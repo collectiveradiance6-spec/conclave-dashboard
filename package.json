@@ -1,39 +1,28 @@
 {
-  "name": "the-conclave-backend",
+  "name": "theconclave-backend",
   "version": "1.0.0",
-  "description": "Backend for The Conclave application, featuring Discord OAuth login and Nitrado integration.",
-  "main": "src/app.ts",
+  "description": "The Conclave Dashboard Backend",
+  "main": "dist/app.js",
   "scripts": {
-    "start": "ts-node src/app.ts",
-    "dev": "ts-node-dev src/app.ts",
+    "dev": "ts-node src/app.ts",
     "build": "tsc",
-    "test": "jest"
+    "start": "node dist/app.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "axios": "^0.21.1",
-    "dotenv": "^10.0.0",
-    "passport": "^0.4.1",
-    "passport-discord": "^0.1.0"
+    "axios": "^1.13.6",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "google-auth-library": "^10.6.1",
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "typescript": "^4.3.2",
-    "ts-node": "^10.0.0",
-    "ts-node-dev": "^1.1.6",
-    "jest": "^27.0.0",
-    "@types/jest": "^27.0.0",
-    "@types/express": "^4.17.13",
-    "@types/jsonwebtoken": "^8.5.5",
-    "@types/passport": "^1.0.0",
-    "@types/passport-discord": "^0.1.0"
-  },
-  "keywords": [
-    "express",
-    "discord",
-    "oauth",
-    "nitrado"
-  ],
-  "author": "Your Name",
-  "license": "MIT"
+    "@types/express": "^4.17.21",
+    "@types/express-session": "^1.17.7",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.11.19",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
 }

@@ -1,14 +1,11 @@
 import { Router } from 'express';
-import { getServiceStatus, restartService } from '../controllers/nitradoController';
-import { authenticate } from '../middleware/auth';
-import { checkAdminRole } from '../middleware/roles';
+import { getServiceStatusController, restartServiceController } from '../controllers/nitradoController';
+import { verifyToken } from '../middleware/auth';
+import { checkAdmin } from '../middleware/roles';
 
 const router = Router();
 
-// Route to get the status of a Nitrado service
-router.get('/status', authenticate, checkAdminRole, getServiceStatus);
-
-// Route to restart a Nitrado service
-router.post('/restart', authenticate, checkAdminRole, restartService);
+router.get('/:serviceId/status', verifyToken, checkAdmin, getServiceStatusController);
+router.post('/:serviceId/restart', verifyToken, checkAdmin, restartServiceController);
 
 export default router;

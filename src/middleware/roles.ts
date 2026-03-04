@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from "express";
+import { AuthRequest } from "../types/AuthRequest";
 
 const roles = {
     admin: 'admin',
@@ -6,7 +7,7 @@ const roles = {
 };
 
 export const checkRole = (role: string) => {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return (req: AuthRequest, res: Response, next: NextFunction) => {
         const userRole = req.user?.role; // Assuming req.user is populated with user data
 
         if (userRole && userRole === role) {

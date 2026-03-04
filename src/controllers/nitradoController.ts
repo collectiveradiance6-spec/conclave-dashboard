@@ -1,22 +1,20 @@
 import { Request, Response } from 'express';
-import { NitradoService } from '../services/nitradoService';
+import { getServiceStatus, restartService } from '../services/nitradoService';
 
-const nitradoService = new NitradoService();
-
-export const getServiceStatus = async (req: Request, res: Response) => {
+export const getServiceStatusController = async (req: Request, res: Response) => {
     try {
-        const status = await nitradoService.getServiceStatus(req.params.serviceId);
+        const status = await getServiceStatus(req.params.serviceId);
         res.status(200).json(status);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching service status', error });
+    } catch (error: any) {
+        res.status(500).json({ message: 'Error fetching service status', error: error.message });
     }
 };
 
-export const restartService = async (req: Request, res: Response) => {
+export const restartServiceController = async (req: Request, res: Response) => {
     try {
-        const result = await nitradoService.restartService(req.params.serviceId);
+        const result = await restartService(req.params.serviceId);
         res.status(200).json(result);
-    } catch (error) {
-        res.status(500).json({ message: 'Error restarting service', error });
+    } catch (error: any) {
+        res.status(500).json({ message: 'Error restarting service', error: error.message });
     }
 };
