@@ -30,7 +30,7 @@ const {
 
 const DISCORD_API = "https://discord.com/api/v10";
 const IS_PROD = NODE_ENV === "production";
-const FRONTEND = FRONTEND_URL || "http://localhost:3000";
+const FRONTEND = FRONTEND_URL || "https://theconclavedominion.com";
 
 // ─── MIDDLEWARE ───────────────────────────────────────
 app.use(cors({
