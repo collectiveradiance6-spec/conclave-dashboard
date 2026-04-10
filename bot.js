@@ -14,9 +14,9 @@
 //   ∙ Exponential backoff login (5s→15s→30s→60s→120s)
 //
 // Commands (38):
-//   Economy: /wallet /curr /clvsd /daily /shop /order /shard /fulfill
+//   Economy: /wallet /curr /clvsd /weekly /shop /order /shard /fulfill
 //   AI/Info: /aegis /ask /servers /map /info /rules /forums /group
-//   Social:  /profile /rank /leaderboard /activity /rep /daily
+//   Social:  /profile /rank /leaderboard /activity /rep /weekly
 //   Admin:   /announce /event /warn /ban /timeout /role /ticket
 //   Tools:   /poll /giveaway /remind /roll /coinflip /calc
 //   Util:    /help /ping /whois /serverinfo /patreon /report
@@ -222,22 +222,21 @@ async function getSupply() {
   });
 }
 
-// Daily claim tracking
+// Weekly ClaveShard claim
 async function claimDaily(id, tag) {
   return sbQuery(async sb => {
     const { data: w } = await sb.from('aegis_wallets').select('*').eq('discord_id', id).single();
     if (!w) { await getWallet(id, tag); return claimDaily(id, tag); }
     const now = new Date();
     const lastClaim = w.last_daily_claim ? new Date(w.last_daily_claim) : null;
+    const WEEK_HOURS = 168; // 7 days
     const diff = lastClaim ? (now - lastClaim) / (1000 * 60 * 60) : 999;
-    if (diff < 20) {
-      const nextClaim = new Date(lastClaim.getTime() + 20 * 60 * 60 * 1000);
-      throw new Error(`⏳ Already claimed today. Next claim: <t:${Math.floor(nextClaim / 1000)}:R>`);
+    if (diff < WEEK_HOURS) {
+      const nextClaim = new Date(lastClaim.getTime() + WEEK_HOURS * 60 * 60 * 1000);
+      throw new Error(`⏳ Already claimed this week. Next claim: <t:${Math.floor(nextClaim / 1000)}:R>`);
     }
-    const streak = diff < 48 ? (w.daily_streak || 0) + 1 : 1;
-    const baseAmt = 100;
-    const bonus = Math.min(streak * 10, 200); // streak bonus caps at +200
-    const amount = baseAmt + bonus;
+    const amount = 3;
+    const streak = (w.daily_streak || 0) + 1;
     const { data, error } = await sb.from('aegis_wallets').update({
       wallet_balance: (w.wallet_balance || 0) + amount,
       lifetime_earned: (w.lifetime_earned || 0) + amount,
@@ -246,8 +245,8 @@ async function claimDaily(id, tag) {
       updated_at: now.toISOString()
     }).eq('discord_id', id).select().single();
     if (error) throw new Error(error.message);
-    await logTx(id, tag, 'daily_claim', amount, data.wallet_balance, `Day ${streak} streak bonus`, 'SYSTEM', 'AEGIS');
-    return { data, amount, streak, bonus };
+    await logTx(id, tag, 'daily_claim', amount, data.wallet_balance, `Week ${streak} claim`, 'SYSTEM', 'AEGIS');
+    return { data, amount, streak, bonus: 0 };
   });
 }
 
@@ -372,33 +371,29 @@ async function beaconGroup() {
 }
 
 async function sentinelOnlinePlayers() {
-  const gid = await beaconGroup();
-  if (!gid) return [];
-  const data = await beaconFetch(`/v4/sentinel/groups/${gid}/characters`, { online: 'true', pageSize: 250 });
+  if (!beaconState.access) return [];
+  const data = await beaconFetch('/v4/sentinel/characters', { online: 'true', pageSize: 250 });
   return data?.results || [];
 }
 
 async function sentinelTribes(serverFilter) {
-  const gid = await beaconGroup();
-  if (!gid) return [];
+  if (!beaconState.access) return [];
   const params = { pageSize: 250 };
-  const data = await beaconFetch(`/v4/sentinel/groups/${gid}/tribes`, params);
+  const data = await beaconFetch('/v4/sentinel/tribes', params);
   let tribes = data?.results || [];
   if (serverFilter) tribes = tribes.filter(t => (t.serviceName||'').toLowerCase().includes(serverFilter.toLowerCase()));
   return tribes;
 }
 
 async function sentinelBans() {
-  const gid = await beaconGroup();
-  if (!gid) return [];
-  const data = await beaconFetch(`/v4/sentinel/groups/${gid}/bans`, { pageSize: 100 });
+  if (!beaconState.access) return [];
+  const data = await beaconFetch('/v4/sentinel/bans', { pageSize: 100 });
   return data?.results || [];
 }
 
 async function sentinelPlayer(name) {
-  const gid = await beaconGroup();
-  if (!gid) return null;
-  const data = await beaconFetch(`/v4/sentinel/groups/${gid}/players`, { search: name, pageSize: 5 });
+  if (!beaconState.access) return null;
+  const data = await beaconFetch('/v4/sentinel/players', { search: name, pageSize: 5 });
   return data?.results?.[0] || null;
 }
 
@@ -611,7 +606,7 @@ SERVERS (10 maps):
 
 RATES: 5x XP/Harvest/Taming/Breeding · 1M weight · No fall damage · Max wild dino level 350
 MODS: Death Inventory Keeper · ARKomatic · Awesome Spyglass · Teleporter
-ECONOMY: /wallet balance · /daily for free shards · /order to shop · /shop for catalog
+ECONOMY: /wallet balance · /weekly for free shards · /order to shop · /shop for catalog
 PAYMENTS: CashApp $TheConclaveDominion · Chime $ANLIKESEF
 MINECRAFT: 134.255.214.44:10090 (Bedrock crossplay)
 PATREON: patreon.com/theconclavedominion — Amissa access at Elite $20/mo tier
@@ -714,7 +709,7 @@ function walletEmbed(title, w, color = C.pl) {
       { name: '📊 Total', value: `**${total.toLocaleString()}**`, inline: true },
       { name: '📈 Lifetime Earned', value: `${(w.lifetime_earned || 0).toLocaleString()}`, inline: true },
       { name: '📉 Lifetime Spent', value: `${(w.lifetime_spent || 0).toLocaleString()}`, inline: true },
-      { name: '🔥 Daily Streak', value: `${w.daily_streak || 0} days`, inline: true },
+      { name: '🔥 Weekly Streak', value: `${w.daily_streak || 0} days`, inline: true },
     );
 }
 
@@ -755,7 +750,7 @@ const cmds = [
     .addSubcommand(s => s.setName('set').setDescription('[ADMIN] Set balance').addUserOption(o => o.setName('user').setDescription('Target').setRequired(true)).addIntegerOption(o => o.setName('amount').setDescription('New balance').setRequired(true).setMinValue(0)).addStringOption(o => o.setName('reason').setDescription('Reason').setRequired(false)))
     .addSubcommand(s => s.setName('top').setDescription('Top 15 holders'))
     .addSubcommand(s => s.setName('stats').setDescription('[ADMIN] Full economy stats')),
-  new SlashCommandBuilder().setName('daily').setDescription('🌟 Claim your daily ClaveShard reward — streak bonuses!'),
+  new SlashCommandBuilder().setName('weekly').setDescription('🌟 Claim your weekly ClaveShard reward — 3 shards every 7 days!'),
   new SlashCommandBuilder().setName('order').setDescription('📦 Submit a ClaveShard order')
     .addIntegerOption(o => o.setName('tier').setDescription('Tier 1-30').setRequired(true).setMinValue(1).setMaxValue(30))
     .addStringOption(o => o.setName('platform').setDescription('Platform').setRequired(true).addChoices({ name: 'Xbox', value: 'Xbox' }, { name: 'PlayStation', value: 'PlayStation' }, { name: 'PC', value: 'PC' }))
@@ -969,19 +964,19 @@ bot.on(Events.InteractionCreate, async i => {
       }
     }
 
-    if (cmd === 'daily') {
+    if (cmd === 'weekly') {
       try {
         const { data: w, amount, streak, bonus } = await claimDaily(i.user.id, i.user.tag || i.user.username);
         const streakBar = '🔥'.repeat(Math.min(streak, 10)) + (streak > 10 ? `+${streak - 10}` : '');
-        return i.editReply({ embeds: [base('🌟 Daily Reward Claimed!', C.gold)
+        return i.editReply({ embeds: [base('🌟 Weekly ClaveShard Claimed!', C.gold)
           .setThumbnail(i.user.displayAvatarURL())
-          .setDescription(`**${i.user.username}** claimed their daily ClaveShard reward!`)
+          .setDescription(`**${i.user.username}** claimed their weekly ClaveShard reward!`)
           .addFields(
             { name: '💎 Claimed', value: `**+${amount.toLocaleString()} shards**`, inline: true },
-            { name: '🔥 Streak', value: `${streak} days${streak > 1 ? ` (+${bonus} bonus)` : ''}`, inline: true },
+            { name: '🔥 Weekly Streak', value: `Week ${streak}`, inline: true },
             { name: '💰 Wallet Balance', value: `${(w.wallet_balance || 0).toLocaleString()} shards`, inline: true },
           )
-          .setFooter({ text: `${streakBar} · Come back in 20h for your next claim!` })
+          .setFooter({ text: `${streakBar} · Week ${streak} — Come back in 7 days!` })
         ] });
       } catch (e) { return i.editReply(e.message); }
     }
@@ -1101,7 +1096,7 @@ bot.on(Events.InteractionCreate, async i => {
         { name: '⚙️ Config', value: '1M Weight · No Fall Dmg · Max Dino 350', inline: true },
         { name: '🗺️ 10 Maps', value: 'Island · Volcano · Extinction · Center · Lost Colony · Astraeos · Valguero · Scorched · Aberration (PvP) · Amissa (Patreon)' },
         { name: '🔧 Mods', value: 'Death Inventory Keeper · ARKomatic · Awesome Spyglass · Teleporter' },
-        { name: '💎 Economy', value: '`/daily` free shards · `/wallet balance` · `/order` to shop' },
+        { name: '💎 Economy', value: '`/weekly` 3 free shards/week · `/wallet balance` · `/order` to shop' },
         { name: '🌐 Links', value: '[Website](https://theconclavedominion.com) · [Discord](https://discord.gg/theconclave) · [Patreon](https://patreon.com/theconclavedominion)' },
       )
     ] });
@@ -1145,7 +1140,7 @@ bot.on(Events.InteractionCreate, async i => {
 
     if (cmd === 'help') {
       const categories = [
-        { name: '💎 Economy', value: '`/wallet` `/curr` `/clvsd` `/daily` `/order` `/shard` `/shop` `/fulfill`' },
+        { name: '💎 Economy', value: '`/wallet` `/curr` `/clvsd` `/weekly` `/order` `/shard` `/shop` `/fulfill`' },
         { name: '🧠 AI & Info', value: '`/aegis` `/ask` `/forget` `/servers` `/map` `/info` `/rules` `/forums` `/group`' },
         { name: '🎖️ Profile', value: '`/profile` `/rank` `/rep` `/whois` `/serverinfo`' },
         { name: '📢 Moderation', value: '`/announce` `/event` `/warn` `/ban` `/timeout` `/role` `/ticket` `/report`' },
@@ -1195,7 +1190,7 @@ bot.on(Events.InteractionCreate, async i => {
             { name: '💎 Wallet', value: `${(wallet.wallet_balance || 0).toLocaleString()}`, inline: true },
             { name: '🏦 Bank', value: `${(wallet.bank_balance || 0).toLocaleString()}`, inline: true },
             { name: '💰 Total Shards', value: `${total.toLocaleString()}`, inline: true },
-            { name: '🔥 Daily Streak', value: `${wallet.daily_streak || 0} days`, inline: true },
+            { name: '🔥 Weekly Streak', value: `${wallet.daily_streak || 0} days`, inline: true },
             { name: '📈 Lifetime Earned', value: `${(wallet.lifetime_earned || 0).toLocaleString()}`, inline: true },
             { name: '📉 Lifetime Spent', value: `${(wallet.lifetime_spent || 0).toLocaleString()}`, inline: true },
           );
@@ -1220,7 +1215,7 @@ bot.on(Events.InteractionCreate, async i => {
           { name: '🏦 Bank', value: `${(myWallet.bank_balance || 0).toLocaleString()}`, inline: true },
           { name: '💰 Total', value: `${total.toLocaleString()}`, inline: true },
           { name: '🏆 Server Rank', value: pos >= 0 ? `#${pos + 1} of ${all.length}` : 'Unranked', inline: true },
-          { name: '🔥 Daily Streak', value: `${myWallet.daily_streak || 0} days`, inline: true },
+          { name: '🔥 Weekly Streak', value: `${myWallet.daily_streak || 0} days`, inline: true },
         )
       ] });
     }
@@ -1548,18 +1543,26 @@ bot.on(Events.InteractionCreate, async i => {
             await beaconGroup();
             // Notify admin
             try {
+              // Send embed summary
               await i.user.send({ embeds: [
                 base('✅ Beacon Sentinel Connected!', C.gr)
                   .setDescription('AEGIS is now authenticated with Beacon Sentinel.')
                   .addFields(
-                    { name: '🏛️ Group ID',    value: beaconState.groupId || 'Discovering...', inline: true },
-                    { name: '⚠️ Next Step',   value: 'Add these to Render env vars so auth survives restarts:', inline: false },
-                    { name: 'BEACON_ACCESS_TOKEN',  value: `\`${t.data.access_token.slice(0,20)}...\`` },
-                    { name: 'BEACON_REFRESH_TOKEN', value: `\`${t.data.refresh_token.slice(0,20)}...\`` },
-                    { name: 'BEACON_TOKEN_EXPIRES', value: `\`${t.data.access_token_expiration}\`` },
-                    { name: 'BEACON_GROUP_ID',      value: `\`${beaconState.groupId || 'check /api/beacon/status'}\`` },
+                    { name: '🏛️ Group ID',  value: beaconState.groupId || 'Discovering...', inline: true },
+                    { name: '⏰ Expires',   value: `<t:${t.data.access_token_expiration}:R>`, inline: true },
+                    { name: '⚠️ Next Step', value: 'Copy the tokens from the next message into Render env vars.' },
                   )
               ]});
+              // Send FULL tokens as plain text (untruncated)
+              await i.user.send([
+                '**Paste these into Render Environment Variables:**',
+                '```',
+                `BEACON_ACCESS_TOKEN=${t.data.access_token}`,
+                `BEACON_REFRESH_TOKEN=${t.data.refresh_token}`,
+                `BEACON_TOKEN_EXPIRES=${t.data.access_token_expiration}`,
+                `BEACON_GROUP_ID=${beaconState.groupId || ''}`,
+                '```',
+              ].join('\n'));
             } catch {}
           } catch (e) {
             const code = e.response?.data?.error;
@@ -1576,7 +1579,7 @@ bot.on(Events.InteractionCreate, async i => {
       const tribes = await sentinelTribes(srvFilter);
       if (!tribes.length) return i.editReply(`📭 No tribes found${srvFilter ? ` on **${srvFilter}**` : ''}.`);
       const lines = tribes.slice(0, 25).map((t, idx) =>
-        `**${idx+1}.** ${t.tribeName || 'Unnamed'} · ${t.memberCount || '?'} members${t.serviceName ? ` · *${t.serviceName}*` : ''}`
+        `**${idx+1}.** ${t.tribeName || 'Unnamed'} · ${t.serviceDisplayName ? ` · *${t.serviceDisplayName}*` : ''}`
       ).join('\n');
       return i.editReply({ embeds: [
         base(`🏛️ Tribes${srvFilter ? ' — ' + srvFilter : ''}`, C.pl)
@@ -1595,9 +1598,9 @@ bot.on(Events.InteractionCreate, async i => {
       const embed = base(`🔍 ${player.playerName || name}`, C.cy)
         .addFields(
           { name: '🆔 Player ID',   value: player.playerId   || 'Unknown', inline: true },
-          { name: '🎮 Platform',    value: player.platform   || 'Unknown', inline: true },
-          { name: '📅 First Seen',  value: player.createdAt  ? `<t:${Math.floor(new Date(player.createdAt)/1000)}:D>` : 'Unknown', inline: true },
-          { name: '🕐 Last Seen',   value: player.lastSeenAt ? `<t:${Math.floor(new Date(player.lastSeenAt)/1000)}:R>` : 'Unknown', inline: true },
+          { name: '👤 Name',        value: player.playerName || 'Unknown', inline: true },
+          { name: '📅 Created',     value: player.createdAt  ? `<t:${Math.floor(new Date(player.createdAt)/1000)}:D>` : 'Unknown', inline: true },
+          { name: '🕐 Last Active', value: player.updatedAt ? `<t:${Math.floor(new Date(player.updatedAt)/1000)}:R>` : 'Unknown', inline: true },
         );
       if (player.notes?.length) embed.addFields({ name: '📝 Notes', value: player.notes.slice(0,3).map(n => n.note).join('\n') });
       return i.editReply({ embeds: [embed] });
@@ -1806,7 +1809,7 @@ bot.on(Events.InteractionCreate, async i => {
         // Group by server
         const byServer = {};
         for (const c of chars) {
-          const srv = c.serviceName || 'Unknown';
+          const srv = c.serviceDisplayName || 'Unknown';
           if (!byServer[srv]) byServer[srv] = [];
           byServer[srv].push(c.characterName || c.playerName || 'Unknown');
         }
@@ -1913,7 +1916,7 @@ bot.on(Events.GuildMemberAdd, async member => {
       .addFields(
         { name: '📌 First Stop', value: '#rules · Read the Codex', inline: true },
         { name: '🎮 Server IPs', value: '#ark-servers', inline: true },
-        { name: '💎 Economy', value: '`/daily` for free shards!', inline: true },
+        { name: '💎 Economy', value: '`/weekly` for free shards!', inline: true },
         { name: '💬 Say Hello', value: '#general', inline: true },
         { name: '🎫 Need Help?', value: '`/ticket` opens private support', inline: true },
         { name: '🧠 Ask AEGIS', value: '`/aegis [question]` for anything', inline: true },
@@ -2021,7 +2024,7 @@ bot.once(Events.ClientReady, async () => {
   STATUS.ready = true; STATUS.readyAt = Date.now();
   console.log(`🤖 AEGIS v8.0 ULTIMATE — ${bot.user.tag}`);
   console.log(`   Supabase: ${sb ? '✅' : '⚠️'} · Anthropic: ${anthropic ? '✅' : '⚠️'} · Health: :${BOT_PORT}`);
-  bot.user.setActivity(`💎 /daily | ${cmds.length} commands`, { type: 3 });
+  bot.user.setActivity(`💎 /weekly | ${cmds.length} commands`, { type: 3 });
   await registerCommands();
 
   // Auto-start live channel name updates on boot
