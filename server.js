@@ -1756,6 +1756,136 @@ app.use((err, _req, res, _next) => {
 });
 
 // ─── START ────────────────────────────────────────────────────────
+
+/* ═══════════ WORLD HUB ROUTES (injected) ═══════════ */
+const multer = require('multer');
+const _hubUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 52428800, files: 3 } });
+
+app.get('/api/hub/posts', async (req, res) => {
+  try {
+    const { page=0, limit=12, type='', search='' } = req.query;
+    const pg = parseInt(page), lim = Math.min(parseInt(limit), 50);
+    let q = supabase.from('hub_posts').select('*').eq('is_approved', true)
+      .order('created_at', { ascending: false })
+      .range(pg*lim, (pg+1)*lim-1);
+    if (type)   q = q.eq('post_type', type);
+    if (search) q = q.or(`game.ilike.%${search}%,server_name.ilike.%${search}%,content.ilike.%${search}%,author_name.ilike.%${search}%`);
+    const { data, error } = await q;
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ posts: data||[], page: pg, hasMore: (data||[]).length >= lim });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/hub/posts/:id', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('hub_posts').select('*')
+      .eq('id', req.params.id).eq('is_approved', true).single();
+    if (error || !data) return res.status(404).json({ error: 'Not found' });
+    await supabase.from('hub_posts').update({ views: (data.views||0)+1 }).eq('id', req.params.id);
+    res.json(data);
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/hub/posts', _hubUpload.array('media', 3), async (req, res) => {
+  try {
+    const { author_name, game, server_name, discord_invite, website, region, post_type, content } = req.body;
+    if (!author_name || !game || !content)
+      return res.status(400).json({ error: 'author_name, game, content required' });
+
+    const platforms = [].concat(req.body['platforms[]']||[]).filter(Boolean);
+    const tagArr    = [].concat(req.body['tags[]']||[]).filter(Boolean);
+    const sp        = [].concat(req.body['share_platforms[]']||[]).filter(Boolean);
+
+    const media_urls = [];
+    for (const file of (req.files||[])) {
+      const ext = file.originalname.split('.').pop();
+      const fname = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: ue } = await supabase.storage.from('hub-media').upload(fname, file.buffer, { contentType: file.mimetype });
+      if (!ue) {
+        const { data: { publicUrl } } = supabase.storage.from('hub-media').getPublicUrl(fname);
+        media_urls.push(publicUrl);
+      }
+    }
+
+    const { data: post, error: ie } = await supabase.from('hub_posts').insert({
+      author_name, game,
+      server_name: server_name||null, discord_invite: discord_invite||null,
+      website: website||null, region: region||null,
+      platforms, post_type: post_type||'other', content, tags: tagArr, media_urls,
+    }).select().single();
+    if (ie) return res.status(500).json({ error: ie.message });
+
+    const social_posted = {};
+    const frontendUrl = process.env.FRONTEND_URL || 'https://theconclavedominion.com';
+    const postUrl = `${frontendUrl}/hub.html?post=${post.id}`;
+    const summary = `${author_name} — ${game}${server_name?' ('+server_name+')':''}`;
+
+    if (sp.includes('discord') && process.env.HUB_DISCORD_WEBHOOK) {
+      try {
+        await axios.post(process.env.HUB_DISCORD_WEBHOOK, {
+          embeds: [{
+            title: summary.slice(0,256),
+            description: content.slice(0,300)+(content.length>300?'…':''),
+            color: 0x7B2FFF, url: postUrl,
+            fields: [
+              ...(server_name    ? [{name:'🏰 Server',    value:server_name,     inline:true}] : []),
+              ...(discord_invite ? [{name:'📨 Discord',   value:discord_invite,  inline:true}] : []),
+              ...(platforms.length?[{name:'🎮 Platforms', value:platforms.join(', '), inline:true}] : []),
+            ],
+            footer: { text: 'World Hub · theconclavedominion.com' },
+            timestamp: new Date().toISOString(),
+          }]
+        });
+        social_posted.discord = true;
+      } catch(e) { social_posted.discord_error = e.message; }
+    }
+
+    if (sp.includes('bluesky') && process.env.BLUESKY_HANDLE && process.env.BLUESKY_APP_PASSWORD) {
+      try {
+        const sess = await axios.post('https://bsky.social/xrpc/com.atproto.server.createSession',
+          { identifier: process.env.BLUESKY_HANDLE, password: process.env.BLUESKY_APP_PASSWORD });
+        const bskyText = `🎮 ${summary}\n\n${content.slice(0,220)}${content.length>220?'…':''}\n\n${postUrl}`.slice(0,300);
+        await axios.post('https://bsky.social/xrpc/com.atproto.repo.createRecord',
+          { repo: sess.data.did, collection: 'app.bsky.feed.post',
+            record: { $type:'app.bsky.feed.post', text: bskyText, createdAt: new Date().toISOString() }},
+          { headers: { Authorization: `Bearer ${sess.data.accessJwt}` }});
+        social_posted.bluesky = true;
+      } catch(e) { social_posted.bluesky_error = e.message; }
+    }
+
+    if (Object.keys(social_posted).length)
+      await supabase.from('hub_posts').update({ social_posted }).eq('id', post.id);
+
+    const share_links = {
+      twitter:  `https://twitter.com/intent/tweet?text=${encodeURIComponent(summary+'\n\n'+postUrl)}`,
+      reddit:   `https://www.reddit.com/submit?url=${encodeURIComponent(postUrl)}&title=${encodeURIComponent(summary)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
+    };
+    res.json({ post: { ...post, social_posted }, share_links });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/hub/posts/:id/boost', async (req, res) => {
+  try {
+    const { data } = await supabase.from('hub_posts').select('boost_count').eq('id', req.params.id).single();
+    if (!data) return res.status(404).json({ error: 'Not found' });
+    const n = (data.boost_count||0)+1;
+    await supabase.from('hub_posts').update({ boost_count: n }).eq('id', req.params.id);
+    res.json({ success: true, boost_count: n });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/discord/guild-emojis', verifyToken, async (req, res) => {
+  try {
+    const r = await axios.get(`https://discord.com/api/v10/guilds/${process.env.DISCORD_GUILD_ID}/emojis`,
+      { headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` } });
+    res.json({ emojis: r.data.map(e => ({ id: e.id, name: e.name,
+      url: `https://cdn.discordapp.com/emojis/${e.id}.${e.animated?'gif':'webp'}?size=32` })) });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+/* ═══════════ END WORLD HUB ROUTES ═══════════ */
+
+
 app.listen(APP_PORT, () => {
   console.log(`🚀 Conclave Aegis API v7.0 running on port ${APP_PORT}`);
   console.log(`   FRONTEND: ${FRONTEND}`);
