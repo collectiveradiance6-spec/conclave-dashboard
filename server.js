@@ -828,7 +828,75 @@ app.post('/api/beacon/auth/poll', async (req, res) => {
   }
 });
 
-// ─── BEACON SENTINEL API ROUTES ────────────────────────────────
+// ─── BEACON OAUTH BROWSER CALLBACK ─────────────────────────────
+// Registered in Beacon app settings as:
+// https://api.theconclavedominion.com/auth/beacon/callback
+// Handles authorization_code exchange when browser flow is used
+// (Device flow via /api/beacon/auth/start does NOT use this route)
+app.get('/auth/beacon/callback', async (req, res) => {
+  const { code, state, error } = req.query;
+
+  if (error) {
+    console.error('❌ Beacon callback error:', error);
+    return res.redirect(`https://theconclavedominion.com/admin.html?beacon_error=${encodeURIComponent(error)}`);
+  }
+
+  if (!code) {
+    return res.status(400).send('Missing authorization code');
+  }
+
+  // Look up PKCE verifier by state
+  const session = beaconDeviceSessions.get(state);
+  const verifier = session?.verifier;
+
+  try {
+    const params = new URLSearchParams({
+      client_id:     BEACON_CID,
+      client_secret: BEACON_CSEC || '',
+      grant_type:    'authorization_code',
+      code,
+      redirect_uri:  'https://api.theconclavedominion.com/auth/beacon/callback',
+      ...(verifier ? { code_verifier: verifier } : {}),
+    });
+
+    const r = await axios.post(`${BEACON_API}/v4/login`, params.toString(), {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      timeout: 10000,
+    });
+
+    const { access_token, refresh_token, access_token_expiration } = r.data;
+    beaconToken.access    = access_token;
+    beaconToken.refresh   = refresh_token;
+    beaconToken.expiresAt = access_token_expiration;
+
+    if (state) beaconDeviceSessions.delete(state);
+
+    // Discover group immediately
+    await beaconDiscoverGroup().catch(() => {});
+
+    console.log('✅ Beacon browser OAuth complete — tokens stored');
+    res.redirect('https://theconclavedominion.com/admin.html?beacon_auth=success');
+  } catch (e) {
+    console.error('❌ Beacon callback token exchange failed:', e.response?.data || e.message);
+    res.redirect('https://theconclavedominion.com/admin.html?beacon_error=token_exchange_failed');
+  }
+});
+
+// ─── BEACON TOKEN PERSIST ───────────────────────────────────────
+// Tokens are in-memory only — Render restarts lose them.
+// Call this after auth to save to Render env vars (manual step).
+// Better: store in Supabase. For now expose current token state.
+app.get('/api/beacon/token-status', verifyToken, checkAdmin, (_req, res) => {
+  res.json({
+    authenticated: !!beaconToken.access,
+    groupId:       beaconToken.groupId || null,
+    expiresAt:     beaconToken.expiresAt || null,
+    expiresIn:     beaconToken.expiresAt ? Math.floor((beaconToken.expiresAt - Date.now() / 1000)) + 's' : null,
+    hasRefresh:    !!beaconToken.refresh,
+  });
+});
+
+
 app.get('/api/beacon/players/online', async (req, res) => {
   try { res.json({ players: await beaconGetOnlinePlayers() }); }
   catch (e) { res.status(500).json({ error: e.message }); }
