@@ -2060,7 +2060,7 @@ bot.once(Events.ClientReady, async () => {
       if (monCh && monMsg) {
         monitorState.set(DISCORD_GUILD_ID, {
           statusChannelId: monCh, activityChannelId: actCh || null,
-          messageId: monMsg, servers: [...MONITOR_SERVERS], prevStatuses: statuses,
+          messageId: monMsg, servers: [...MONITOR_SERVERS], prevStatuses: statuses,e
         });
         await refreshMonitor(guild);
         console.log('📡 Monitor embed resumed');
