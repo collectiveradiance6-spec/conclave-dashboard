@@ -1958,20 +1958,37 @@ healthServer.listen(BOT_PORT, () => console.log(`💓 Bot health: :${BOT_PORT}`)
 // ─── WATCHDOG ──────────────────────────────────────────────────
 let watchdogFails = 0, lastReady = Date.now();
 
+// Grace period — don't watch until 60s after boot to let Discord handshake complete
+const WATCHDOG_START = Date.now() + 60_000;
+
 setInterval(async () => {
-  const wsStatus = bot.ws?.status;
+  // Don't fire during startup grace period
+  if (Date.now() < WATCHDOG_START) return;
+
+  const wsStatus = bot.ws?.status ?? -1;
   const heapMB = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
   if (heapMB > 450) console.warn(`⚠️  High memory: ${heapMB}MB`);
-  if (wsStatus === 0) { watchdogFails = 0; lastReady = Date.now(); return; }
+
+  // ws=0 (READY) or ws=4 (NEARLY — about to become ready): healthy
+  if (wsStatus === 0 || wsStatus === 4) {
+    watchdogFails = 0;
+    lastReady = Date.now();
+    return;
+  }
+
   watchdogFails++;
   const downSec = Math.floor((Date.now() - lastReady) / 1000);
   console.warn(`⚠️  Watchdog: ws=${wsStatus} down=${downSec}s fails=${watchdogFails}`);
-  if (watchdogFails >= 3) {
+
+  // Only act after 5 consecutive failures (2.5 min) to avoid reacting to brief resumes
+  if (watchdogFails >= 5) {
     STATUS.reconnects++;
-    watchdogFails = 0;
     console.error(`❌ Reconnecting (attempt #${STATUS.reconnects})...`);
-    try { bot.destroy(); await new Promise(r => setTimeout(r, 5000)); await bot.login(DISCORD_BOT_TOKEN); lastReady = Date.now(); console.log('✅ Watchdog reconnect OK'); }
-    catch (e) { console.error('❌ Watchdog reconnect failed:', e.message); }
+    // Exit cleanly — Render auto-restarts. destroy+login in-process causes corrupt state in djs v14.
+    STATUS.ready = false;
+    try { healthServer.close(); } catch (_) {}
+    try { bot.destroy(); } catch (_) {}
+    setTimeout(() => process.exit(1), 2000);
   }
 }, 30_000);
 
