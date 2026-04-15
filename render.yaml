@@ -28,6 +28,10 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         value: https://theconclavedominion.com
+      - key: ADMIN_URL
+        value: https://theconclavedominion.com/admin
+      - key: API_BASE_URL
+        value: https://api.theconclavedominion.com
 
       # Discord
       - key: DISCORD_CLIENT_ID
@@ -40,6 +44,8 @@ services:
         value: "1438103556610723922"
       - key: DISCORD_REDIRECT_URI
         value: https://api.theconclavedominion.com/auth/discord/callback
+      - key: BEACON_REDIRECT_URI
+        value: https://api.theconclavedominion.com/auth/beacon/callback
 
       # Discord Roles
       - key: ROLE_OWNER_ID

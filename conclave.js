@@ -6,7 +6,7 @@
 'use strict';
 const TC = (function(){
 
-const API = 'https://conclave-dashboard.onrender.com';
+const API = (window.CONCLAVE_API_BASE_URL || document.documentElement?.dataset?.apiBase || 'https://api.theconclavedominion.com').replace(/\/$/, '');
 const SERVERS = [
   {id:1,key:'aberration',display:'Aberration',emoji:'🌋',ip:'217.114.196.80',port:5540,mapId:'18655529',isPvP:true,isPatreon:false},
   {id:2,key:'scorched',display:'Scorched Earth',emoji:'🏜️',ip:'217.114.196.103',port:5240,mapId:'18598049',isPvP:false,isPatreon:false},
@@ -455,11 +455,11 @@ function initSkew() {
    API
 ════════════════════════════════════════════ */
 function fetchGoal(cb) {
-  fetch(API+'/donation-goal').then(r=>r.json()).then(cb)
+  fetch(API+'/api/donation-goal').then(r=>r.json()).then(cb)
     .catch(()=>cb({goal:500,raised:342,donors:23,days:14}));
 }
 function fetchServers(cb) {
-  fetch(API+'/api/servers').then(r=>r.json()).then(cb)
+  fetch(API+'/servers').then(r=>r.json()).then(d=>cb(Array.isArray(d)?{servers:d}:d))
     .catch(()=>cb({servers:SERVERS.map((s,i)=>({...s,online:s.key!=='extinction',players:[12,7,19,3,5,8,24,11,0,6][i],maxPlayers:20,name:s.display,address:`${s.ip}:${s.port}`}))}));
 }
 function fetchEvents(cb) {

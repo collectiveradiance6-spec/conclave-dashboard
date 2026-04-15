@@ -1659,7 +1659,7 @@ bot.on(Events.InteractionCreate, async interaction => {
   // ── /setup-channels ───────────────────────────────────────────
   if (cmd === 'setup-channels') {
     if (!isOwner(member)) return interaction.reply({content:'❌ Owner only.',ephemeral:true});
-    return interaction.reply({content:'⚙️ Full channel setup: **theconclavedominion.com/admin.html**\n\nRecommended structure:\n📁 Welcome & Info → #welcome #rules #announcements #changelog\n📁 ARK Servers → #server-status #connect-info #mod-requests\n📁 Community → #general #media #events #giveaways\n📁 Economy → #shop #orders #pickups\n📁 Support → #help #tickets (auto-created by AEGIS)\n📁 Staff → #staff-chat #mod-log #aegis-admin',ephemeral:true});
+    return interaction.reply({content:'⚙️ Full channel setup: **theconclavedominion.com/admin**\n\nRecommended structure:\n📁 Welcome & Info → #welcome #rules #announcements #changelog\n📁 ARK Servers → #server-status #connect-info #mod-requests\n📁 Community → #general #media #events #giveaways\n📁 Economy → #shop #orders #pickups\n📁 Support → #help #tickets (auto-created by AEGIS)\n📁 Staff → #staff-chat #mod-log #aegis-admin',ephemeral:true});
   }
 
   // ── /setup-roles ──────────────────────────────────────────────

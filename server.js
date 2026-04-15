@@ -60,6 +60,11 @@ const {
   NITRADO_TOKEN,
 } = process.env;
 
+const API_BASE_URL = (process.env.API_BASE_URL || 'https://api.theconclavedominion.com').replace(/\/$/, '');
+const ADMIN_URL = (process.env.ADMIN_URL || `${FRONTEND_URL}/admin`).replace(/\/$/, '');
+const BEACON_REDIRECT_URI = process.env.BEACON_REDIRECT_URI || `${API_BASE_URL}/auth/beacon/callback`;
+const DISCORD_CALLBACK_URL = DISCORD_REDIRECT_URI || `${API_BASE_URL}/auth/discord/callback`;
+
 const IS_PROD    = NODE_ENV === 'production';
 const DISCORD_API = 'https://discord.com/api/v10';
 const BEACON_API  = 'https://api.usebeacon.app';
@@ -89,7 +94,9 @@ app.use(cors({
     FRONTEND_URL,
     'https://theconclave.pages.dev',
     'https://theconclavedominion.com',
+    'https://www.theconclavedominion.com',
     'http://localhost:3000',
+    'http://127.0.0.1:3000',
   ],
   credentials: true,
 }));
@@ -143,7 +150,7 @@ app.get('/auth/discord', (req, res) => {
   req.session.oauthState = state;
   const params = new URLSearchParams({
     client_id:     DISCORD_CLIENT_ID,
-    redirect_uri:  DISCORD_REDIRECT_URI,
+    redirect_uri:  DISCORD_CALLBACK_URL,
     response_type: 'code',
     scope:         'identify guilds guilds.members.read',
     state,
@@ -153,9 +160,9 @@ app.get('/auth/discord', (req, res) => {
 
 app.get('/auth/discord/callback', async (req, res) => {
   const { code, state } = req.query;
-  if (!code) return res.redirect(`${FRONTEND_URL}?error=no_code`);
+  if (!code) return res.redirect(`${ADMIN_URL}?error=no_code`);
   if (state && req.session.oauthState && state !== req.session.oauthState)
-    return res.redirect(`${FRONTEND_URL}?error=state_mismatch`);
+    return res.redirect(`${ADMIN_URL}?error=state_mismatch`);
 
   try {
     // Exchange code for tokens
@@ -165,7 +172,7 @@ app.get('/auth/discord/callback', async (req, res) => {
         client_secret: DISCORD_CLIENT_SECRET,
         grant_type:    'authorization_code',
         code,
-        redirect_uri:  DISCORD_REDIRECT_URI,
+        redirect_uri:  DISCORD_CALLBACK_URL,
       }),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
@@ -184,7 +191,7 @@ app.get('/auth/discord/callback', async (req, res) => {
 
     const user = userRes.data;
     const inGuild = guildsRes.data.some(g => g.id === DISCORD_GUILD_ID);
-    if (!inGuild) return res.redirect(`${FRONTEND_URL}?error=not_member`);
+    if (!inGuild) return res.redirect(`${ADMIN_URL}?error=not_member`);
 
     // Get member roles
     let roles = [];
@@ -205,10 +212,10 @@ app.get('/auth/discord/callback', async (req, res) => {
       roles,
     }, JWT_SECRET, { expiresIn: '8h' });
 
-    res.redirect(`${FRONTEND_URL}/admin.html?token=${token}`);
+    res.redirect(`${ADMIN_URL}?token=${token}`);
   } catch (e) {
     console.error('❌ Discord OAuth error:', e.response?.data || e.message);
-    res.redirect(`${FRONTEND_URL}?error=oauth_failed`);
+    res.redirect(`${ADMIN_URL}?error=oauth_failed`);
   }
 });
 
@@ -305,7 +312,7 @@ app.get('/auth/beacon', (req, res) => {
 
   const params = new URLSearchParams({
     client_id:             BEACON_CID,
-    redirect_uri:          'https://api.theconclavedominion.com/auth/beacon/callback',
+    redirect_uri:          BEACON_REDIRECT_URI,
     response_type:         'code',
     scope:                 BEACON_SCOPE,
     state,
@@ -317,7 +324,7 @@ app.get('/auth/beacon', (req, res) => {
 
 app.get('/auth/beacon/callback', async (req, res) => {
   const { code, state } = req.query;
-  if (!code) return res.redirect(`${FRONTEND_URL}/admin.html?beacon_error=no_code`);
+  if (!code) return res.redirect(`${ADMIN_URL}?beacon_error=no_code`);
 
   const session = beaconDeviceSessions.get(state);
   try {
@@ -326,7 +333,7 @@ app.get('/auth/beacon/callback', async (req, res) => {
       client_secret: BEACON_CSEC,
       grant_type:    'authorization_code',
       code,
-      redirect_uri:  'https://api.theconclavedominion.com/auth/beacon/callback',
+      redirect_uri:  BEACON_REDIRECT_URI,
       scope:         BEACON_SCOPE,
       ...(session ? { code_verifier: session.verifier } : {}),
     };
@@ -343,10 +350,10 @@ app.get('/auth/beacon/callback', async (req, res) => {
 
     await beaconDiscoverGroup().catch(() => {});
     console.log('✅ Beacon browser OAuth complete');
-    res.redirect(`${FRONTEND_URL}/admin.html?beacon_auth=success`);
+    res.redirect(`${ADMIN_URL}?beacon_auth=success`);
   } catch (e) {
     console.error('❌ Beacon callback failed:', e.response?.data || e.message);
-    res.redirect(`${FRONTEND_URL}/admin.html?beacon_error=token_exchange_failed`);
+    res.redirect(`${ADMIN_URL}?beacon_error=token_exchange_failed`);
   }
 });
 
@@ -804,6 +811,8 @@ app.use((err, _req, res, _next) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Conclave AEGIS API v8.0 — port ${PORT}`);
   console.log(`🔗 Frontend: ${FRONTEND_URL}`);
+  console.log(`🔗 Admin: ${ADMIN_URL}`);
+  console.log(`🔗 API: ${API_BASE_URL}`);
   console.log(`🔐 Beacon: ${beaconToken.access ? '✅ token loaded' : '⚠️  not authenticated'}`);
   // Attempt Beacon group discovery on boot if we have a token
   if (beaconToken.access && !beaconToken.groupId) {

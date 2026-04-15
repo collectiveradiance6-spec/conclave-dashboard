@@ -149,17 +149,17 @@ function animateCounter(el, target, duration = 1400, prefix = '', suffix = '') {
 }
 
 /* ── API ── */
-const API = 'https://conclave-dashboard.onrender.com';
+const API = (window.CONCLAVE_API_BASE_URL || document.documentElement?.dataset?.apiBase || 'https://api.theconclavedominion.com').replace(/\/$/, '');
 
 function fetchGoal(cb) {
-  fetch(API + '/donation-goal')
+  fetch(API + '/api/donation-goal')
     .then(r => r.json()).then(cb)
     .catch(() => cb({ goal:500, raised:342, donors:23, days:14, percent:68 }));
 }
 
 function fetchServers(cb) {
   fetch(API + '/servers')
-    .then(r => r.json()).then(cb)
+    .then(r => r.json()).then(data => cb(Array.isArray(data) ? { servers: data } : data))
     .catch(() => cb({
       servers: CONCLAVE_SERVERS.map((s, i) => ({
         ...s,

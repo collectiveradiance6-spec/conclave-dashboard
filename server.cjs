@@ -43,7 +43,10 @@ const {
 // ─── CONSTANTS ────────────────────────────────────────────────────
 const DISCORD_API = 'https://discord.com/api/v10';
 const IS_PROD     = NODE_ENV === 'production';
-const FRONTEND    = FRONTEND_URL || 'http://localhost:3000';
+const FRONTEND    = (FRONTEND_URL || 'https://theconclavedominion.com').replace(/\/$/, '');
+const API_BASE_URL = (process.env.API_BASE_URL || 'https://api.theconclavedominion.com').replace(/\/$/, '');
+const ADMIN_URL   = (process.env.ADMIN_URL || `${FRONTEND}/admin`).replace(/\/$/, '');
+const DISCORD_CALLBACK_URL = DISCORD_REDIRECT_URI || `${API_BASE_URL}/auth/discord/callback`;
 const APP_PORT    = PORT || 5001;
 
 // ─── REQUIRED ENV CHECKS ──────────────────────────────────────────
@@ -152,7 +155,7 @@ async function buildPrompt(extra = '') {
 const generateAuthUrl = () => {
   const params = new URLSearchParams({
     client_id:     DISCORD_CLIENT_ID,
-    redirect_uri:  DISCORD_REDIRECT_URI,
+    redirect_uri:  DISCORD_CALLBACK_URL,
     response_type: 'code',
     scope:         'identify guilds.members.read'
   });
@@ -165,7 +168,7 @@ const getAccessToken = async (code) => {
     client_secret: DISCORD_CLIENT_SECRET,
     grant_type:    'authorization_code',
     code,
-    redirect_uri:  DISCORD_REDIRECT_URI
+    redirect_uri:  DISCORD_CALLBACK_URL
   });
   const res = await axios.post(
     `${DISCORD_API}/oauth2/token`,
@@ -301,7 +304,7 @@ app.get('/auth/discord', (_req, res) => {
 
 app.get('/auth/discord/callback', async (req, res) => {
   const { code } = req.query;
-  if (!code) return res.redirect(`${FRONTEND}?error=no_code`);
+  if (!code) return res.redirect(`${ADMIN_URL}?error=no_code`);
 
   try {
     const accessToken = await getAccessToken(code);
@@ -351,10 +354,10 @@ app.get('/auth/discord/callback', async (req, res) => {
       { expiresIn: '8h' }
     );
 
-    return res.redirect(`${FRONTEND}/admin.html?token=${token}&login=success`);
+    return res.redirect(`${ADMIN_URL}?token=${token}&login=success`);
   } catch (err) {
     console.error('❌ Auth callback error:', err.message);
-    return res.redirect(`${FRONTEND}?error=auth_failed`);
+    return res.redirect(`${ADMIN_URL}?error=auth_failed`);
   }
 });
 

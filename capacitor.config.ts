@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'src',
   server: {
     androidScheme: 'https',
-    allowNavigation: ['discord.com', '*.discord.com', 'nitrado.net', '*.supabase.co']
+    allowNavigation: ['discord.com', '*.discord.com', 'nitrado.net', '*.supabase.co', 'theconclavedominion.com', '*.theconclavedominion.com', 'api.theconclavedominion.com']
   },
   plugins: {
     SplashScreen: {

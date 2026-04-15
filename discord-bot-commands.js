@@ -13,6 +13,7 @@ const { Client, GatewayIntentBits, EmbedBuilder,
 const GUILD_ID  = '1438103556610723922';
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const API_BASE_URL = (process.env.API_BASE_URL || 'https://api.theconclavedominion.com').replace(/\/$/, '');
 const CONCLAVE_GOLD   = 0xFFB800;
 const CONCLAVE_PLASMA = 0x7B2FFF;
 const CONCLAVE_GREEN  = 0x35ED7E;
@@ -272,20 +273,18 @@ async function handlePanel(interaction) {
 }
 
 async function handleStatus(interaction) {
-  // Fetch real data from your API
   let serverData;
   try {
-    const res = await fetch('https://conclave-dashboard.onrender.com/servers');
+    const res = await fetch(`${API_BASE_URL}/servers`);
     serverData = await res.json();
-  } catch(e) {
-    serverData = { servers: [] };
+  } catch (e) {
+    serverData = [];
   }
 
   const channel = interaction.options.getChannel('channel') || interaction.channel;
   const showOffline = interaction.options.getBoolean('show_offline') ?? true;
-  const servers = serverData.servers || [];
-
-  const onlineCount = servers.filter(s => s.online).length;
+  const servers = Array.isArray(serverData) ? serverData : (serverData.servers || []);
+  const onlineCount = servers.filter(s => s.online || s.status === 'online').length;
 
   const embed = new EmbedBuilder()
     .setColor(onlineCount >= 8 ? CONCLAVE_GREEN : onlineCount >= 5 ? CONCLAVE_GOLD : CONCLAVE_RED)
@@ -293,11 +292,11 @@ async function handleStatus(interaction) {
     .setDescription(`**${onlineCount}/${servers.length || 10} maps online** · 5x Crossplay · Xbox · PS · PC`)
     .addFields(
       servers
-        .filter(s => showOffline || s.online)
+        .filter(s => showOffline || s.online || s.status === 'online')
         .map(s => ({
-          name: `${s.online ? '🟢' : '🔴'} ${s.emoji || ''} ${s.display || s.name}`,
-          value: s.online
-            ? `\`${s.ip}:${s.port}\` · ${s.players || 0}/${s.maxPlayers || 20} players${s.isPvP ? ' · **PvP**' : ''}`
+          name: `${(s.online || s.status === 'online') ? '🟢' : '🔴'} ${s.emoji || ''} ${s.display || s.name}`,
+          value: (s.online || s.status === 'online')
+            ? `\`${s.ip}:${s.port}\`${s.players != null ? ` · ${s.players}/${s.maxPlayers || 20} players` : ''}${s.isPvP ? ' · **PvP**' : ''}`
             : '`Offline`',
           inline: true,
         }))
@@ -318,15 +317,18 @@ async function handleShards(interaction) {
 
   // Log to Render API
   try {
-    await fetch('https://conclave-dashboard.onrender.com/orders', {
+    await fetch(`${API_BASE_URL}/shop/order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        player, tier: tier === 99 ? 'INS' : tier,
-        shards: tier === 99 ? 5 : tier,
-        platform, server: server, note: notes,
-        source: 'discord-slash-command',
-        requestedBy: interaction.user.username,
+        tier: tier === 99 ? null : tier,
+        tier_cost: tier === 99 ? null : tier,
+        character_name: player,
+        tribe_name: null,
+        map: server,
+        discord_username: interaction.user.username,
+        selected_items: [tier === 99 ? 'Dino Insurance' : `Tier ${tier} package`],
+        order_details: `Platform: ${platform}\nNotes: ${notes}`,
       }),
     });
   } catch(e) { /* API may be warming up */ }
@@ -356,7 +358,7 @@ async function handleShards(interaction) {
       .setDescription(`**${player}** ordered **Tier ${tier}** on **${server}** (${platform})`)
       .setFooter({ text: 'Fulfill within 24-72 hours' });
     try {
-      await fetch(councilWebhookUrl, { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ embeds: [notif] }) });
+      await fetch(councilWebhookUrl, { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ embeds: [notif.toJSON()] }) });
     } catch(e) {}
   }
 }
