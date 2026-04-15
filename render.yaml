@@ -1,27 +1,35 @@
+# ═══════════════════════════════════════════════════════════════
+# CONCLAVE AEGIS — render.yaml
+# Deploy this file to auto-configure Render services
+# ═══════════════════════════════════════════════════════════════
+
 services:
+
+  # ─── API + BOT (Web Service) ──────────────────────────────────
   - type: web
-    name: theconclave-dominion-api
+    name: conclave-aegis-api
     runtime: node
-    region: ohio
-    plan: starter
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node server.js
+    plan: starter
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000
+        value: 5001
       - key: BOT_PORT
         value: 3001
+
+      # ── Fill these in Render dashboard ──
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
       - key: FRONTEND_URL
         value: https://theconclavedominion.com
-      - key: DISCORD_REDIRECT_URI
-        value: https://api.theconclavedominion.com/auth/discord/callback
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_SERVICE_ROLE_KEY
-        sync: false
+
+      # Discord
       - key: DISCORD_CLIENT_ID
         sync: false
       - key: DISCORD_CLIENT_SECRET
@@ -29,35 +37,29 @@ services:
       - key: DISCORD_BOT_TOKEN
         sync: false
       - key: DISCORD_GUILD_ID
-        sync: false
-      - key: DISCORD_WEBHOOK_URL
-        sync: false
-      - key: ANTHROPIC_API_KEY
-        sync: false
-      - key: NITRADO_API_KEY
-        sync: false
-      - key: BATTLEMETRICS_TOKEN
-        sync: false
-      - key: JWT_SECRET
-        sync: false
-      - key: SESSION_SECRET
-        sync: false
+        value: "1438103556610723922"
+      - key: DISCORD_REDIRECT_URI
+        value: https://api.theconclavedominion.com/auth/discord/callback
+
+      # Discord Roles
       - key: ROLE_OWNER_ID
         sync: false
       - key: ROLE_ADMIN_ID
         sync: false
       - key: ROLE_HELPER_ID
         sync: false
-      - key: ROLE_BOOSTER_ID
+
+      # Supabase
+      - key: SUPABASE_URL
         sync: false
-      - key: ROLE_DONATOR_ID
+      - key: SUPABASE_SERVICE_KEY
         sync: false
-      - key: ROLE_ADVERTISER_ID
+
+      # Anthropic (AEGIS AI)
+      - key: ANTHROPIC_API_KEY
         sync: false
-      - key: ROLE_SURVIVOR_ID
-        sync: false
-      - key: AEGIS_CHANNEL_ID
-        sync: false
+
+      # Beacon Sentinel
       - key: BEACON_CLIENT_ID
         sync: false
       - key: BEACON_CLIENT_SECRET
@@ -66,7 +68,27 @@ services:
         sync: false
       - key: BEACON_REFRESH_TOKEN
         sync: false
-      - key: BEACON_TOKEN_EXPIRY
+      - key: BEACON_TOKEN_EXPIRES
         sync: false
       - key: BEACON_GROUP_ID
+        sync: false
+
+      # Shop
+      - key: SHOP_WEBHOOK_URL
+        sync: false
+      - key: SHOP_TICKETS_CHANNEL
+        value: "1492878413533282394"
+      - key: SHOP_LOG_CHANNEL
+        value: "1492870196958859436"
+
+      # Nitrado
+      - key: NITRADO_TOKEN
+        sync: false
+
+      # Live Monitor (set after /setup-monitoring runs)
+      - key: MONITOR_STATUS_CHANNEL_ID
+        sync: false
+      - key: MONITOR_ACTIVITY_CHANNEL_ID
+        sync: false
+      - key: MONITOR_MESSAGE_ID
         sync: false
