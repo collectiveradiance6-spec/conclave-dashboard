@@ -826,6 +826,33 @@ const cmds = [
     .addStringOption(o => o.setName('emoji').setDescription('Emoji (e.g. 🌿)').setRequired(false))
     .addBooleanOption(o => o.setName('pvp').setDescription('PvP server?').setRequired(false))
     .addBooleanOption(o => o.setName('patreon').setDescription('Patreon-only?').setRequired(false)),
+  // ─── ADDITIONAL COMMANDS (brings total to 60) ─────────────────
+  new SlashCommandBuilder().setName('rates').setDescription('📈 View all 5× boost rates for the cluster'),
+  new SlashCommandBuilder().setName('dino').setDescription('🦕 Look up ARK dino info and taming data')
+    .addStringOption(o => o.setName('name').setDescription('Dino name (e.g. Rex, Giga, Wyvern)').setRequired(true)),
+  new SlashCommandBuilder().setName('tame').setDescription('🎯 Quick tame guide for a specific dino')
+    .addStringOption(o => o.setName('dino').setDescription('Dino name').setRequired(true)),
+  new SlashCommandBuilder().setName('wipe').setDescription('📅 Wipe schedule — when is the next server wipe?'),
+  new SlashCommandBuilder().setName('transfer').setDescription('🔄 How to cross-ARK transfer between servers'),
+  new SlashCommandBuilder().setName('crossplay').setDescription('🎮 Crossplay connection guide (Xbox · PS · PC)'),
+  new SlashCommandBuilder().setName('trade').setDescription('🤝 Post a trade request')
+    .addStringOption(o => o.setName('offering').setDescription('What you are offering').setRequired(true))
+    .addStringOption(o => o.setName('looking-for').setDescription('What you want in return').setRequired(true))
+    .addStringOption(o => o.setName('server').setDescription('Which server').setRequired(false)),
+  new SlashCommandBuilder().setName('leaderboard').setDescription('🏆 Top 10 ClaveShard holders in the Dominion'),
+  new SlashCommandBuilder().setName('give').setDescription('[ADMIN] Give shards to a player').setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+    .addUserOption(o => o.setName('user').setDescription('Player').setRequired(true))
+    .addIntegerOption(o => o.setName('amount').setDescription('Shards to give').setRequired(true).setMinValue(1))
+    .addStringOption(o => o.setName('reason').setDescription('Reason').setRequired(false)),
+  new SlashCommandBuilder().setName('tip').setDescription('💡 Random ARK survival tip for the Dominion'),
+  new SlashCommandBuilder().setName('mods').setDescription('🔧 List all active mods on the cluster'),
+  new SlashCommandBuilder().setName('coords').setDescription('📍 Share or look up in-game coordinates')
+    .addStringOption(o => o.setName('location').setDescription('Location name or coordinates').setRequired(true))
+    .addStringOption(o => o.setName('map').setDescription('Which map').setRequired(false)),
+  new SlashCommandBuilder().setName('online').setDescription('👥 Who is currently online across the cluster'),
+  new SlashCommandBuilder().setName('clipscore').setDescription('🎬 Submit a clip or screenshot for Clip of the Week')
+    .addStringOption(o => o.setName('url').setDescription('Link to your clip or image').setRequired(true))
+    .addStringOption(o => o.setName('description').setDescription('Brief description').setRequired(false)),
 ].map(c => c.toJSON());
 
 async function registerCommands() {
@@ -1007,15 +1034,17 @@ bot.on(Events.InteractionCreate, async i => {
     if (cmd === 'shard') return i.editReply({ embeds: [base('💠 ClaveShard Shop', C.gold)
       .setDescription('Price = **Tier # in Shards per item**. Each tier item costs its tier number in ClaveShard.\nPay via **$TheConclaveDominion** CashApp or **$ANLIKESEF** Chime, then `/order`.\n🌐 theconclavedominion.com/shop.html')
       .addFields(
-        { name: '💠 T1 · 1 Shard/Item', value: 'L600 Dino · Ammo · Coloring · Kibble · 100% Imprint · Structures · Cryofridge · ConCoins', inline: false },
-        { name: '💎 T2 · 2 Shards/Item', value: 'L600 Vanilla & Modded Dino · L450 Shiny · L450 Shiny Shoulder · 60 Storage Boxes', inline: false },
-        { name: '✨ T3 · 3 Shards/Item', value: 'Tek Blueprint · Shiny Essence · 200% Imprint · L500 T1 Shiny', inline: false },
-        { name: '🔥 T5 · 5 Shards/Item', value: 'Boss Defeat Cmd · L1000 Dinos · Shiny Essence · Small Bundle (50k Resources) · Imprint Kibble', inline: false },
-        { name: '⚔️ T6 · 6 | 🌌 T8 · 8', value: 'T6: Boss Ready Bundle · 300% Imprint · Max XP\nT8: 100,000 Resources Bundle', inline: false },
-        { name: '🛡️ T10 · 10 Shards/Item', value: 'Astral Dino · Platform · Shiny Essence Set · Color Party (10 Dinos) · L1100 Breeding Pair', inline: false },
-        { name: '🌠 T12 · 12 | 👑 T15 · 15', value: 'T12: 200k Resources\nT15: 30k Element · L1250 Multi-Class Dino · 300k Resources', inline: false },
-        { name: '🏰 T20 · 20 | 💰 T30 · 30', value: 'T20: Base Expansion (+1 Behemoth Gate)\nT30: 1.5M Resources Admin Refill', inline: false },
-        { name: '🛡️ Dino Insurance · Open Ticket', value: 'One-time use · Must be named · Backup may not save · Special cases may apply', inline: false },
+        { name: '💠 T1 · 1 CLVSD/Item', value: 'L600 Vanilla Dino (Tameable) · Max XP · 3 Stacks Ammo · Full Dino Coloring · 100 Kibble/Cakes/Beer · 100% Imprint · 500 Non-Tek Structures · Cryofridge+120 Pods · 50k ConCoins · 2500 Materials · 10 Tributes · Boss Artifact · Non-Tek Blueprint · Revival Token 48hr', inline: false },
+        { name: '💎 T2 · 2 CLVSD/Item', value: 'Modded L600 Dino · L600 Allowed Dino · L500 Random Shiny · L500 Random Shiny Shoulder Variant · 60 Dedicated Storage', inline: false },
+        { name: '✨ T3 · 3 CLVSD/Item', value: 'Tek Blueprint · 1 Shiny Essence · 200% Imprint · L600 T1 Special Shiny', inline: false },
+        { name: '🔥 T5 · 5 CLVSD/Item', value: 'Boss Defeat Command · Bronto or Dread+Saddle · L1000 Allowed Dino · L100 Raw Shiny Essence · L800 T2 Shiny · Small Bundle (250k Resources) · 2500 Imprint Kibble', inline: false },
+        { name: '⚔️ T6 · 6 CLVSD/Item', value: 'Boss Ready Bundle · L1250 Breeding Pair/Boss Dinos · 250% Imprint (Rex/Yuti/Charcha/Theriz) · 300% Imprint (Ossidon)', inline: false },
+        { name: '🌌 T8 · 8 CLVSD/Item', value: 'Medium Resource Bundle · 100,000 Resources (No Element Variants)', inline: false },
+        { name: '🛡️ T10 · 10 CLVSD/Item', value: 'Tek Suit Blueprint Set · Floating Platform · Combo Shiny Essence (2 of selected) · Dino Color Party 10 dinos · 1375 Breeding Pair', inline: false },
+        { name: '🌠 T12 · 12 CLVSD/Item', value: 'Large Resource Bundle · 200,000 Resources (No Element Variants)', inline: false },
+        { name: '👑 T15 · 15 CLVSD/Item', value: '30k Element · L1500 Rhyniognatha · L1500 Reaper · L1500 Aureliax · L1500 Elder Claw · X-Large Bundle 300k Resources', inline: false },
+        { name: '🏰 T20 · 20 | 💰 T30 · 30', value: 'T20: 1x1 Behemoth Gate Expansion (10/max)\nT30: 3 Dedicated Storage Refill · 1.6M Resources (No Element/Structures/Artifacts)', inline: false },
+        { name: '🛡️ Dino Insurance · Open Ticket', value: 'One-time use · Must be named · Backup may not save · May require respawn · One time per dino', inline: false },
       )
     ] });
 
@@ -1784,6 +1813,268 @@ bot.on(Events.InteractionCreate, async i => {
 });
 
 // ─── BUTTON HANDLERS ───────────────────────────────────────────
+// ── RATES ──────────────────────────────────────────────────────
+  if (cmd === 'rates') {
+    return i.reply({ embeds: [base('📈 Cluster Rates — 5× Everything', C.cy)
+      .setDescription('All rates apply across every map in the cluster.')
+      .addFields(
+        { name: '⚡ XP',        value: '5×',         inline: true },
+        { name: '🪓 Harvest',   value: '5×',         inline: true },
+        { name: '🦴 Taming',    value: '5×',         inline: true },
+        { name: '🥚 Breeding',  value: '5×',         inline: true },
+        { name: '🏋️ Weight',    value: '1,000,000',  inline: true },
+        { name: '🦕 Max Dino',  value: 'Lvl 350',    inline: true },
+        { name: '💀 Fall DMG',  value: 'Off',        inline: true },
+        { name: '🌐 Platform',  value: 'Xbox · PS · PC crossplay', inline: true },
+        { name: '🗺️ Maps',      value: '10 active servers', inline: true },
+      )
+    ], ephemeral: false });
+  }
+
+  // ── DINO ───────────────────────────────────────────────────────
+  if (cmd === 'dino') {
+    await i.deferReply();
+    const name = i.options.getString('name');
+    const DINOS = {
+      rex:    { icon:'🦖', desc:'Top predator. Max wild 150. Best for bosses.', kibble:'Rex Kibble',  food:'Raw Mutton', tame:'~2h at 150' },
+      giga:   { icon:'🦣', desc:'Strongest land dino. Rage mechanic. Handle with care.', kibble:'Exceptional',food:'Raw Mutton',tame:'4-6h at 150'},
+      wyvern: { icon:'🐉', desc:'No tame — steal an egg from a nest. Raise on milk.', kibble:'N/A',food:'Wyvern Milk',tame:'Egg steal + imprint'},
+      anky:   { icon:'⚒️', desc:'Best metal/crystal/flint harvester in the game.', kibble:'Simple',food:'Mejoberry',tame:'~1h at 150'},
+      argy:   { icon:'🦅', desc:'Best all-around flyer. Great carry weight and speed.', kibble:'Regular',food:'Raw Mutton',tame:'~1.5h at 150'},
+      bronto: { icon:'🦕', desc:'Massive berry harvester. Saddle is a mobile base.', kibble:'Superior',food:'Crops',tame:'~3h at 150'},
+    };
+    const key = name.toLowerCase().replace(/[^a-z]/g,'');
+    const found = DINOS[key] || Object.entries(DINOS).find(([k])=>k.startsWith(key.slice(0,3)))?.[1];
+    if (found) {
+      return i.editReply({ embeds: [base(`${found.icon} ${name.charAt(0).toUpperCase()+name.slice(1)}`, C.cy)
+        .addFields(
+          { name:'📋 Description', value:found.desc, inline:false },
+          { name:'🍖 Best Food',   value:found.food, inline:true  },
+          { name:'🥣 Kibble',      value:found.kibble, inline:true },
+          { name:'⏱️ Tame Time',   value:found.tame, inline:true  },
+          { name:'💡 Tip', value:`On our 5× cluster tame times are 5× faster than official!`, inline:false }
+        )
+      ] });
+    }
+    // Fall back to AEGIS if not in local DB
+    if (anthropic) {
+      try {
+        const msg = await anthropic.messages.create({ model:'claude-haiku-4-5-20251001', max_tokens:400,
+          messages:[{role:'user',content:`Give me a brief ARK Survival Ascended guide for taming a ${name} on a 5x server. Include: best food, kibble, rough tame time at lvl 150 on 5x rates, and 1 tip. Keep it under 200 words.`}] });
+        return i.editReply({ embeds: [base(`🦕 ${name.charAt(0).toUpperCase()+name.slice(1)} — Tame Guide`, C.cy)
+          .setDescription(msg.content[0].text)
+          .setFooter({text:'Powered by AEGIS AI · 5× Rates'})
+        ] });
+      } catch(e) { /* fall through */ }
+    }
+    return i.editReply({ embeds: [base('🦕 Dino Lookup', C.cy).setDescription(`I don't have specific data for **${name}**. Try /aegis for more detailed info!`)] });
+  }
+
+  // ── TAME ───────────────────────────────────────────────────────
+  if (cmd === 'tame') {
+    const dino = i.options.getString('dino');
+    await i.deferReply();
+    if (anthropic) {
+      try {
+        const msg = await anthropic.messages.create({ model:'claude-haiku-4-5-20251001', max_tokens:350,
+          messages:[{role:'user',content:`Quick taming guide for ${dino} in ARK Survival Ascended on a 5× server. Include: preferred food, narcotics estimate, knockout method, time at level 150 with 5x taming. Short, formatted, practical.`}] });
+        return i.editReply({ embeds: [base(`🎯 How to Tame: ${dino.charAt(0).toUpperCase()+dino.slice(1)}`, C.gold)
+          .setDescription(msg.content[0].text)
+          .setFooter({text:'5× Taming Rates · TheConclave Dominion'})
+        ] });
+      } catch(e) {}
+    }
+    return i.editReply({ embeds: [base('🎯 Tame Guide', C.gold).setDescription(`Check the ARK wiki for **${dino}** taming info. Our cluster runs 5× taming — multiply official times by 0.2x.`)] });
+  }
+
+  // ── WIPE ───────────────────────────────────────────────────────
+  if (cmd === 'wipe') {
+    return i.reply({ embeds: [base('📅 Wipe Schedule', C.mag)
+      .setDescription('Wipe dates are announced at least **1 week in advance** in <#announcements>.')
+      .addFields(
+        { name:'🗺️ PvE Maps',    value:'No scheduled wipes. Maps persist until major updates require it.', inline:false },
+        { name:'⚔️ Aberration PvP', value:'Seasonal wipes. Check Discord for current season end date.', inline:false },
+        { name:'⭐ Amissa (Patreon)', value:'No wipes — patron-protected server.', inline:false },
+        { name:'📢 Announcements', value:'Join Discord for wipe ping notifications.', inline:false },
+      )
+    ], ephemeral: false });
+  }
+
+  // ── TRANSFER ───────────────────────────────────────────────────
+  if (cmd === 'transfer') {
+    return i.reply({ embeds: [base('🔄 Cross-ARK Transfer Guide', C.cy)
+      .addFields(
+        { name:'Step 1', value:'Go to an **Obelisk**, Supply Drop, or **TEK Transmitter**', inline:false },
+        { name:'Step 2', value:'Open the Terminal → Click **"Travel to Another Server"**', inline:false },
+        { name:'Step 3', value:'Select the destination Conclave map from the list', inline:false },
+        { name:'Step 4', value:'Upload your survivor + dinos/items (each has a 24h timer)', inline:false },
+        { name:'⚠️ Notes', value:'• Some items/dinos may not transfer between all maps
+• Downloads available at Obelisks on the destination map
+• Transfers enabled across all 10 Conclave servers', inline:false },
+      )
+    ], ephemeral: false });
+  }
+
+  // ── CROSSPLAY ──────────────────────────────────────────────────
+  if (cmd === 'crossplay') {
+    return i.reply({ embeds: [base('🎮 Crossplay Connection Guide', C.cy)
+      .addFields(
+        { name:'🎮 Xbox / Microsoft Store', value:'Search **TheConclave** in the unofficial server browser, or use the IP directly via network settings', inline:false },
+        { name:'🎯 PlayStation', value:'Use the in-game unofficial server browser and search **TheConclave**', inline:false },
+        { name:'💻 PC (Steam/Epic)', value:'Add as favorite in ARK server browser. All 10 IPs are listed at theconclavedominion.com/ark', inline:false },
+        { name:'📋 Quick IP', value:'**The Island:** 217.114.196.102:5390
+All server IPs → `/servers`', inline:false },
+        { name:'🔧 Still stuck?', value:'Open a ticket with `/ticket` or ask in #help-desk', inline:false },
+      )
+    ], ephemeral: false });
+  }
+
+  // ── TRADE ──────────────────────────────────────────────────────
+  if (cmd === 'trade') {
+    const offering    = i.options.getString('offering');
+    const lookingFor  = i.options.getString('looking-for');
+    const server      = i.options.getString('server') || 'Any server';
+    const embed = base('🤝 Trade Request', C.gold)
+      .setDescription(`**${i.user.username}** is looking to trade!`)
+      .addFields(
+        { name:'📦 Offering',     value:offering,   inline:true },
+        { name:'🔍 Looking For',  value:lookingFor, inline:true },
+        { name:'🗺️ Server',       value:server,     inline:true },
+        { name:'📬 Contact',      value:`DM <@${i.user.id}> or reply here`, inline:false },
+      )
+      .setFooter({ text: 'TheConclave Trade Post · Use at your own risk · No scam protection' });
+    return i.reply({ embeds: [embed] });
+  }
+
+  // ── LEADERBOARD ────────────────────────────────────────────────
+  if (cmd === 'leaderboard') {
+    await i.deferReply();
+    try {
+      if (!sb) return i.editReply({ embeds: [base('🏆 Leaderboard', C.gold).setDescription('⚠️ Economy not connected.')] });
+      const { data:rows, error } = await sb.from('aegis_wallets')
+        .select('discord_tag,wallet_balance,bank_balance')
+        .order('wallet_balance', { ascending: false })
+        .limit(10);
+      if (error||!rows?.length) return i.editReply({ embeds: [base('🏆 Leaderboard', C.gold).setDescription('No data yet!')] });
+      const medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+      const lines = rows.map((r,idx) => `${medals[idx]} **${r.discord_tag||'Unknown'}** — **${((r.wallet_balance||0)+(r.bank_balance||0)).toLocaleString()}** 💎`).join('\n');
+      return i.editReply({ embeds: [base('🏆 ClaveShard Leaderboard', C.gold).setDescription(lines)] });
+    } catch(e) { return i.editReply({ embeds: [base('🏆 Leaderboard', C.gold).setDescription('Error fetching data.')] }); }
+  }
+
+  // ── GIVE (admin grant shortcut) ────────────────────────────────
+  if (cmd === 'give') {
+    await i.deferReply({ ephemeral: true });
+    const target = i.options.getUser('user');
+    const amount = i.options.getInteger('amount');
+    const reason = i.options.getString('reason') || 'Admin grant';
+    try {
+      if (!sb) return i.editReply('⚠️ Economy offline.');
+      const { data:w } = await sb.from('aegis_wallets').upsert({ discord_id: target.id, discord_tag: target.username }, { onConflict: 'discord_id' }).select().single();
+      await sb.from('aegis_wallets').update({ wallet_balance: (w?.wallet_balance||0) + amount }).eq('discord_id', target.id);
+      await sb.from('aegis_wallet_ledger').insert({ discord_id: target.id, actor_discord_id: i.user.id, amount, transaction_type: 'grant', note: reason });
+      return i.editReply({ embeds: [base(`✅ Gave ${amount.toLocaleString()} 💎 to ${target.username}`, C.gr).setDescription(`Reason: ${reason}`)] });
+    } catch(e) { return i.editReply(`❌ Failed: ${e.message}`); }
+  }
+
+  // ── TIP ────────────────────────────────────────────────────────
+  if (cmd === 'tip') {
+    const TIPS = [
+      'Put points into **Weight** on your first few levels — you can never have too much.',
+      'On our 5× cluster, **imprinting** is 5× faster too. Set timers and don't miss a cuddle!',
+      'Use a **Whip** to grab items off the ground while mounted. Huge QoL upgrade.',
+      'Baby dinos eat roughly **5× faster** on boosted servers. Always have plenty of food ready.',
+      '**Element** is shared across the cluster via transfers. Farm on Extinction, use anywhere.',
+      'The **Aberration** server is PvP — cross over prepared or you'll be looted.',
+      'Amissa is a **Patreon-only** server with extra protections and a dedicated community.',
+      'Use `/transfer` to learn how to move your survivor and dinos between all 10 maps.',
+      '**Crystal Isles and Lost Colony** are great starter maps — fewer predators near spawn.',
+      'Join the Discord for giveaways, events, and free **ClaveShard** rewards!',
+      'Type `/weekly` in Discord every 7 days for 3 free ClaveShards — never miss it!',
+      '**Megalodons** near the Island spawn beaches. Build inland or high up.',
+      'Tame an **Anky** first — metal and crystal farming makes everything easier.',
+      'Beaver dams respawn faster when harvested completely. Leave nothing behind.',
+      'Always back up your dinos in a cryo pod before major base builds or server transfers.',
+    ];
+    const tip = TIPS[Math.floor(Math.random() * TIPS.length)];
+    return i.reply({ embeds: [base('💡 Dominion Tip', C.gold).setDescription(`> ${tip}`).setFooter({text:'TheConclave Dominion · 5× Rates · 10 Maps'})] });
+  }
+
+  // ── MODS ───────────────────────────────────────────────────────
+  if (cmd === 'mods') {
+    return i.reply({ embeds: [base('🔧 Active Cluster Mods', C.cy)
+      .setDescription('TheConclave Dominion runs **vanilla ARK: Survival Ascended** with no gameplay-altering mods. All customization is done through server INI settings.')
+      .addFields(
+        { name:'✅ Enabled', value:'Custom stack sizes · Custom spawn weights · Boosted rates via INI', inline:false },
+        { name:'❌ No pay-to-win mods', value:'Economy is handled through the **ClaveShard** bot system, not mods.', inline:false },
+        { name:'📋 Full Config', value:'Use `/info` for full server config details', inline:false },
+      )
+    ], ephemeral: false });
+  }
+
+  // ── COORDS ─────────────────────────────────────────────────────
+  if (cmd === 'coords') {
+    const location = i.options.getString('location');
+    const map      = i.options.getString('map') || 'current map';
+    const embed = base('📍 Coordinates', C.cy)
+      .setDescription(`**${location}** on ${map}`)
+      .addFields(
+        { name:'📋 Format', value:'In-game: **LAT LON** shown top-right of your HUD
+Example: `52.3 / 48.1` = Lat 52.3, Lon 48.1', inline:false },
+        { name:'💡 Sharing Tip', value:'Use `📍` in chat + your coords so tribe/allies can find you fast', inline:false },
+        { name:'🗺️ Map Overlays', value:'For detailed maps with POIs, visit **ARK Smart Breeding** or **Dododex** map tool', inline:false },
+      );
+    return i.reply({ embeds: [embed] });
+  }
+
+  // ── ONLINE ─────────────────────────────────────────────────────
+  if (cmd === 'online') {
+    await i.deferReply();
+    try {
+      let lines = '';
+      let total = 0;
+      // Try Beacon first
+      if (beaconState?.access) {
+        try {
+          const chars = await sentinelOnlinePlayers();
+          if (chars.length) {
+            total = chars.length;
+            const byServer = {};
+            for (const c of chars) {
+              const srv = c.serviceDisplayName || 'Unknown';
+              if (!byServer[srv]) byServer[srv] = 0;
+              byServer[srv]++;
+            }
+            lines = Object.entries(byServer).map(([s,n]) => `**${s}** — ${n} player${n>1?'s':''}`).join('\n');
+          }
+        } catch{}
+      }
+      if (!lines) lines = 'No live player data available. Use `/servers` for server status.';
+      return i.editReply({ embeds: [base(`👥 Online Now — ${total} Player${total!==1?'s':''}`, C.gr)
+        .setDescription(lines)
+        .setFooter({text:'Live via Beacon Sentinel · TheConclave Dominion'})
+      ] });
+    } catch(e) { return i.editReply({ embeds: [base('👥 Online', C.gr).setDescription('Could not fetch live data.')] }); }
+  }
+
+  // ── CLIPSCORE ──────────────────────────────────────────────────
+  if (cmd === 'clipscore') {
+    const url  = i.options.getString('url');
+    const desc = i.options.getString('description') || 'No description provided.';
+    const embed = base('🎬 Clip Submission', C.mag)
+      .setDescription(`**${i.user.username}** submitted a clip for Clip of the Week!`)
+      .addFields(
+        { name:'🔗 Link',        value:url,  inline:false },
+        { name:'📝 Description', value:desc, inline:false },
+        { name:'⭐ Vote',        value:'React with ⭐ to support this clip!', inline:false },
+      )
+      .setFooter({text:'TheConclave Clip of the Week · Council picks the winner'});
+    const msg = await i.reply({ embeds:[embed], fetchReply:true });
+    await msg.react('⭐').catch(()=>{});
+    return;
+  }
+
+
 bot.on(Events.InteractionCreate, async i => {
   if (!i.isButton()) return;
 
@@ -1926,6 +2217,8 @@ bot.on(Events.GuildMemberAdd, async member => {
   } catch (e) { console.error('❌ Welcome:', e.message); }
 });
 
+
+  
 // ─── SHARD EVENTS ──────────────────────────────────────────────
 bot.on('shardDisconnect', (e, id) => console.warn(`⚠️  Shard ${id} disconnected (code ${e.code})`));
 bot.on('shardReconnecting', id => console.log(`🔄 Shard ${id} reconnecting...`));

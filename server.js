@@ -1954,6 +1954,73 @@ app.get('/api/discord/guild-emojis', verifyToken, async (req, res) => {
 /* ═══════════ END WORLD HUB ROUTES ═══════════ */
 
 
+
+// ─── SUPPORT TICKET (from website Help form → Discord) ────────────
+// POST /api/support/ticket
+// Called by the island help form. Sends to Discord + logs to Supabase.
+app.post('/api/support/ticket', async (req, res) => {
+  try {
+    const {
+      name, discord_tag, email,
+      category, subject, platform,
+      message: msg,
+      discord_channel_id
+    } = req.body;
+
+    if (!name || !subject || !msg) {
+      return res.status(400).json({ error: 'name, subject and message are required' });
+    }
+
+    const channelId = discord_channel_id || '1448251332296441906';
+    const ref = `TKT-${Date.now().toString(36).toUpperCase()}`;
+    const ts  = new Date().toISOString();
+
+    // ── Send to Discord channel via Bot ──
+    if (DISCORD_BOT_TOKEN) {
+      const embed = {
+        title: `🆘 Support Ticket: ${subject}`.slice(0, 256),
+        color: 0xFF4CD2,
+        fields: [
+          { name: '📛 Name',      value: name || 'N/A',               inline: true },
+          { name: '💬 Discord',   value: discord_tag || 'Not provided', inline: true },
+          { name: '📧 Email',     value: email || 'Not provided',       inline: true },
+          { name: '🏷️ Category',  value: category || 'general',         inline: true },
+          { name: '🎮 Platform',  value: platform || 'N/A',             inline: true },
+          { name: '🔖 Ref',       value: ref,                           inline: true },
+          { name: '📝 Message',   value: (msg || '').slice(0, 1000) }
+        ],
+        footer: { text: 'TheConclave Dominion — Support System' },
+        timestamp: ts
+      };
+      try {
+        await axios.post(
+          `https://discord.com/api/v10/channels/${channelId}/messages`,
+          { embeds: [embed] },
+          { headers: { Authorization: `Bot ${DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' } }
+        );
+      } catch (discordErr) {
+        console.error('⚠️  Discord support ticket send failed:', discordErr.response?.data || discordErr.message);
+      }
+    }
+
+    // ── Log to Supabase ──
+    try {
+      await supabase.from('support_logs').insert({
+        name, discord_tag: discord_tag || null, email: email || null,
+        category: category || 'general', subject, message: msg,
+        platform: platform || null, status: 'open'
+      });
+    } catch (dbErr) {
+      console.error('⚠️  Supabase support log failed:', dbErr.message);
+    }
+
+    return res.json({ success: true, ref });
+  } catch (err) {
+    console.error('❌ /api/support/ticket error:', err.message);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(APP_PORT, () => {
   console.log(`🚀 Conclave Aegis API v7.0 running on port ${APP_PORT}`);
   console.log(`   FRONTEND: ${FRONTEND}`);
