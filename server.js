@@ -139,6 +139,10 @@ function checkMod(req, res, next) {
 // DISCORD OAUTH
 // ═══════════════════════════════════════════════════════════════
 app.get('/auth/discord', (req, res) => {
+  // Store destination for post-auth redirect
+  if (req.query.dest && ['admin','aegis-admin'].includes(req.query.dest)) {
+    if (req.session) req.session.oauth_dest = req.query.dest;
+  }
   const state = crypto.randomBytes(16).toString('hex');
   req.session.oauthState = state;
   const params = new URLSearchParams({
@@ -205,7 +209,11 @@ app.get('/auth/discord/callback', async (req, res) => {
       roles,
     }, JWT_SECRET, { expiresIn: '8h' });
 
-    res.redirect(`${FRONTEND_URL}/admin.html?token=${token}`);
+    // Route to correct admin surface based on state dest param
+    const dest = (req.session?.oauth_dest || 'admin');
+    delete req.session?.oauth_dest;
+    const targetPath = dest === 'aegis-admin' ? '/aegis-admin/' : '/admin/';
+    res.redirect(`${FRONTEND_URL}${targetPath}?token=${token}&login=success`);
   } catch (e) {
     console.error('❌ Discord OAuth error:', e.response?.data || e.message);
     res.redirect(`${FRONTEND_URL}?error=oauth_failed`);
@@ -317,7 +325,7 @@ app.get('/auth/beacon', (req, res) => {
 
 app.get('/auth/beacon/callback', async (req, res) => {
   const { code, state } = req.query;
-  if (!code) return res.redirect(`${FRONTEND_URL}/admin.html?beacon_error=no_code`);
+  if (!code) return res.redirect(`${FRONTEND_URL}/admin/?beacon_error=no_code`);
 
   const session = beaconDeviceSessions.get(state);
   try {
@@ -343,10 +351,10 @@ app.get('/auth/beacon/callback', async (req, res) => {
 
     await beaconDiscoverGroup().catch(() => {});
     console.log('✅ Beacon browser OAuth complete');
-    res.redirect(`${FRONTEND_URL}/admin.html?beacon_auth=success`);
+    res.redirect(`${FRONTEND_URL}/admin/?beacon_auth=success`);
   } catch (e) {
     console.error('❌ Beacon callback failed:', e.response?.data || e.message);
-    res.redirect(`${FRONTEND_URL}/admin.html?beacon_error=token_exchange_failed`);
+    res.redirect(`${FRONTEND_URL}/admin/?beacon_error=token_exchange_failed`);
   }
 });
 
