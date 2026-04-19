@@ -1,23 +1,98 @@
-# Clean URL rewrites — 200 serves file silently, no redirect loop possible
-/home           /index.html           200
-/ark            /ark.html             200
-/minecraft      /minecraft.html       200
-/donate         /donations.html       200
-/donations      /donations.html       200
-/hub            /hub.html             200
-/nitrado        /nitrado.html         200
-/shop           /shop.html            200
-/partners       /promoter.html        200
-/promoter       /promoter.html        200
-/council        /MeetTheConclave.html 200
-/meet           /MeetTheConclave.html 200
-/dev            /developers.html      200
-/developers     /developers.html      200
-/terms          /terms.html           200
-/privacy        /privacy.html         200
-/ai             /AEGIS-AI.html        200
-/aegis          /AEGIS-AI.html        200
-/admin          /AEGIS-Admin.html     200
-/login          /AEGIS-Auth.html      200
-/auth           /AEGIS-Auth.html      200
-/suzy           /suzyqs.html          200
+# ══════════════════════════════════════════════════════════════════
+# TheConclave Dominion — Cloudflare Pages _redirects MASTER v2.0
+# ══════════════════════════════════════════════════════════════════
+# RULES:
+#   301 = permanent (browser-cacheable, SEO-safe)
+#   NO /foo → /foo.html chains (Cloudflare auto-serves .html)
+#   NO circular loops. Alias → canonical .html ONLY.
+#   Old renamed files → new canonical files
+#   External redirects last
+# ══════════════════════════════════════════════════════════════════
+
+# ── Homepage ───────────────────────────────────────────────────────
+/home                           /                               301
+
+# ── ARK ───────────────────────────────────────────────────────────
+/ark                            /ark.html                       301
+/servers                        /ark.html                       301
+/asa                            /ark.html                       301
+
+# ── Minecraft ─────────────────────────────────────────────────────
+/minecraft                      /minecraft.html                 301
+/mc                             /minecraft.html                 301
+
+# ── Hub ───────────────────────────────────────────────────────────
+/hub                            /hub.html                       301
+/worldconnect                   /hub.html                       301
+/nexus                          /hub.html                       301
+
+# ── Shop ──────────────────────────────────────────────────────────
+/shop                           /shop.html                      301
+/store                          /shop.html                      301
+/clvsd                          /shop.html                      301
+
+# ── Donations ─────────────────────────────────────────────────────
+/donate                         /sponsoranddonate.html          301
+/donations                      /sponsoranddonate.html          301
+/sponsors                       /sponsoranddonate.html          301
+/fund                           /sponsoranddonate.html          301
+/support                        /sponsoranddonate.html          301
+/donations.html                 /sponsoranddonate.html          301
+
+# ── Promoters ─────────────────────────────────────────────────────
+/promotor                       /promotor.html                  301
+/promoters                      /promotor.html                  301
+/partners                       /promotor.html                  301
+/promoter                       /promotor.html                  301
+/promoter.html                  /promotor.html                  301
+
+# ── Sub-promoter pages ────────────────────────────────────────────
+/nitrado                        /nitrado.html                   301
+/solparade                      /solparade.html                 301
+/sol                            /solparade.html                 301
+/suzyqs                         /suzyqs.html                    301
+/suzy                           /suzyqs.html                    301
+/choco                          /choco.html                     301
+/fundraiser                     /choco.html                     301
+
+# ── Meet The Team ─────────────────────────────────────────────────
+/team                           /meettheteam.html               301
+/council                        /meettheteam.html               301
+/meet                           /meettheteam.html               301
+/staff                          /meettheteam.html               301
+/meettheteam                    /meettheteam.html               301
+/MeetTheConclave                /meettheteam.html               301
+/MeetTheConclave.html           /meettheteam.html               301
+
+# ── Art Gallery ───────────────────────────────────────────────────
+/gallery                        /sandysartgalla.html            301
+/art                            /sandysartgalla.html            301
+/sandys                         /sandysartgalla.html            301
+
+# ── AEGIS AI ──────────────────────────────────────────────────────
+/ai                             /AEGIS-AI.html                  301
+/aegis                          /AEGIS-AI.html                  301
+
+# ── Admin / Auth ──────────────────────────────────────────────────
+/admin                          /AEGIS-Admin.html               301
+/login                          /AEGIS-Auth.html                301
+/auth                           /AEGIS-Auth.html                301
+/dashboard                      /AEGIS-Admin.html               301
+
+# ── Discord AEGIS ─────────────────────────────────────────────────
+/aegis-discord                  /AEGIS-Discord.html             301
+
+# ── Legal ─────────────────────────────────────────────────────────
+/terms                          /terms.html                     301
+/privacy                        /privacy.html                   301
+/legal                          /terms.html                     301
+
+# ── Developers ────────────────────────────────────────────────────
+/developers                     /developers.html                301
+/dev                            /developers.html                301
+
+# ── External ──────────────────────────────────────────────────────
+/discord                        https://discord.gg/theconclave  301
+/join                           https://discord.gg/theconclave  301
+/patreon                        https://patreon.com/theconclavedominion  301
+/nitrado-aff                    https://www.nitrado-aff.com/59GPP8X/D42TT/  301
