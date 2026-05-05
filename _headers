@@ -1,0 +1,32 @@
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+
+/aegis-admin/*
+  X-Robots-Tag: noindex, nofollow
+
+*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+*.png
+  Cache-Control: public, max-age=604800
+
+*.jpg
+  Cache-Control: public, max-age=604800
+
+*.gif
+  Cache-Control: public, max-age=604800
+
+*.webp
+  Cache-Control: public, max-age=604800
+
+*.mp4
+  Cache-Control: public, max-age=2592000

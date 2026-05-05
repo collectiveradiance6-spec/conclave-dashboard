@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Terms of Service — TheConclave Dominion</title>
+<link rel="icon" href="conclave-badge.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;900&family=Exo+2:ital,wght@0,100;0,300;0,400;0,600;0,800;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/conclave.css?v=18">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+<style>
+.legal-hero{padding:calc(var(--nav-h)+4rem) var(--section-px) 3rem;border-bottom:1px solid rgba(255,255,255,.06);max-width:var(--max-w);margin:0 auto;}
+.legal-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,4rem);color:#fff;margin-bottom:.5rem;}
+.legal-date{font-family:var(--font-mono);font-size:.68rem;color:rgba(255,255,255,.25);letter-spacing:.15em;margin-bottom:2.5rem;}
+.legal-body{max-width:820px;margin:0 auto;padding:4rem var(--section-px) 5rem;}
+.legal-section{margin-bottom:3rem;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.legal-section:last-child{border-bottom:none;}
+.legal-section h2{font-family:var(--font-heading);font-size:1rem;color:var(--gold);letter-spacing:.1em;margin-bottom:1rem;text-transform:uppercase;}
+.legal-section p,.legal-section li{font-family:var(--font-body);font-size:.92rem;color:rgba(255,255,255,.5);line-height:1.9;margin-bottom:.6rem;}
+.legal-section ul{padding-left:1.4rem;}
+.legal-section li::marker{color:var(--electric);}
+.data-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem;}
+.data-table th{font-family:var(--font-heading);font-size:.62rem;letter-spacing:.12em;color:var(--gold);padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;text-transform:uppercase;}
+.data-table td{padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);font-family:var(--font-body);color:rgba(255,255,255,.5);}
+.data-table tr:hover td{background:rgba(255,255,255,.02);}
+</style>
+</head>
+<body data-scene="default">
+<!-- THECONCLAVE — APPLE ISLAND NAV v2 -->
+
+<script src="/nav-island.js?v=3.0" defer></script>
+
+<canvas id="bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;"></canvas>
+<script src="/bg-engine.js?v=300"></script>
+<div class="p-side p-side-l">© 2026 TheConclave Dominion • ARK: Survival Ascended</div>
+<div class="p-side p-side-r">5x Crossplay • All Platforms • 10 Maps</div>
+<nav class="nav" id="mainNav">
+  <div class="nav-pill">
+    <a href="/" class="nav-logo"><img src="/conclave-badge.png" alt="Conclave"><span>TheConclave</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/ark">ARK</a><a href="/minecraft">Minecraft</a><a href="/donate">Donate</a>
+      <a href="/nitrado">Nitrado</a><a href="/promotor">Promoter</a><a href="/team">Meet Us</a>
+      <a href="/ai" class="nav-cta">AEGIS AI</a>
+    </div>
+    <button class="nav-hamburger" id="navToggle">☰</button>
+  </div>
+</nav>
+<main>
+<div class="legal-hero">
+  <div class="archiv-label">Legal</div>
+  <h1 class="legal-title">Terms of Service</h1>
+  <div class="legal-date">EFFECTIVE: JANUARY 1, 2026 · LAST UPDATED: MARCH 2026</div>
+</div>
+<div class="legal-body">
+  <div class="legal-section"><h2>1. Acceptance</h2><p>By accessing theconclavedominion.com, joining any Dominion game server, or purchasing Clave Shards, you agree to be bound by these Terms.</p></div>
+  <div class="legal-section"><h2>2. Community Conduct</h2><p>All members must uphold the Dominion Codex. Prohibited behaviors include:</p><ul><li>Cheating, exploiting, hacking, or unauthorized modifications on any server</li><li>Harassment, threats, hate speech, or targeted abuse toward any member</li><li>Impersonating Council members, staff, or other players</li><li>Sharing another member's personal information without consent</li><li>Advertising competing communities without prior Council approval</li></ul></div>
+  <div class="legal-section"><h2>3. ClaveShard Purchases</h2><p>ClaveShard currency has no real-world monetary value. All purchases are final and non-refundable. Delivery is completed within 24–72 hours by a Council member. The Dominion reserves the right to withhold shards from accounts in violation of these Terms.</p></div>
+  <div class="legal-section"><h2>4. Donations</h2><p>All donations are voluntary contributions toward operating costs. Donations are non-refundable and do not constitute a purchase of goods or services. Donor perks may be revoked for Terms violations.</p></div>
+  <div class="legal-section"><h2>5. Bans and Enforcement</h2><p>The Council reserves the right to ban any account at any time for violations of these Terms. Bans may be appealed via Discord. Permanent bans will be issued for cheating, doxxing, or severe harassment. No refunds will be issued to banned accounts.</p></div>
+  <div class="legal-section"><h2>6. Intellectual Property</h2><p>All Dominion branding, lore, and written content belong to TheConclave Dominion. Underlying game titles are property of their respective developers.</p></div>
+  <div class="legal-section"><h2>7. Disclaimer</h2><p>Services are provided "as is." We do not guarantee uninterrupted service, uptime, or server availability. We are not liable for data loss or damages arising from use of our services.</p></div>
+  <div class="legal-section"><h2>8. Changes</h2><p>We may update these Terms at any time. Material changes will be announced in Discord. Continued use constitutes acceptance.</p></div>
+  <div class="legal-section"><h2>9. Contact</h2><p>Questions? Join Discord at discord.gg/theconclave or email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e9888d848087a99d818c8a86878a85889f8c8d86848087808687c78a8684">[email&#160;protected]</a>.</p></div>
+</div>
+</main><footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand"><div class="footer-tagline">WE DIDN'T WAIT FOR THE LIGHT.<br>WE BECAME IT.</div></div>
+    <div><div class="footer-links"><a href="/ark">ARK</a><a href="/minecraft">Minecraft</a><a href="/donate">Donate</a><a href="/nitrado">Nitrado</a><a href="/promotor">Promoter</a></div></div>
+    <div><div class="footer-links"><a href="https://discord.gg/theconclave" target="_blank">Discord</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 TheConclave Dominion</span></div>
+</footer><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudfl<script src="/conclave.js?v=20"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){TC.init('index');});</script>
+
+
+
+
+
+
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Worldseed Chamber — TheConclave Dominion</title>
+<link rel="icon" href="conclave-badge.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Exo+2:wght@300;400;600;800&family=Share+Tech+Mono&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/conclave.css?v=18">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<script>
+/* ── VIDEO GUARD — force reload iframes blocked by browser ── */
+(function(){
+  var done = false;
+  function forceVideo(){
+    if(done) return;
+    document.querySelectorAll('#__tcd_video_bg__ iframe').forEach(function(ifr){
+      // Rebuild src to trigger fresh load with all permissions
+      var src = ifr.src;
+      if(!src) return;
+      // Remove and re-add to force browser re-evaluation
+      var parent = ifr.parentNode;
+      var clone = ifr.cloneNode(true);
+      clone.src = '';
+      parent.replaceChild(clone, ifr);
+      setTimeout(function(){ clone.src = src; }, 80);
+    });
+    done = true;
+  }
+  // Try after page is interactive
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(forceVideo, 1200); });
+  } else {
+    setTimeout(forceVideo, 1200);
+  }
+  // Also try on first user interaction (browser allows autoplay after gesture)
+  ['click','keydown','touchstart'].forEach(function(ev){
+    document.addEventListener(ev, forceVideo, {once:true, passive:true});
+  });
+})();
+</script>
+</head>
+<body>
+<!-- ═══ CINEMATIC VIDEO BACKGROUND ═══ -->
+<div id="__tcd_video_bg__" style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:#01080A;">
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.80);z-index:2;"></div>
+  <iframe
+    src="https://www.youtube-nocookie.com/embed/MmB9b5njVbA?autoplay=1&mute=1&loop=1&playlist=MmB9b5njVbA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=0"
+    style="position:absolute;top:50%;left:50%;min-width:100vw;min-height:56.25vw;width:177.78vh;height:100vh;transform:translate(-50%,-50%);border:0;z-index:1;pointer-events:none;"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen
+    loading="lazy"
+    title="Background Video"
+    frameborder="0">
+  </iframe>
+</div>
+<!-- THECONCLAVE — APPLE ISLAND NAV v2 -->
+
+<script src="/nav-island.js?v=3.0" defer></script>
+
+<canvas id="bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;"></canvas>
+<script src="/bg-engine.js?v=300"></script>
+<div class="scanlines"></div>
+<div class="psl psl-l">&#169; 2026 TheConclave &bull; Minecraft Bedrock</div><div class="psl psl-r">Worldseed Chamber &bull; Build Your Legend</div>
+<nav id="nav">
+  <a href="/" class="nav-logo"><img src="/conclave-badge.png" alt=""><span>TheConclave&#174;</span></a>
+  <div id="nav-lnk" class="nav-links">
+    <a href="/ark">ARK</a>
+    <a href="/minecraft" class="active">Minecraft</a>
+    <a href="/hub" class="hub-link">&#127758; Hub</a>
+    <a href="/donate">Donate</a>
+    <a href="/nitrado">Nitrado</a>
+    <a href="/promotor">Partners</a>
+    <a href="/team">Council</a>
+    <a href="/ai" class="ncta">AEGIS AI</a>
+  </div>
+  <button id="nav-tog" class="nav-hbg">&#9776;</button>
+</nav>
+<section style="position:relative;min-height:85vh;display:flex;align-items:center;justify-content:center;overflow:hidden;max-width:100vw;padding:calc(var(--nav)+5rem) var(--px) 5rem;z-index:5;text-align:center;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(53,237,126,.12),transparent 60%),radial-gradient(ellipse at center,transparent 30%,rgba(5,5,8,.95) 100%);z-index:1;"></div>
+  <div style="position:relative;z-index:2;max-width:680px;">
+    <div class="eye r" style="justify-content:center;" id="mcEye">Minecraft Bedrock &bull; Crossplay</div>
+    <h1 style="font-family:var(--fi);font-size:clamp(2.8rem,7vw,8rem);font-weight:900;line-height:.88;letter-spacing:-.04em;color:#fff;opacity:0;margin-bottom:1rem;" id="mcT1">WORLDSEED<br><span style="background:linear-gradient(135deg,#35ED7E,#00D4FF,#7B2FFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">CHAMBER.</span></h1>
+    <p style="font-family:var(--fb);font-size:1.05rem;color:rgba(255,255,255,.5);max-width:460px;margin:0 auto 2.5rem;line-height:1.8;font-weight:300;opacity:0;" id="mcSub">Build your legend. Block by block. Lore by lore.</p>
+    <div style="opacity:0;" id="mcCtas">
+      <button class="btn-gr" onclick="copyText('134.255.214.44:10090',this);spawnParticles(event.clientX,event.clientY)">Copy Server IP &#x2398;</button>&nbsp;
+      <a href="https://discord.gg/theconclave" class="btn-dc" target="_blank">Discord</a>
+    </div>
+  </div>
+</section>
+<main class="site-wrap">
+<section class="sec">
+  <div class="sec-inner">
+    <div class="split c">
+      <div>
+        <div class="lbl r">Connection Details</div>
+        <div class="card el spc r" style="margin-bottom:1.2rem;">
+          <div style="font-family:var(--fm);font-size:.65rem;color:rgba(0,212,255,.55);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.5rem;">Server IP</div>
+          <div style="font-family:var(--fm);font-size:1.6rem;color:var(--gr);text-shadow:0 0 20px rgba(53,237,126,.4);margin-bottom:.8rem;">134.255.214.44:10090</div>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+            <button class="btn-gr" onclick="copyText('134.255.214.44:10090',this);spawnParticles(event.clientX,event.clientY)" style="flex:1;justify-content:center;">Copy Full IP &#x2398;</button>
+            <button class="btn-el" onclick="copyText('134.255.214.44',this)" style="flex:1;justify-content:center;">Copy Host</button>
+          </div>
+        </div>
+        <div class="lbl r" style="margin-top:2rem;">How to Connect</div>
+        <div class="flist r">
+          <div class="fitem"><div class="fico">1&#xFE0F;&#x20E3;</div><div><div class="ftit">Open Minecraft Bedrock</div><div class="fdsc">Launch on Xbox, PlayStation, or PC (Windows 10/11 Edition).</div></div></div>
+          <div class="fitem"><div class="fico">2&#xFE0F;&#x20E3;</div><div><div class="ftit">Go to Play &rarr; Servers</div><div class="fdsc">Scroll to the bottom of the Servers tab and click Add Server.</div></div></div>
+          <div class="fitem"><div class="fico">3&#xFE0F;&#x20E3;</div><div><div class="ftit">Enter the IP &amp; Port</div><div class="fdsc">Address: 134.255.214.44 &bull; Port: 10090</div></div></div>
+          <div class="fitem"><div class="fico">4&#xFE0F;&#x20E3;</div><div><div class="ftit">Join &amp; Build</div><div class="fdsc">Say hello in Discord. The Dominion awaits.</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="lbl r">Features</div>
+        <div class="ga r" style="--mc:200px;">
+          <div class="card r"><div style="font-size:1.5rem;margin-bottom:.45rem;">&#x1F30D;</div><div class="ftit">Crossplay</div><div class="fdsc" style="font-size:.8rem;">All Bedrock platforms welcome.</div></div>
+          <div class="card r"><div style="font-size:1.5rem;margin-bottom:.45rem;">&#x1F6E1;&#xFE0F;</div><div class="ftit">Active Admins</div><div class="fdsc" style="font-size:.8rem;">Real humans, around the clock.</div></div>
+          <div class="card r"><div style="font-size:1.5rem;margin-bottom:.45rem;">&#x1F5FA;&#xFE0F;</div><div class="ftit">Community Map</div><div class="fdsc" style="font-size:.8rem;">Shared world, shared history.</div></div>
+          <div class="card r"><div style="font-size:1.5rem;margin-bottom:.45rem;">&#x1F4AC;</div><div class="ftit">Discord Linked</div><div class="fdsc" style="font-size:.8rem;">Stay connected, on or off server.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="footer-in"><div><a href="/" class="nav-logo" style="display:inline-flex;margin-bottom:.85rem;"><img src="/conclave-badge.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,184,0,.8));"><span style="font-family:var(--fd);font-size:.7rem;background:var(--sptx);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:specShift 4s linear infinite;">TheConclave&#174;</span></a><div class="footer-tag">WE DIDN'T WAIT FOR THE LIGHT.<br>WE BECAME IT.</div></div><div><div class="footer-links"><a href="/ark">ARK</a><a href="/minecraft">Minecraft</a><a href="/donate">Donate</a><a href="/nitrado">Nitrado</a><a href="/promotor">Partners</a><a href="/team">Meet Us</a></div></div><div><div class="footer-links"><a href="https://discord.gg/theconclave" target="_blank">Discord</a><a href="https://patreon.com/theconclavedominion" target="_blank">Patreon</a><a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank">Nitrado Affiliate</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div></div></div><div class="footer-btm"><span>&copy; 2026 TheConclave Dominion</span><span>ARK:SA &middot; 5x Crossplay &middot; 10 Maps</span></div></footer><script src="/conclave.js?v=20"></script>
+<script>document.addEventListener("DOMContentLoaded",()=>{TC.init('minecraft');
+  if(!window._sweepKi){window._sweepKi=function(){document.querySelectorAll(".ki").forEach(function(s,i){setTimeout(function(){s.style.transform="translateY(0)";s.style.opacity="1";},Math.min(i*25,400));});};}
+  setTimeout(_sweepKi,100);setTimeout(_sweepKi,600);setTimeout(_sweepKi,1500);if(window.gsap){gsap.set(["#mcEye","#mcT1","#mcSub","#mcCtas"],{y:34,opacity:0});gsap.timeline({defaults:{ease:"power4.out"}}).to("#mcEye",{opacity:1,y:0,duration:.7,delay:.25}).to("#mcT1",{opacity:1,y:0,duration:1.1},"-=.3").to("#mcSub",{opacity:1,y:0,duration:.8},"-=.4").to("#mcCtas",{opacity:1,y:0,duration:.6},"-=.3");}});</script>
+<script src="/aegis-companion.js?v=5.0"></script>
+
+
+
+
+
+
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>
+</html>

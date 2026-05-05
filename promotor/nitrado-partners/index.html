@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nitrado Partner — TheConclave Dominion</title>
+<link rel="icon" href="conclave-badge.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Exo+2:wght@300;400;600;800&family=Share+Tech+Mono&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/conclave.css?v=18">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+<!-- THECONCLAVE — APPLE ISLAND NAV v2 -->
+
+<script src="/nav-island.js?v=3.0" defer></script>
+
+<canvas id="bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;"></canvas>
+<script src="/bg-engine.js?v=300"></script>
+<div class="scanlines"></div>
+<div class="psl psl-l">&#169; 2026 TheConclave Dominion &bull; Official Nitrado Partner</div><div class="psl psl-r">Game Server Hosting &bull; 30% Affiliate Back</div>
+<nav id="nav">
+  <a href="/" class="nav-logo"><img src="/conclave-badge.png" alt=""><span>TheConclave&#174;</span></a>
+  <div id="nav-lnk" class="nav-links">
+    <a href="/ark">ARK</a>
+    <a href="/minecraft">Minecraft</a>
+    <a href="/hub" class="hub-link">&#127758; Hub</a>
+    <a href="/donate">Donate</a>
+    <a href="/nitrado" class="active">Nitrado</a>
+    <a href="/promotor">Partners</a>
+    <a href="/team">Council</a>
+    <a href="/ai" class="ncta">AEGIS AI</a>
+  </div>
+  <button id="nav-tog" class="nav-hbg">&#9776;</button>
+</nav>
+<section style="position:relative;min-height:75vh;display:flex;align-items:center;justify-content:center;overflow:hidden;max-width:100vw;padding:calc(var(--nav)+5rem) var(--px) 5rem;z-index:5;text-align:center;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(0,212,255,.1),transparent 60%),radial-gradient(ellipse at center,transparent 30%,rgba(5,5,8,.95) 100%);z-index:1;"></div>
+  <div style="position:relative;z-index:2;max-width:680px;">
+    <div class="eye r" style="justify-content:center;" id="nitEye">Official Partner</div>
+    <h1 style="font-family:var(--fi);font-size:clamp(2.8rem,7vw,8rem);font-weight:900;line-height:.88;letter-spacing:-.04em;color:#fff;opacity:0;" id="nitT1">NITRADO<br><span style="background:linear-gradient(135deg,#00D4FF,#7B2FFF,#FF4CD2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">PARTNER.</span></h1>
+    <p style="font-family:var(--fb);font-size:1.05rem;color:rgba(255,255,255,.5);max-width:480px;margin:1rem auto 2.5rem;line-height:1.8;font-weight:300;opacity:0;" id="nitSub">Every Conclave server runs on Nitrado. Use our link — get the best hosting, and 30% comes back to the Dominion.</p>
+    <div style="opacity:0;" id="nitCtas"><a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank" class="btn-el" onclick="spawnParticles(event.clientX,event.clientY)">Get Your Server &rarr;</a></div>
+  </div>
+</section>
+<main class="site-wrap">
+<div style="position:relative;z-index:5;padding:0 var(--px) 2rem;max-width:var(--max);margin:0 auto;">
+  <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank"><img src="/970x90_EN.png" style="width:100%;border-radius:10px;display:block;" onerror="this.parentElement.style.display='none'"></a>
+</div>
+<section class="sec">
+  <div class="sec-inner">
+    <div class="split c">
+      <div>
+        <div class="lbl r">Why Nitrado?</div>
+        <h2 class="sec-t r kin">The Infrastructure Behind<br>The Dominion.</h2>
+        <p class="sec-sub r">Every Conclave server runs on Nitrado. When you use our affiliate link, 30% of your purchase comes back to support the Dominion — at no extra cost to you.</p>
+        <div class="flist r">
+          <div class="fitem"><div class="fico">&#x26A1;</div><div><div class="ftit">Instant Setup</div><div class="fdsc">Servers live in under 3 minutes.</div></div></div>
+          <div class="fitem"><div class="fico">&#x1F6E1;&#xFE0F;</div><div><div class="ftit">DDoS Protection</div><div class="fdsc">Enterprise-grade on every server.</div></div></div>
+          <div class="fitem"><div class="fico">&#x1F30D;</div><div><div class="ftit">Global Data Centers</div><div class="fdsc">NA, Europe, Asia locations.</div></div></div>
+          <div class="fitem"><div class="fico">&#x1F4AC;</div><div><div class="ftit">24/7 Support</div><div class="fdsc">Real humans around the clock.</div></div></div>
+        </div>
+        <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank" class="btn-el r" style="margin-top:2rem;display:inline-flex;" onclick="spawnParticles(event.clientX,event.clientY)">Get Your Nitrado Server &rarr;</a>
+      </div>
+      <div>
+        <div class="lbl r">Nitrado Banners</div>
+        <div style="display:flex;flex-direction:column;gap:1rem;" class="r">
+          <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank"><img src="/300x250_EN.jpg" style="width:100%;border-radius:10px;display:block;" onerror="this.style.display='none'"></a>
+          <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank"><img src="/216x36_EN.png" style="width:100%;border-radius:8px;display:block;" onerror="this.style.display='none'"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer"><div class="footer-in"><div><a href="/" class="nav-logo" style="display:inline-flex;margin-bottom:.85rem;"><img src="/conclave-badge.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,184,0,.8));"><span style="font-family:var(--fd);font-size:.7rem;background:var(--sptx);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:specShift 4s linear infinite;">TheConclave&#174;</span></a><div class="footer-tag">WE DIDN'T WAIT FOR THE LIGHT.<br>WE BECAME IT.</div></div><div><div class="footer-links"><a href="/ark">ARK</a><a href="/minecraft">Minecraft</a><a href="/donate">Donate</a><a href="/nitrado">Nitrado</a><a href="/promotor">Partners</a><a href="/team">Meet Us</a></div></div><div><div class="footer-links"><a href="https://discord.gg/theconclave" target="_blank">Discord</a><a href="https://patreon.com/theconclavedominion" target="_blank">Patreon</a><a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank">Nitrado Affiliate</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div></div></div><div class="footer-btm"><span>&copy; 2026 TheConclave Dominion</span><span>ARK:SA &middot; 5x Crossplay &middot; 10 Maps</span></div></footer><script src="/conclave.js?v=20"></script>
+<script>document.addEventListener("DOMContentLoaded",()=>{TC.init('nitrado');
+  if(!window._sweepKi){window._sweepKi=function(){document.querySelectorAll(".ki").forEach(function(s,i){setTimeout(function(){s.style.transform="translateY(0)";s.style.opacity="1";},Math.min(i*25,400));});};}
+  setTimeout(_sweepKi,100);setTimeout(_sweepKi,600);setTimeout(_sweepKi,1500);if(window.gsap){gsap.set(["#nitEye","#nitT1","#nitSub","#nitCtas"],{y:34,opacity:0});gsap.timeline({defaults:{ease:"power4.out"}}).to("#nitEye",{opacity:1,y:0,duration:.7,delay:.25}).to("#nitT1",{opacity:1,y:0,duration:1.1},"-=.3").to("#nitSub",{opacity:1,y:0,duration:.8},"-=.4").to("#nitCtas",{opacity:1,y:0,duration:.6},"-=.3");}});</script>
+<script src="/aegis-companion.js?v=5.0"></script>
+
+
+
+
+
+
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>
+</html>

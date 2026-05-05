@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Support TheConclave — Funding & Sponsors</title>
+<meta name="description" content="Support TheConclave Dominion — donate, use affiliate links, and help keep our servers alive.">
+<link rel="icon" href="/conclave-badge.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;0,800;1,300&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/conclave.css?v=18">
+<style>
+body { background: #07050a; }
+.donate-hero {
+  min-height: 50vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 24px 60px;
+  position: relative;
+}
+.donate-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 30%, rgba(255,184,0,.12), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 20% 70%, rgba(255,76,210,.08), transparent 50%);
+  pointer-events: none;
+}
+.donate-hero h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.2rem,7vw,6rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #FFB800, #FF4CD2, #7B2FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 1rem;
+  line-height: 1;
+  position: relative;
+}
+.donate-hero p {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1rem;
+  color: rgba(255,255,255,.5);
+  max-width: 480px;
+  line-height: 1.7;
+  position: relative;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.donate-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.donate-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--card-glow, rgba(255,184,0,.05));
+  opacity: 0;
+  transition: opacity .25s;
+  border-radius: 16px;
+}
+.donate-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,.15); }
+.donate-card:hover::before { opacity: 1; }
+
+.card-icon { font-size: 2rem; margin-bottom: 12px; }
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.card-sub {
+  font-family: 'Exo 2', sans-serif;
+  font-size: .78rem;
+  color: rgba(255,255,255,.4);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.card-detail {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .7rem;
+  color: rgba(255,184,0,.8);
+  background: rgba(255,184,0,.07);
+  border: 1px solid rgba(255,184,0,.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 20px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: .65rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: .06em;
+  transition: all .2s;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+.link-gold { background: rgba(255,184,0,.15); border: 1px solid rgba(255,184,0,.35); color: #FFB800; }
+.link-gold:hover { background: rgba(255,184,0,.3); color: #fff; }
+.link-pk { background: rgba(255,76,210,.12); border: 1px solid rgba(255,76,210,.3); color: #FF4CD2; }
+.link-pk:hover { background: rgba(255,76,210,.25); color: #fff; }
+.link-el { background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.25); color: #00D4FF; }
+.link-el:hover { background: rgba(0,212,255,.2); color: #fff; }
+.link-pl { background: rgba(123,47,255,.12); border: 1px solid rgba(123,47,255,.3); color: #a855f7; }
+.link-pl:hover { background: rgba(123,47,255,.25); color: #fff; }
+
+/* Commission badges */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: .52rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: rgba(53,237,126,.1);
+  border: 1px solid rgba(53,237,126,.2);
+  color: #35ED7E;
+  margin-bottom: 10px;
+}
+
+/* Referral section */
+.referral-section {
+  max-width: 1100px;
+  margin: 0 auto 80px;
+  padding: 0 24px;
+}
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.07);
+}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<main style="position:relative;z-index:5;">
+
+<div class="donate-hero">
+  <div style="font-family:'Share Tech Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,184,0,.5);margin-bottom:1rem;">TheConclave Dominion · Support</div>
+  <h1>Keep The Realm Alive</h1>
+  <p>Every contribution keeps a server running for the entire community. Thank you for powering TheConclave.</p>
+</div>
+
+<!-- DIRECT DONATE -->
+<div class="referral-section">
+  <div class="section-title">💰 Direct Donations</div>
+  <div class="cards-grid" style="padding:0;margin:0 0 40px;">
+
+    <div class="donate-card" style="--card-glow:rgba(255,184,0,.08);">
+      <div class="card-icon">💵</div>
+      <div class="card-title">CashApp</div>
+      <div class="card-sub">Send directly. Fastest way to support us.</div>
+      <div class="card-detail">$TheConclaveDominion</div>
+      <a href="https://cash.app/$TheConclaveDominion" target="_blank" rel="noopener" class="card-link link-gold">Open CashApp →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(0,212,255,.06);">
+      <div class="card-icon">💸</div>
+      <div class="card-title">Chime</div>
+      <div class="card-sub">Send via Chime Pay.</div>
+      <div class="card-detail">$ANLIKESEF</div>
+      <a href="https://chime.com" target="_blank" rel="noopener" class="card-link link-el">Chime Pay →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(255,76,210,.06);">
+      <div class="card-icon">💜</div>
+      <div class="card-title">Patreon</div>
+      <div class="card-sub">Monthly support — unlock Amissa map + exclusive perks.</div>
+      <a href="https://www.patreon.com/TheConclaveDominion?utm_campaign=creatorshare_creator" target="_blank" rel="noopener" class="card-link link-pk">Join Patreon →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(0,112,255,.08);">
+      <div class="card-icon">🅿️</div>
+      <div class="card-title">PayPal</div>
+      <div class="card-sub">Send directly via PayPal.</div>
+      <div class="card-detail">trentonm18@gmail.com</div>
+      <a href="https://paypal.me/trentonm18" target="_blank" rel="noopener" class="card-link link-el">PayPal →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(0,212,255,.06);">
+      <div class="card-icon">🖥️</div>
+      <div class="card-title">Nitrado Donate</div>
+      <div class="card-sub">Donate directly to our Nitrado server hosting account.</div>
+      <a href="https://server.nitrado.net/donations/donate/12326221" target="_blank" rel="noopener" class="card-link link-el">Nitrado Donate →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- NITRADO AFFILIATE -->
+<div class="referral-section">
+  <div class="section-title">🖥️ Nitrado Affiliate Links — 30% Back To Us</div>
+  <div class="cards-grid" style="padding:0;margin:0 0 40px;">
+
+    <div class="donate-card" style="--card-glow:rgba(0,212,255,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">🦕</div>
+      <div class="card-title">Nitrado — ARK: SA</div>
+      <div class="card-sub">Rent your own ARK server. We get 30% — helps keep our servers alive.</div>
+      <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank" rel="noopener" class="card-link link-el">Rent ARK Server →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(53,237,126,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">⛏️</div>
+      <div class="card-title">Nitrado — Minecraft</div>
+      <div class="card-sub">Minecraft server hosting via Nitrado.</div>
+      <a href="https://www.nitrado-aff.com/596PP8X/D42TT/?uid=25" target="_blank" rel="noopener" class="card-link link-el">Rent Minecraft Server →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(255,184,0,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">🏜️</div>
+      <div class="card-title">Nitrado — Dune</div>
+      <div class="card-sub">Dune: Awakening server hosting.</div>
+      <a href="https://www.nitrado-aff.com/596PP8X/D42TT/?uid=59" target="_blank" rel="noopener" class="card-link link-el">Rent Dune Server →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(255,76,210,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">🐾</div>
+      <div class="card-title">Nitrado — Palworld</div>
+      <div class="card-sub">Palworld server hosting via Nitrado.</div>
+      <a href="https://www.nitrado-aff.com/596PP8X/D42TT/?uid=60" target="_blank" rel="noopener" class="card-link link-el">Rent Palworld Server →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(53,237,126,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">🏭</div>
+      <div class="card-title">Nitrado — Satisfactory</div>
+      <div class="card-sub">Satisfactory server hosting.</div>
+      <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/?uid=64" target="_blank" rel="noopener" class="card-link link-el">Rent Satisfactory Server →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(123,47,255,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">⭐</div>
+      <div class="card-title">Nitrado — StarRupture</div>
+      <div class="card-sub">StarRupture server via Nitrado.</div>
+      <a href="https://www.nitrado-aff.com/596PP8X/D42TT/?uid=77" target="_blank" rel="noopener" class="card-link link-el">Rent StarRupture Server →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(0,212,255,.06);">
+      <div class="badge">30% Partner Commission</div>
+      <div class="card-icon">🎮</div>
+      <div class="card-title">Nitrado — Hytale</div>
+      <div class="card-sub">Hytale server hosting when available.</div>
+      <a href="https://www.nitrado-aff.com/596PP8X/D42TT/?uid=79" target="_blank" rel="noopener" class="card-link link-el">Nitrado Hytale →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- REFERRAL BONUSES -->
+<div class="referral-section">
+  <div class="section-title">🎁 Referral Bonuses — Help Yourself While Supporting Us</div>
+  <div class="cards-grid" style="padding:0;margin:0 0 80px;">
+
+    <div class="donate-card" style="--card-glow:rgba(53,237,126,.07);">
+      <div class="badge">$5 Bonus</div>
+      <div class="card-icon">💵</div>
+      <div class="card-title">CashApp Referral</div>
+      <div class="card-sub">Get $5 when you send $5+ with Cash App within 14 days. Code: <strong>MRWL42Z</strong></div>
+      <a href="https://cash.app/app/MRWL42Z" target="_blank" rel="noopener" class="card-link link-gold">Get $5 with CashApp →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(0,212,255,.07);">
+      <div class="badge">$100 Bonus</div>
+      <div class="card-icon">🏦</div>
+      <div class="card-title">Chime Referral</div>
+      <div class="card-sub">Join Chime and get $100. Terms apply.</div>
+      <a href="https://www.chime.com/r/christiancox130/?c=s" target="_blank" rel="noopener" class="card-link link-el">Get $100 with Chime →</a>
+    </div>
+
+    <div class="donate-card" style="--card-glow:rgba(255,184,0,.07);">
+      <div class="badge">Flexible Income</div>
+      <div class="card-icon">🛒</div>
+      <div class="card-title">Instacart Shopper</div>
+      <div class="card-sub">Earn money shopping and delivering from local stores. Flexible schedule.</div>
+      <a href="http://inst.cr/t/THIwcVUyOUJu" target="_blank" rel="noopener" class="card-link link-gold">Sign Up as Instacart Shopper →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- DISCORD -->
+<div style="text-align:center;padding:0 24px 80px;">
+  <a href="https://discord.gg/theconclave" target="_blank" rel="noopener" class="btn-el" style="font-size:.85rem;padding:14px 32px;">
+    💬 Join Our Discord Community →
+  </a>
+</div>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div>
+      <a href="/" class="nav-logo" style="display:inline-flex;margin-bottom:.85rem;">
+        <img src="/conclave-badge.png" style="width:28px;height:28px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,184,0,.8));">
+        <span style="font-family:'Cinzel Decorative',sans-serif;font-size:.68rem;background:linear-gradient(135deg,#FFB800,#FF4CD2,#7B2FFF);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">TheConclave®</span>
+      </a>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.55rem;color:rgba(255,255,255,.2);line-height:1.8;">WE DIDN'T WAIT FOR THE LIGHT.<br>WE BECAME IT.</div>
+    </div>
+    <div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.8rem;">Navigate</div>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/ark">ARK Servers</a>
+        <a href="/shop">ClaveShard Shop</a>
+        <a href="/promotor">Partners</a>
+        <a href="/team">Team</a>
+        <a href="/terms">Terms</a>
+        <a href="/privacy">Privacy</a>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.8rem;">Connect</div>
+      <div class="footer-links">
+        <a href="https://discord.gg/theconclave" target="_blank">Discord</a>
+        <a href="https://www.patreon.com/TheConclaveDominion" target="_blank">Patreon</a>
+        <a href="https://www.nitrado-aff.com/59GPP8X/D42TT/" target="_blank">Nitrado Affiliate</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-btm">
+    <span>© 2026 TheConclave Dominion</span>
+    <span>ARK:SA · 5x Crossplay · 10 Maps</span>
+  </div>
+</footer>
+
+<script src="/conclave.js?v=20"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.TC) TC.init('donations');
+});
+</script>
+<script src="/nav-island.js?v=3.0"></script>
+<script src="/bg-engine.js?v=300"></script>
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>
+</html>

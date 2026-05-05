@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World Connect Hub Supreme — TheConclave Dominion</title>
+<meta name="description" content="World Connect Hub Supreme — the unified intelligent network that maps, connects, and activates every meaningful relationship in gaming.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Share+Tech+Mono&display=swap">
+<style>
+:root{
+  --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;--gd:#FFB800;--gr:#35ED7E;--or:#FF6B00;
+  --wc-a:#00D4FF;--wc-b:#7B2FFF;--wc-c:#35ED7E;--wc-d:#FF4CD2;
+  --bg:#010108;--glass:rgba(4,4,24,.8);--border:rgba(0,212,255,.14);
+  --fm:'Share Tech Mono',monospace;--ft:'Orbitron',sans-serif;--fe:'Exo 2',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:var(--fe);overflow-x:hidden}
+
+/* NAV */
+#nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+  background:rgba(1,1,10,.96);border-radius:100px;padding:7px 20px 7px 14px;
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  box-shadow:0 0 0 1px rgba(0,212,255,.2),0 8px 40px rgba(0,0,0,.85);}
+#nav:hover{box-shadow:0 0 0 1px rgba(0,212,255,.4),0 12px 50px rgba(0,212,255,.12);}
+.n-logo{font-family:var(--ft);font-size:.6rem;font-weight:900;color:#fff;letter-spacing:.14em;text-decoration:none;}
+.n-dot{width:7px;height:7px;border-radius:50%;background:var(--cy);box-shadow:0 0 10px var(--cy);animation:pd 2s infinite;}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
+.n-links{display:flex;gap:16px;margin-left:6px;}
+.n-links a{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.35);text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.n-links a:hover,.n-links a.on{color:var(--cy);}
+@media(max-width:640px){.n-links{display:none}}
+
+/* ── HERO: ANIMATED NETWORK GRAPH ── */
+#hero{position:relative;height:100vh;min-height:720px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#nv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;
+  filter:saturate(1.8) hue-rotate(180deg) brightness(.9);z-index:0;pointer-events:none;}
+.hvl{position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 80% 55% at 50% 0%,rgba(0,212,255,.18),transparent 58%),
+             radial-gradient(ellipse 55% 70% at 0% 110%,rgba(123,47,255,.18),transparent 55%),
+             radial-gradient(ellipse 45% 55% at 100% 80%,rgba(53,237,126,.08),transparent 55%),
+             linear-gradient(180deg,rgba(1,1,8,.1) 0%,rgba(1,1,8,.94) 100%);}
+.hsc{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.28;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);
+  animation:sc 10s linear infinite;}
+@keyframes sc{to{background-position:0 80px}}
+
+/* Network nodes canvas decoration */
+#networkCanvas{position:absolute;inset:0;z-index:2;pointer-events:none;}
+
+.hc{position:relative;z-index:3;text-align:center;padding:0 24px;max-width:900px;}
+.hk{font-family:var(--fm);font-size:.52rem;letter-spacing:.3em;color:rgba(0,212,255,.6);text-transform:uppercase;
+  margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem;}
+.hk::before,.hk::after{content:'';width:30px;height:1px;background:rgba(0,212,255,.28);}
+.ht{font-family:var(--ft);font-size:clamp(2rem,8vw,5.5rem);font-weight:900;line-height:.9;
+  background:linear-gradient(135deg,#00D4FF 0%,#7B2FFF 40%,#35ED7E 70%,#FF4CD2 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.8rem;animation:hg 5s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 60px rgba(0,212,255,.3));}
+@keyframes hg{0%{filter:drop-shadow(0 0 35px rgba(0,212,255,.22))}100%{filter:drop-shadow(0 0 90px rgba(0,212,255,.55))}}
+.ht-sub{font-family:var(--fm);font-size:.58rem;letter-spacing:.22em;color:rgba(0,212,255,.4);
+  text-transform:uppercase;margin-bottom:1.5rem;}
+.hsub{font-family:var(--fe);font-size:clamp(.85rem,2vw,1.08rem);color:rgba(255,255,255,.42);
+  max-width:600px;margin:0 auto 2rem;line-height:1.8;font-weight:300;}
+
+/* Live stats strip */
+.live-stats{
+  display:flex;gap:0;max-width:600px;margin:0 auto 2.5rem;
+  background:rgba(4,4,24,.8);border:1px solid rgba(0,212,255,.18);border-radius:16px;overflow:hidden;
+}
+.ls{flex:1;padding:1rem .6rem;text-align:center;border-right:1px solid rgba(0,212,255,.1);}
+.ls:last-child{border-right:none;}
+.ls-n{font-family:var(--ft);font-size:1.2rem;font-weight:900;color:var(--cy);line-height:1;}
+.ls-l{font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;color:rgba(255,255,255,.2);
+  text-transform:uppercase;margin-top:.25rem;}
+.ls-dot{width:5px;height:5px;border-radius:50%;background:var(--gr);box-shadow:0 0 6px var(--gr);
+  display:inline-block;animation:pd 1.5s infinite;margin-right:.3rem;}
+
+.hbtns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
+.btn-cy{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.65rem 1.8rem;border-radius:100px;text-decoration:none;
+  background:linear-gradient(135deg,#00D4FF,#7B2FFF);color:#fff;
+  box-shadow:0 4px 28px rgba(0,212,255,.38);transition:all .22s;display:inline-block;}
+.btn-cy:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(0,212,255,.5);}
+.btn-gs{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.65rem 1.8rem;border-radius:100px;text-decoration:none;
+  border:1px solid rgba(0,212,255,.2);background:rgba(0,212,255,.04);
+  color:rgba(0,212,255,.55);transition:all .22s;display:inline-block;}
+.btn-gs:hover{border-color:rgba(0,212,255,.45);color:var(--cy);}
+
+/* LAYOUT */
+.wrap{max-width:1220px;margin:0 auto;padding:0 24px;}
+.sec{padding:5rem 0;}
+.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.3em;color:rgba(0,212,255,.42);
+  text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem;}
+.sl::after{content:'';flex:1;height:1px;background:rgba(0,212,255,.1);}
+.st{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;
+  margin-bottom:.65rem;line-height:1.05;}
+.st em{font-style:normal;background:linear-gradient(135deg,var(--cy),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* PHILOSOPHY */
+.philosophy{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:28px;padding:3rem 2.5rem;
+  position:relative;overflow:hidden;
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;
+}
+@media(max-width:720px){.philosophy{grid-template-columns:1fr;padding:2rem 1.5rem}}
+.philosophy::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 100% 50%,rgba(0,212,255,.05),transparent 60%),
+             radial-gradient(ellipse 50% 60% at 0% 50%,rgba(123,47,255,.04),transparent 60%);
+  pointer-events:none;}
+.ph-not{position:relative;}
+.ph-not h3{font-family:var(--ft);font-size:.85rem;font-weight:700;color:rgba(255,58,58,.7);
+  margin-bottom:.8rem;letter-spacing:.05em;}
+.ph-is h3{font-family:var(--ft);font-size:.85rem;font-weight:700;color:var(--cy);
+  margin-bottom:.8rem;letter-spacing:.05em;}
+.ph-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.ph-list li{font-family:var(--fe);font-size:.88rem;color:rgba(255,255,255,.42);
+  line-height:1.6;font-weight:300;padding-left:1.2rem;position:relative;}
+.ph-list li::before{content:'→';position:absolute;left:0;color:var(--cy);font-family:var(--fm);font-size:.7rem;}
+.ph-not .ph-list li::before{content:'✗';color:rgba(255,58,58,.6);}
+.ph-not .ph-list li{color:rgba(255,255,255,.28);}
+
+/* SYSTEM ARCHITECTURE — feature cards */
+.arch-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;
+  margin-top:2rem;
+}
+.arch-card{
+  background:var(--glass);border-radius:20px;padding:2rem 1.5rem;
+  position:relative;overflow:hidden;transition:all .28s;
+}
+.arch-card:hover{transform:translateY(-4px);}
+.arch-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--ac-line,linear-gradient(90deg,transparent,rgba(0,212,255,.6),transparent));}
+.arch-icon{font-size:2.2rem;margin-bottom:.8rem;display:block;}
+.arch-num{position:absolute;top:1.2rem;right:1.2rem;font-family:var(--ft);font-size:.55rem;
+  font-weight:700;color:rgba(255,255,255,.1);letter-spacing:.1em;}
+.arch-title{font-family:var(--ft);font-size:.92rem;font-weight:700;color:#fff;margin-bottom:.5rem;}
+.arch-sub{font-family:var(--fm);font-size:.46rem;letter-spacing:.12em;
+  color:var(--ac-color,rgba(0,212,255,.55));text-transform:uppercase;margin-bottom:.6rem;}
+.arch-desc{font-family:var(--fe);font-size:.83rem;color:rgba(255,255,255,.35);line-height:1.7;font-weight:300;}
+.arch-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem;}
+.at{font-family:var(--fm);font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.2rem .55rem;border-radius:100px;
+  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.18);color:rgba(0,212,255,.6);}
+
+/* Individual card accent overrides */
+.arch-card.identity{border:1px solid rgba(0,212,255,.18);}
+.arch-card.identity:hover{border-color:rgba(0,212,255,.35);box-shadow:0 16px 50px rgba(0,212,255,.1);}
+.arch-card.graph{border:1px solid rgba(123,47,255,.18);}
+.arch-card.graph:hover{border-color:rgba(123,47,255,.35);box-shadow:0 16px 50px rgba(123,47,255,.12);}
+.arch-card.graph::before{background:linear-gradient(90deg,transparent,rgba(123,47,255,.6),transparent)}
+.arch-card.graph .arch-sub{color:rgba(123,47,255,.7)}
+.arch-card.graph .at{background:rgba(123,47,255,.08);border-color:rgba(123,47,255,.2);color:rgba(123,47,255,.7)}
+.arch-card.community{border:1px solid rgba(53,237,126,.16);}
+.arch-card.community:hover{border-color:rgba(53,237,126,.3);box-shadow:0 16px 50px rgba(53,237,126,.1);}
+.arch-card.community::before{background:linear-gradient(90deg,transparent,rgba(53,237,126,.5),transparent)}
+.arch-card.community .arch-sub{color:rgba(53,237,126,.6)}
+.arch-card.community .at{background:rgba(53,237,126,.07);border-color:rgba(53,237,126,.18);color:rgba(53,237,126,.65)}
+.arch-card.creator{border:1px solid rgba(255,76,210,.16);}
+.arch-card.creator:hover{border-color:rgba(255,76,210,.3);box-shadow:0 16px 50px rgba(255,76,210,.1);}
+.arch-card.creator::before{background:linear-gradient(90deg,transparent,rgba(255,76,210,.55),transparent)}
+.arch-card.creator .arch-sub{color:rgba(255,76,210,.6)}
+.arch-card.creator .at{background:rgba(255,76,210,.07);border-color:rgba(255,76,210,.18);color:rgba(255,76,210,.65)}
+.arch-card.feed{border:1px solid rgba(255,184,0,.16);}
+.arch-card.feed:hover{border-color:rgba(255,184,0,.3);box-shadow:0 16px 50px rgba(255,184,0,.1);}
+.arch-card.feed::before{background:linear-gradient(90deg,transparent,rgba(255,184,0,.5),transparent)}
+.arch-card.feed .arch-sub{color:rgba(255,184,0,.6)}
+.arch-card.feed .at{background:rgba(255,184,0,.07);border-color:rgba(255,184,0,.18);color:rgba(255,184,0,.65)}
+.arch-card.matching{border:1px solid rgba(255,107,0,.16);}
+.arch-card.matching:hover{border-color:rgba(255,107,0,.3);box-shadow:0 16px 50px rgba(255,107,0,.1);}
+.arch-card.matching::before{background:linear-gradient(90deg,transparent,rgba(255,107,0,.5),transparent)}
+.arch-card.matching .arch-sub{color:rgba(255,107,0,.6)}
+.arch-card.matching .at{background:rgba(255,107,0,.07);border-color:rgba(255,107,0,.18);color:rgba(255,107,0,.65)}
+.arch-card.distribution{border:1px solid rgba(0,212,255,.16);}
+.arch-card.reputation{border:1px solid rgba(255,184,0,.16);}
+.arch-card.reputation:hover{border-color:rgba(255,184,0,.3);box-shadow:0 16px 50px rgba(255,184,0,.1);}
+.arch-card.reputation::before{background:linear-gradient(90deg,transparent,rgba(255,184,0,.5),transparent)}
+.arch-card.reputation .arch-sub{color:rgba(255,184,0,.6)}
+.arch-card.reputation .at{background:rgba(255,184,0,.07);border-color:rgba(255,184,0,.18);color:rgba(255,184,0,.65)}
+.arch-card.monetization{border:1px solid rgba(53,237,126,.16);}
+.arch-card.monetization:hover{border-color:rgba(53,237,126,.3);box-shadow:0 16px 50px rgba(53,237,126,.1);}
+.arch-card.monetization::before{background:linear-gradient(90deg,transparent,rgba(53,237,126,.5),transparent)}
+.arch-card.monetization .arch-sub{color:rgba(53,237,126,.6)}
+.arch-card.monetization .at{background:rgba(53,237,126,.07);border-color:rgba(53,237,126,.18);color:rgba(53,237,126,.65)}
+
+/* GOD-TIER FEATURES */
+.god-tier{
+  background:var(--glass);
+  border:1px solid rgba(0,212,255,.18);
+  border-radius:28px;padding:3rem 2.5rem;
+  position:relative;overflow:hidden;
+}
+.god-tier::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,212,255,.07),transparent 60%),
+             radial-gradient(ellipse 50% 50% at 50% 100%,rgba(123,47,255,.06),transparent 60%);
+  pointer-events:none;}
+.gt-title{font-family:var(--ft);font-size:.55rem;font-weight:700;letter-spacing:.25em;
+  color:var(--cy);text-transform:uppercase;margin-bottom:2rem;text-align:center;
+  display:flex;align-items:center;justify-content:center;gap:.6rem;}
+.gt-title::before,.gt-title::after{content:'';flex:0 0 40px;height:1px;background:rgba(0,212,255,.2);}
+.gt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;}
+.gt-item{background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.1);border-radius:16px;
+  padding:1.4rem 1.2rem;text-align:center;transition:all .22s;}
+.gt-item:hover{border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.04);}
+.gt-icon{font-size:2rem;display:block;margin-bottom:.5rem;}
+.gt-name{font-family:var(--ft);font-size:.78rem;font-weight:700;color:#fff;margin-bottom:.3rem;}
+.gt-desc{font-family:var(--fe);font-size:.76rem;color:rgba(255,255,255,.3);line-height:1.55;font-weight:300;}
+
+/* ROADMAP */
+.roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem;}
+.rm{background:var(--glass);border-radius:18px;padding:1.6rem 1.4rem;position:relative;overflow:hidden;}
+.rm.active{border:1px solid rgba(0,212,255,.25);box-shadow:0 8px 30px rgba(0,212,255,.08);}
+.rm.next{border:1px solid rgba(53,237,126,.18);}
+.rm.future{border:1px solid rgba(255,255,255,.07);opacity:.65;}
+.rm::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--rm-line,linear-gradient(90deg,transparent,rgba(0,212,255,.5),transparent));}
+.rm.next::before{--rm-line:linear-gradient(90deg,transparent,rgba(53,237,126,.5),transparent)}
+.rm.future::before{--rm-line:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
+.rm-phase{font-family:var(--fm);font-size:.46rem;letter-spacing:.2em;
+  color:var(--rm-c,rgba(0,212,255,.55));text-transform:uppercase;margin-bottom:.4rem;}
+.rm.next .rm-phase{--rm-c:rgba(53,237,126,.6)}
+.rm.future .rm-phase{--rm-c:rgba(255,255,255,.22)}
+.rm-title{font-family:var(--ft);font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.rm-items{list-style:none;display:flex;flex-direction:column;gap:.3rem;}
+.rm-items li{font-family:var(--fe);font-size:.78rem;color:rgba(255,255,255,.32);
+  line-height:1.5;font-weight:300;padding-left:1rem;position:relative;}
+.rm-items li::before{content:'›';position:absolute;left:0;color:var(--rm-c,rgba(0,212,255,.5));font-size:.8rem;}
+.rm.next .rm-items li::before{color:rgba(53,237,126,.6)}
+.rm.future .rm-items li::before{color:rgba(255,255,255,.18)}
+.rm-status{display:inline-block;font-family:var(--fm);font-size:.42rem;letter-spacing:.08em;
+  text-transform:uppercase;padding:.2rem .55rem;border-radius:100px;margin-top:.6rem;}
+.rm-status.live{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--cy);}
+.rm-status.soon{background:rgba(53,237,126,.1);border:1px solid rgba(53,237,126,.22);color:#35ED7E;}
+.rm-status.planned{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.3);}
+
+/* COMMUNITY NODES (ARK maps as network nodes) */
+.nodes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.85rem;margin-top:1.5rem;}
+.node{background:var(--glass);border:1px solid rgba(255,255,255,.07);border-radius:16px;
+  padding:1.2rem 1rem;transition:all .22s;position:relative;overflow:hidden;text-decoration:none;color:#fff;}
+.node:hover{transform:translateY(-3px);border-color:rgba(0,212,255,.3);
+  box-shadow:0 10px 30px rgba(0,212,255,.1);}
+.node-status{position:absolute;top:10px;right:10px;width:6px;height:6px;border-radius:50%;
+  background:var(--gr);box-shadow:0 0 6px var(--gr);animation:pd 2s infinite;}
+.node-icon{font-size:1.6rem;margin-bottom:.4rem;display:block;}
+.node-label{font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:.2rem;}
+.node-name{font-family:var(--ft);font-size:.78rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.node-type{font-family:var(--fm);font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.18rem .48rem;border-radius:100px;display:inline-block;margin-bottom:.3rem;}
+.node-type.pvp{background:rgba(255,58,58,.1);border:1px solid rgba(255,58,58,.2);color:#FF3A3A;}
+.node-type.pve{background:rgba(53,237,126,.08);border:1px solid rgba(53,237,126,.2);color:#35ED7E;}
+.node-type.patreon{background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.2);color:#FFB800;}
+.node-players{font-family:var(--fm);font-size:.42rem;color:rgba(0,212,255,.5);
+  display:flex;align-items:center;gap:.3rem;}
+
+/* JOIN THE NETWORK */
+.join-cta{background:var(--glass);border:1px solid rgba(0,212,255,.2);border-radius:28px;
+  padding:4rem 2.5rem;text-align:center;position:relative;overflow:hidden;}
+.join-cta::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 75% 60% at 50% 50%,rgba(0,212,255,.07),transparent 65%),
+             radial-gradient(ellipse 50% 50% at 50% 100%,rgba(123,47,255,.06),transparent 60%);
+  pointer-events:none;}
+.join-cta h2{font-family:var(--ft);font-size:clamp(1.8rem,6vw,3.5rem);font-weight:900;
+  background:linear-gradient(135deg,#00D4FF,#7B2FFF,#35ED7E);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.8rem;position:relative;}
+.join-cta p{font-family:var(--fe);font-size:1rem;color:rgba(255,255,255,.38);
+  max-width:520px;margin:0 auto 2.5rem;line-height:1.8;font-weight:300;position:relative;}
+.join-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;position:relative;}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 24px;text-align:center;
+  font-family:var(--fm);font-size:.47rem;letter-spacing:.1em;color:rgba(255,255,255,.14);text-transform:uppercase;}
+footer a{color:rgba(0,212,255,.32);text-decoration:none;}footer a:hover{color:var(--cy);}
+
+/* DISCORD FLOAT */
+#df{position:fixed;bottom:24px;right:24px;z-index:9998;
+  font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.58rem 1.2rem;border-radius:100px;
+  background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;
+  text-decoration:none;box-shadow:0 4px 24px rgba(88,101,242,.4);
+  transition:all .22s;display:flex;align-items:center;gap:.4rem;}
+#df:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(88,101,242,.55);}
+
+/* REVEAL */
+.r{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;}
+.r.in{opacity:1;transform:none;}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="n-logo" href="/">THECONCLAVE®</a>
+  <span class="n-dot"></span>
+  <div class="n-links">
+    <a href="/">Home</a>
+    <a href="/ark">ARK</a>
+    <a href="/hub" class="on">Hub</a>
+    <a href="/promotor">Partners</a>
+    <a href="/donate">Donate</a>
+    <a href="/ai">AEGIS</a>
+  </div>
+</nav>
+
+<!-- HERO: NETWORK ANIMATION -->
+<section id="hero">
+  <!--
+    VIDEO: Place a space/tech/network visualization video at /assets/video/network-bg.mp4
+    Free sources: Pexels.com "network" "space" "data" — free to use.
+  -->
+  <video id="nv" autoplay muted loop playsinline preload="auto">
+    <source src="/assets/video/network-bg.mp4" type="video/mp4">
+    <source src="https://cdn.pixabay.com/video/2022/04/08/113261-696793634_large.mp4" type="video/mp4">
+  </video>
+
+  <!-- Animated network graph canvas -->
+  <canvas id="networkCanvas"></canvas>
+
+  <div class="hvl"></div>
+  <div class="hsc"></div>
+
+  <div class="hc">
+    <div class="hk">TheConclave Dominion · Unified Network Infrastructure</div>
+    <h1 class="ht">WORLD<br>CONNECT<br>HUB</h1>
+    <div class="ht-sub">SUPREME EDITION</div>
+
+    <div class="live-stats">
+      <div class="ls"><div class="ls-n"><span class="ls-dot"></span>10</div><div class="ls-l">Active Nodes</div></div>
+      <div class="ls"><div class="ls-n">4</div><div class="ls-l">Platforms</div></div>
+      <div class="ls"><div class="ls-n">∞</div><div class="ls-l">Connections</div></div>
+      <div class="ls"><div class="ls-n">24/7</div><div class="ls-l">Live Network</div></div>
+    </div>
+
+    <p class="hsub">The unified intelligent network that maps, connects, and activates every meaningful relationship in gaming — not a social app, not a forum. A living civilization infrastructure.</p>
+    <div class="hbtns">
+      <a class="btn-cy" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🌐 Enter The Network</a>
+      <a class="btn-gs" href="#architecture">⚙️ Full Architecture</a>
+      <a class="btn-gs" href="#maps">🗺️ Active Nodes</a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <!-- PHILOSOPHY -->
+  <section class="sec">
+    <div class="sl r">🧠 Core Philosophy</div>
+    <h2 class="st r d1">What World Connect Hub <em>Actually Is</em></h2>
+    <div class="philosophy r d2">
+      <div class="ph-not">
+        <h3>✗ What it is NOT:</h3>
+        <ul class="ph-list">
+          <li>A social media app</li>
+          <li>A forum or message board</li>
+          <li>A game launcher</li>
+          <li>A replacement for Discord</li>
+          <li>Another isolated community platform</li>
+        </ul>
+      </div>
+      <div class="ph-is">
+        <h3>→ What it IS:</h3>
+        <ul class="ph-list">
+          <li>A real-time intelligent network mapping every relationship in gaming</li>
+          <li>Isolated communities → connected nodes</li>
+          <li>Scattered updates → structured signals</li>
+          <li>Random promotion → precision distribution</li>
+          <li>Missed opportunities → automatic alignment</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FULL SYSTEM ARCHITECTURE -->
+  <section class="sec" style="padding-top:0" id="architecture">
+    <div class="sl r">🏗️ System Architecture</div>
+    <h2 class="st r d1">10-Layer <em>Infrastructure Blueprint</em></h2>
+    <p class="r d2" style="font-family:var(--fe);font-size:.9rem;color:rgba(255,255,255,.35);max-width:580px;margin-bottom:2rem;line-height:1.8;font-weight:300;">Every layer of World Connect Hub Supreme, fully engineered.</p>
+
+    <div class="arch-grid">
+
+      <div class="arch-card identity r d1">
+        <div class="arch-num">01</div>
+        <div class="arch-icon">🧬</div>
+        <div class="arch-title">Identity Layer</div>
+        <div class="arch-sub">The Core of Everything</div>
+        <p class="arch-desc">Dynamic identity profiles with roles (Player, Server Owner, Mod, Creator, Developer), games played, communities joined, mods used, and activity patterns. This feeds the entire system.</p>
+        <div class="arch-tags"><span class="at">Profiles</span><span class="at">Roles</span><span class="at">Activity</span></div>
+      </div>
+
+      <div class="arch-card graph r d2">
+        <div class="arch-num">02</div>
+        <div class="arch-icon">🌐</div>
+        <div class="arch-title">Global Graph Engine</div>
+        <div class="arch-sub">The Brain</div>
+        <p class="arch-desc">A constantly-updating graph connecting Users ↔ Servers ↔ Mods ↔ Creators ↔ Communities. Enables instant recommendations, smart routing, and predictive matching. Google Maps — but for gaming relationships.</p>
+        <div class="arch-tags"><span class="at">Graph</span><span class="at">AI Routing</span><span class="at">Predictive</span></div>
+      </div>
+
+      <div class="arch-card community r d3">
+        <div class="arch-num">03</div>
+        <div class="arch-icon">🔴</div>
+        <div class="arch-title">Community Node System</div>
+        <div class="arch-sub">Discord Integration</div>
+        <p class="arch-desc">Every Discord server becomes a live node with metadata: game, activity level, tags (PvP, modded, casual). Live sync of announcements, member growth, events. The platform powers Discord — doesn't replace it.</p>
+        <div class="arch-tags"><span class="at">Nodes</span><span class="at">Discord Sync</span><span class="at">Live Data</span></div>
+      </div>
+
+      <div class="arch-card creator r d1">
+        <div class="arch-num">04</div>
+        <div class="arch-icon">🎮</div>
+        <div class="arch-title">Creator & Mod Intelligence</div>
+        <div class="arch-sub">CurseForge Integration</div>
+        <p class="arch-desc">Integrated with mod ecosystems. Tracks mod versions, dependencies, update frequency. Answers "Who is affected by this update?" and auto-notifies relevant communities. Fastest update distribution in gaming.</p>
+        <div class="arch-tags"><span class="at">Mods</span><span class="at">CurseForge</span><span class="at">Auto-notify</span></div>
+      </div>
+
+      <div class="arch-card feed r d2">
+        <div class="arch-num">05</div>
+        <div class="arch-icon">📡</div>
+        <div class="arch-title">Universal Feed System</div>
+        <div class="arch-sub">The Pulse</div>
+        <p class="arch-desc">Real-time personalized, context-aware, multi-source feed. Mod updates, server recruitment, events, creator announcements. Users don't see everything — they see what matters.</p>
+        <div class="arch-tags"><span class="at">Real-time</span><span class="at">Personalized</span><span class="at">Multi-source</span></div>
+      </div>
+
+      <div class="arch-card distribution r d3">
+        <div class="arch-num">06</div>
+        <div class="arch-icon">⚡</div>
+        <div class="arch-title">Smart Distribution Engine</div>
+        <div class="arch-sub">Post Once, Saturate All</div>
+        <p class="arch-desc">Posts auto-route across the network. Communities opt into categories. Content reaches relevant nodes instantly. External bridges via webhooks, share-ready exports, API integrations. Post once → saturate your entire relevant ecosystem.</p>
+        <div class="arch-tags"><span class="at">Auto-route</span><span class="at">Webhooks</span><span class="at">API</span></div>
+      </div>
+
+      <div class="arch-card matching r d1">
+        <div class="arch-num">07</div>
+        <div class="arch-icon">🔮</div>
+        <div class="arch-title">Opportunity Matching Engine</div>
+        <div class="arch-sub">Better Than LinkedIn</div>
+        <p class="arch-desc">Server needs moderators → matched instantly. Creator needs testers → pushed to active players. Player looking for a community → gets precision results. The addictive layer that keeps everyone engaged.</p>
+        <div class="arch-tags"><span class="at">Matching</span><span class="at">Smart</span><span class="at">Instant</span></div>
+      </div>
+
+      <div class="arch-card reputation r d2">
+        <div class="arch-num">08</div>
+        <div class="arch-icon">🏆</div>
+        <div class="arch-title">Reputation & Trust Layer</div>
+        <div class="arch-sub">Quality Over Noise</div>
+        <p class="arch-desc">Verified creators, ranked communities, engagement-based trust scores. High-quality signals rise — noise dies. Prevents spam chaos and ensures the network stays signal-rich.</p>
+        <div class="arch-tags"><span class="at">Verified</span><span class="at">Trust Score</span><span class="at">Rankings</span></div>
+      </div>
+
+      <div class="arch-card community r d3">
+        <div class="arch-num">09</div>
+        <div class="arch-icon">💬</div>
+        <div class="arch-title">Real-Time Comms Layer</div>
+        <div class="arch-sub">Extending Discord</div>
+        <p class="arch-desc">Not replacing Discord but extending it. Cross-community channels, event coordination hubs, global announcements. The connective tissue between isolated Discord realms.</p>
+        <div class="arch-tags"><span class="at">Cross-community</span><span class="at">Events</span><span class="at">Global</span></div>
+      </div>
+
+      <div class="arch-card monetization r d1">
+        <div class="arch-num">10</div>
+        <div class="arch-icon">💰</div>
+        <div class="arch-title">Monetization Engine</div>
+        <div class="arch-sub">Built-In, Not Forced</div>
+        <p class="arch-desc">Promoted posts (targeted, not spam). Premium analytics for creators. Server growth tools. API access tiers. Revenue that funds the network without compromising the experience.</p>
+        <div class="arch-tags"><span class="at">Revenue</span><span class="at">Analytics</span><span class="at">API Tiers</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GOD-TIER FEATURES -->
+  <section class="sec" style="padding-top:0">
+    <div class="sl r">⚡ Unfair Advantages</div>
+    <h2 class="st r d1">The <em>God-Tier Features</em></h2>
+    <div class="god-tier r d2">
+      <div class="gt-title">⚡ Exclusive Capabilities</div>
+      <div class="gt-grid">
+        <div class="gt-item">
+          <span class="gt-icon">🔮</span>
+          <div class="gt-name">Predictive Connection</div>
+          <p class="gt-desc">"You're about to need this server, mod, or person" — predicted before you ask.</p>
+        </div>
+        <div class="gt-item">
+          <span class="gt-icon">🌍</span>
+          <div class="gt-name">Global Event Sync</div>
+          <p class="gt-desc">All events across gaming unified into one intelligent calendar with smart reminders.</p>
+        </div>
+        <div class="gt-item">
+          <span class="gt-icon">🧠</span>
+          <div class="gt-name">AI-Assisted Routing</div>
+          <p class="gt-desc">Content goes where it should — not just where it's posted. Claude AI powers the routing layer.</p>
+        </div>
+        <div class="gt-item">
+          <span class="gt-icon">🔗</span>
+          <div class="gt-name">Cross-Ecosystem Identity</div>
+          <p class="gt-desc">One profile across Discord, CurseForge, and future integrations. Your identity follows you.</p>
+        </div>
+        <div class="gt-item">
+          <span class="gt-icon">📊</span>
+          <div class="gt-name">Control Center</div>
+          <p class="gt-desc">Admin dashboard with network analytics, trend tracking, and community growth insights.</p>
+        </div>
+        <div class="gt-item">
+          <span class="gt-icon">🚀</span>
+          <div class="gt-name">Instant Amplification</div>
+          <p class="gt-desc">One post reaches every relevant node in the network within seconds of publishing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILD ROADMAP -->
+  <section class="sec" style="padding-top:0">
+    <div class="sl r">🚀 Build Roadmap</div>
+    <h2 class="st r d1">Critical <em>Build Phases</em></h2>
+    <div class="roadmap r d2">
+      <div class="rm active">
+        <div class="rm-phase">Phase 1</div>
+        <div class="rm-title">Foundation</div>
+        <ul class="rm-items">
+          <li>ARK cluster discovery</li>
+          <li>Discord server sync</li>
+          <li>Live node status</li>
+          <li>Community profiles</li>
+        </ul>
+        <span class="rm-status live">🟢 Live</span>
+      </div>
+      <div class="rm next">
+        <div class="rm-phase">Phase 2</div>
+        <div class="rm-title">Identity & Feed</div>
+        <ul class="rm-items">
+          <li>User account system</li>
+          <li>Follow network</li>
+          <li>Personalized feed</li>
+          <li>Basic graph engine</li>
+        </ul>
+        <span class="rm-status soon">⚡ Building</span>
+      </div>
+      <div class="rm future">
+        <div class="rm-phase">Phase 3</div>
+        <div class="rm-title">Smart Routing</div>
+        <ul class="rm-items">
+          <li>Auto-distribution engine</li>
+          <li>Creator dashboard</li>
+          <li>Mod tracking layer</li>
+          <li>Opportunity matching</li>
+        </ul>
+        <span class="rm-status planned">⏳ Planned</span>
+      </div>
+      <div class="rm future">
+        <div class="rm-phase">Phase 4</div>
+        <div class="rm-title">AI + Multi-Game</div>
+        <ul class="rm-items">
+          <li>Predictive AI routing</li>
+          <li>Multi-game expansion</li>
+          <li>Global event calendar</li>
+          <li>Cross-ecosystem identity</li>
+        </ul>
+        <span class="rm-status planned">⏳ Vision</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVE NODES (ARK MAPS AS NETWORK NODES) -->
+  <section class="sec" style="padding-top:0" id="maps">
+    <div class="sl r">🌐 Active Network</div>
+    <h2 class="st r d1">Live <em>Community Nodes</em></h2>
+    <p class="r d2" style="font-family:var(--fe);font-size:.9rem;color:rgba(255,255,255,.35);max-width:580px;margin-bottom:1.5rem;line-height:1.8;font-weight:300;">Every TheConclave Dominion map is a live network node — indexed, monitored, and connected.</p>
+    <div class="nodes-grid r d3">
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🌑</span><div class="node-label">Map Node</div><div class="node-name">Aberration</div><span class="node-type pvp">⚔️ PvP</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">☀️</span><div class="node-label">Map Node</div><div class="node-name">Scorched Earth</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🏔️</span><div class="node-label">Map Node</div><div class="node-name">Valguero</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status" style="background:var(--gd);box-shadow:0 0 6px var(--gd)"></div><span class="node-icon">✨</span><div class="node-label">Map Node</div><div class="node-name">Amissa</div><span class="node-type patreon">⭐ Patreon</span><div class="node-players">● Members Only</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🌌</span><div class="node-label">Map Node</div><div class="node-name">Astraeos</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🚀</span><div class="node-label">Map Node</div><div class="node-name">Lost Colony</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🌴</span><div class="node-label">Map Node</div><div class="node-name">The Island</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">⚡</span><div class="node-label">Map Node</div><div class="node-name">The Center</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🤖</span><div class="node-label">Map Node</div><div class="node-name">Extinction</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+      <a class="node" href="/ark"><div class="node-status"></div><span class="node-icon">🌋</span><div class="node-label">Map Node</div><div class="node-name">Volcano</div><span class="node-type pve">🌿 PvE</span><div class="node-players">● Online</div></a>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section class="sec" style="padding-top:0;padding-bottom:6rem;">
+    <div class="join-cta r">
+      <h2>ENTER THE<br>NETWORK</h2>
+      <p>World Connect Hub Supreme is live and growing. Start as a node in the Dominion — expand into the entire gaming civilization.</p>
+      <div class="join-btns">
+        <a class="btn-cy" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🌐 Join Discord</a>
+        <a class="btn-gs" href="/ark">🗺️ View ARK Cluster</a>
+        <a class="btn-gs" href="/promotor">🤝 Partners</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div style="margin-bottom:.5rem;">
+    <a href="/">Home</a> · <a href="/ark">ARK</a> · <a href="/promotor">Partners</a> · <a href="/donate">Donate</a> · <a href="https://discord.gg/theconclave">Discord</a>
+  </div>
+  WE DIDN'T WAIT FOR THE LIGHT. WE BECAME IT. · © 2026 TheConclave Dominion · World Connect Hub Supreme
+</footer>
+
+<a id="df" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Join Discord</a>
+
+<script>
+'use strict';
+
+/* ── NETWORK CANVAS ANIMATION ── */
+const canvas = document.getElementById('networkCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, nodes=[], edges=[], frame=0;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* Node colors matching theme */
+const NODE_COLORS = ['#00D4FF','#7B2FFF','#35ED7E','#FF4CD2','#FFB800','#FF6B00'];
+
+function initNodes(){
+  nodes = [];
+  const count = Math.min(Math.floor(W/80),28);
+  for(let i=0;i<count;i++){
+    nodes.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      vx: (Math.random()-.5)*.4,
+      vy: (Math.random()-.5)*.4,
+      r: 2+Math.random()*3,
+      color: NODE_COLORS[Math.floor(Math.random()*NODE_COLORS.length)],
+      pulse: Math.random()*Math.PI*2,
+    });
+  }
+}
+initNodes();
+window.addEventListener('resize', initNodes);
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  frame++;
+
+  /* Update positions */
+  nodes.forEach(n=>{
+    n.x += n.vx;
+    n.y += n.vy;
+    n.pulse += 0.025;
+    if(n.x<0||n.x>W) n.vx*=-1;
+    if(n.y<0||n.y>H) n.vy*=-1;
+  });
+
+  /* Draw edges */
+  nodes.forEach((a,i)=>{
+    nodes.slice(i+1).forEach(b=>{
+      const dx=a.x-b.x, dy=a.y-b.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<160){
+        const alpha=(1-dist/160)*0.12;
+        ctx.beginPath();
+        ctx.strokeStyle=`rgba(0,212,255,${alpha})`;
+        ctx.lineWidth=.5;
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+      }
+    });
+  });
+
+  /* Draw nodes */
+  nodes.forEach(n=>{
+    const pr = n.r + Math.sin(n.pulse)*.8;
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,pr,0,Math.PI*2);
+    ctx.fillStyle=n.color+'22';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,n.r*.6,0,Math.PI*2);
+    ctx.fillStyle=n.color;
+    ctx.fill();
+    /* Pulse ring */
+    const pulseAlpha = (Math.sin(n.pulse)+1)/2*0.15;
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,pr*2,0,Math.PI*2);
+    ctx.strokeStyle=n.color.replace(')',`,${pulseAlpha})`).replace('rgb','rgba');
+    ctx.lineWidth=.8;
+    ctx.stroke();
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ── REVEAL ── */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

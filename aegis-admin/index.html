@@ -1,0 +1,2701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>AEGIS — TheConclave Dominion Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   CONCLAVE DESIGN TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg-void:      #02010d;
+  --bg-deep:      #050818;
+  --bg-panel:     #080c1e;
+  --bg-card:      rgba(8,12,30,0.92);
+  --bg-hover:     rgba(255,255,255,0.04);
+
+  --gold:         #ffaa00;
+  --gold-dim:     rgba(255,170,0,0.25);
+  --electric:     #00c8ff;
+  --teal:         #00ffcc;
+  --violet:       #7b2fff;
+  --violet-dim:   rgba(123,47,255,0.2);
+
+  /* The Conclave rainbow signature */
+  --rainbow: linear-gradient(90deg,
+    #ff4400,#ff8800,#ffcc00,#44ff44,#00ffcc,#0088ff,#8844ff,#ff44cc);
+  --rainbow-v: linear-gradient(180deg,
+    #ff4400,#ff8800,#ffcc00,#44ff44,#00ffcc,#0088ff,#8844ff,#ff44cc);
+
+  --glass-bg:     rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-shine:  rgba(255,255,255,0.08);
+
+  --text-1: rgba(255,255,255,0.95);
+  --text-2: rgba(255,255,255,0.6);
+  --text-3: rgba(255,255,255,0.3);
+
+  --status-online:  #00ff88;
+  --status-offline: #ff3355;
+  --status-warn:    #ffaa00;
+  --status-info:    #00c8ff;
+
+  --sidebar-w: 252px;
+  --topbar-h:  64px;
+  --spring: cubic-bezier(0.34,1.56,0.64,1);
+  --ease:   cubic-bezier(0.22,1,0.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg-void);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════════
+   COSMIC BACKGROUND
+═══════════════════════════════════════════════ */
+#cosmos {
+  position: fixed; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse at 20% 30%, rgba(123,47,255,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 70%, rgba(0,200,255,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 100%, rgba(255,68,0,0.06) 0%, transparent 50%),
+              var(--bg-void);
+  overflow: hidden;
+}
+#cosmos canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ═══════════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════════ */
+#shell {
+  position: relative; z-index: 1;
+  display: flex; width: 100%; height: 100%;
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+#sidebar {
+  width: var(--sidebar-w);
+  height: 100%;
+  display: flex; flex-direction: column;
+  background: rgba(5,8,24,0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Rainbow left edge */
+#sidebar::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--rainbow-v);
+  animation: drip-flow 4s linear infinite;
+}
+@keyframes drip-flow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
+}
+
+/* Sidebar glow orb */
+#sidebar::after {
+  content: '';
+  position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(123,47,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+  position: relative;
+}
+.logo-emblem {
+  width: 42px; height: 42px; border-radius: 10px;
+  overflow: hidden; flex-shrink: 0;
+  border: 1.5px solid rgba(255,170,0,0.4);
+  box-shadow: 0 0 16px rgba(255,170,0,0.2), 0 0 32px rgba(123,47,255,0.15);
+}
+.logo-emblem img { width: 100%; height: 100%; object-fit: cover; }
+.logo-text { overflow: hidden; }
+.logo-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--rainbow);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+.logo-sub {
+  font-size: 9px; color: var(--text-3);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.sidebar-env {
+  margin: 10px 12px;
+  background: rgba(0,255,136,0.08);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--status-online);
+  letter-spacing: 1px; font-weight: 600;
+}
+.env-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--status-online); animation: pulse-dot 2s ease infinite; }
+@keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+
+.nav-section-label {
+  font-size: 9px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-3);
+  padding: 14px 16px 6px;
+}
+
+.nav-list { list-style: none; padding: 0 8px; }
+.nav-item { margin-bottom: 2px; }
+.nav-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-link:hover { background: var(--bg-hover); }
+.nav-link.active {
+  background: rgba(123,47,255,0.15);
+  border: 1px solid rgba(123,47,255,0.25);
+}
+.nav-link.active::before {
+  content: '';
+  position: absolute; left: 0; top: 2px; bottom: 2px; width: 3px;
+  background: var(--rainbow);
+  border-radius: 0 3px 3px 0;
+}
+.nav-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  transition: background 0.2s;
+}
+.nav-link.active .nav-icon { background: rgba(123,47,255,0.25); }
+.nav-text { font-size: 13px; font-weight: 500; color: var(--text-2); transition: color 0.2s; flex: 1; }
+.nav-link.active .nav-text { color: var(--text-1); }
+.nav-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+  background: rgba(255,51,85,0.2); color: #ff3355;
+  border: 1px solid rgba(255,51,85,0.3);
+}
+.nav-badge.gold { background: rgba(255,170,0,0.15); color: var(--gold); border-color: rgba(255,170,0,0.3); }
+
+.sidebar-user {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.user-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.user-card:hover { background: var(--bg-hover); }
+.user-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0;
+  border: 1.5px solid rgba(255,170,0,0.4);
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-info { flex: 1; overflow: hidden; }
+.user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role {
+  font-size: 10px; letter-spacing: 0.5px;
+  background: var(--rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
+.user-logout { font-size: 16px; color: var(--text-3); cursor: pointer; transition: color 0.2s; }
+.user-logout:hover { color: #ff3355; }
+
+/* ═══════════════════════════════════════════════
+   MAIN AREA
+═══════════════════════════════════════════════ */
+#main {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden; min-width: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════════════ */
+#topbar {
+  height: var(--topbar-h);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 16px;
+  background: rgba(5,8,24,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+/* Rainbow bottom line */
+#topbar::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: var(--rainbow);
+  opacity: 0.4;
+}
+
+.page-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.page-breadcrumb { font-size: 11px; color: var(--text-3); margin-top: 1px; letter-spacing: 0.5px; }
+
+.topbar-spacer { flex: 1; }
+
+.topbar-stat {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.ts-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.ts-label { color: var(--text-3); }
+.ts-val { font-weight: 600; }
+
+.alert-bell {
+  position: relative; width: 38px; height: 38px; border-radius: 9px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; transition: background 0.2s;
+}
+.alert-bell:hover { background: rgba(255,255,255,0.08); }
+.alert-pip {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #ff3355; border: 1.5px solid var(--bg-deep);
+  animation: pulse-dot 1.5s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   CONTENT AREA
+═══════════════════════════════════════════════ */
+#content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 24px;
+  scrollbar-width: thin; scrollbar-color: rgba(123,47,255,0.4) transparent;
+}
+#content::-webkit-scrollbar { width: 5px; }
+#content::-webkit-scrollbar-thumb { background: rgba(123,47,255,0.4); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; animation: page-in 0.35s var(--ease) both; }
+@keyframes page-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════════════
+   CARDS / GLASS PANELS
+═══════════════════════════════════════════════ */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  pointer-events: none;
+}
+
+.card-rainbow {
+  border-image: none;
+  position: relative;
+}
+.card-rainbow::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: 14px;
+  padding: 1px;
+  background: var(--rainbow);
+  -webkit-mask: linear-gradient(#fff,#fff) content-box, linear-gradient(#fff,#fff);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════════════════════ */
+.section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-2);
+}
+.section-title span {
+  background: var(--rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.section-action {
+  font-size: 11px; color: var(--electric);
+  cursor: pointer; letter-spacing: 0.5px;
+  transition: opacity 0.2s;
+}
+.section-action:hover { opacity: 0.7; }
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD — STAT CARDS
+═══════════════════════════════════════════════ */
+.stat-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 24px;
+}
+.stat-card {
+  padding: 18px 16px;
+  cursor: default;
+  transition: transform 0.2s var(--spring), box-shadow 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.stat-icon {
+  font-size: 22px; margin-bottom: 10px;
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.stat-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -1px; margin-bottom: 3px;
+}
+.stat-label { font-size: 11px; color: var(--text-3); letter-spacing: 0.5px; text-transform: uppercase; }
+.stat-delta { font-size: 11px; margin-top: 6px; }
+.delta-up { color: var(--status-online); }
+.delta-down { color: var(--status-offline); }
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD — GRIDS
+═══════════════════════════════════════════════ */
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.dash-grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
+
+/* ═══════════════════════════════════════════════
+   SERVER LIST
+═══════════════════════════════════════════════ */
+.server-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  transition: background 0.15s;
+  cursor: pointer;
+}
+.server-row:hover { background: var(--bg-hover); }
+.server-row + .server-row { border-top: 1px solid rgba(255,255,255,0.04); }
+
+.server-status {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.s-online { background: var(--status-online); box-shadow: 0 0 8px var(--status-online); }
+.s-offline { background: var(--status-offline); }
+.s-warn { background: var(--status-warn); box-shadow: 0 0 8px var(--status-warn); }
+
+.server-map {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+  overflow: hidden;
+}
+.server-map img { width: 100%; height: 100%; object-fit: cover; }
+
+.server-info { flex: 1; min-width: 0; }
+.server-name {
+  font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.server-meta { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+.server-players {
+  text-align: right; flex-shrink: 0;
+}
+.player-count { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 700; color: var(--electric); }
+.player-label { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; }
+
+.server-actions { display: flex; gap: 6px; }
+.srv-btn {
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: 'Exo 2', sans-serif;
+  border: none;
+}
+.btn-view { background: rgba(0,200,255,0.15); color: var(--electric); border: 1px solid rgba(0,200,255,0.25); }
+.btn-view:hover { background: rgba(0,200,255,0.25); }
+.btn-edit { background: rgba(255,170,0,0.12); color: var(--gold); border: 1px solid rgba(255,170,0,0.25); }
+.btn-edit:hover { background: rgba(255,170,0,0.22); }
+
+/* ═══════════════════════════════════════════════
+   STAFF GRID
+═══════════════════════════════════════════════ */
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.staff-card {
+  padding: 20px 12px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.25s var(--spring), box-shadow 0.25s;
+}
+.staff-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.staff-avatar-wrap {
+  position: relative; width: 72px; height: 72px;
+  margin: 0 auto 12px;
+}
+.staff-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.15);
+  position: relative; z-index: 1;
+}
+.staff-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.staff-ring {
+  position: absolute; inset: -3px; border-radius: 50%;
+  background: var(--rainbow);
+  z-index: 0;
+  animation: spin-ring 6s linear infinite;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), black calc(100% - 3px));
+}
+@keyframes spin-ring { to { transform: rotate(360deg); } }
+
+.staff-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.staff-role {
+  font-size: 10px; letter-spacing: 0.5px;
+  padding: 2px 8px; border-radius: 20px;
+  display: inline-block;
+}
+.role-owner { background: rgba(255,170,0,0.15); color: var(--gold); border: 1px solid rgba(255,170,0,0.3); }
+.role-admin { background: rgba(123,47,255,0.15); color: #a87fff; border: 1px solid rgba(123,47,255,0.3); }
+.role-helper { background: rgba(0,200,255,0.1); color: var(--electric); border: 1px solid rgba(0,200,255,0.25); }
+.role-it { background: rgba(0,255,204,0.1); color: var(--teal); border: 1px solid rgba(0,255,204,0.25); }
+
+.staff-status {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--bg-panel);
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════════════════
+   CLAVESHARD ORDERS TABLE
+═══════════════════════════════════════════════ */
+.order-table { width: 100%; border-collapse: collapse; }
+.order-table th {
+  text-align: left; padding: 10px 14px;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-3);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.order-table td {
+  padding: 12px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.order-table tr:hover td { background: var(--bg-hover); }
+.order-table tr:last-child td { border-bottom: none; }
+
+.order-player { display: flex; align-items: center; gap: 8px; }
+.order-plat {
+  font-size: 10px; padding: 2px 7px; border-radius: 4px;
+  font-weight: 600; letter-spacing: 0.5px;
+}
+.plat-xbox { background: rgba(16,124,16,0.2); color: #4caf50; border: 1px solid rgba(16,124,16,0.3); }
+.plat-ps5  { background: rgba(0,68,170,0.2); color: #5b9fff; border: 1px solid rgba(0,68,170,0.3); }
+.plat-pc   { background: rgba(150,150,150,0.15); color: #aaa; border: 1px solid rgba(150,150,150,0.25); }
+
+.order-status {
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+  display: inline-block; letter-spacing: 0.5px;
+}
+.os-pending { background: rgba(255,170,0,0.12); color: var(--gold); border: 1px solid rgba(255,170,0,0.25); }
+.os-fulfilled { background: rgba(0,255,136,0.1); color: var(--status-online); border: 1px solid rgba(0,255,136,0.2); }
+.os-processing { background: rgba(0,200,255,0.1); color: var(--electric); border: 1px solid rgba(0,200,255,0.2); }
+
+.shard-amt {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px;
+  color: var(--electric);
+}
+.shard-icon { width: 18px; height: 18px; }
+
+/* ═══════════════════════════════════════════════
+   DONATIONS PANEL
+═══════════════════════════════════════════════ */
+.funding-bar-wrap { margin-bottom: 20px; }
+.funding-bar-label {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 8px;
+}
+.funding-bar-name { font-size: 13px; font-weight: 600; }
+.funding-bar-amt { font-family: 'Orbitron', sans-serif; font-size: 13px; }
+.funding-bar-track {
+  height: 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden; position: relative;
+}
+.funding-bar-fill {
+  height: 100%; border-radius: 10px;
+  background: var(--rainbow);
+  background-size: 200% 100%;
+  animation: rainbow-slide 3s linear infinite;
+  transition: width 1s var(--ease);
+  position: relative;
+}
+.funding-bar-fill::after {
+  content: '';
+  position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+@keyframes rainbow-slide { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+.donor-list { }
+.donor-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px;
+  transition: background 0.15s;
+}
+.donor-row:hover { background: var(--bg-hover); }
+.donor-row + .donor-row { border-top: 1px solid rgba(255,255,255,0.04); }
+.donor-rank {
+  font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700;
+  width: 28px; color: var(--text-3);
+}
+.donor-rank.gold-rank { color: var(--gold); }
+.donor-name { flex: 1; font-size: 13px; font-weight: 500; }
+.donor-amount {
+  font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--status-online);
+}
+.donor-flag { font-size: 11px; padding: 2px 7px; border-radius: 20px; margin-left: 6px; }
+.flag-patron { background: rgba(255,68,0,0.15); color: #ff6644; border: 1px solid rgba(255,68,0,0.3); }
+.flag-nitrado { background: rgba(0,255,204,0.1); color: var(--teal); border: 1px solid rgba(0,255,204,0.25); }
+
+/* ═══════════════════════════════════════════════
+   AUDIT LOGS
+═══════════════════════════════════════════════ */
+.log-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 16px;
+  transition: background 0.15s;
+}
+.log-row:hover { background: var(--bg-hover); }
+.log-row + .log-row { border-top: 1px solid rgba(255,255,255,0.04); }
+.log-time { font-size: 10px; color: var(--text-3); width: 80px; flex-shrink: 0; padding-top: 2px; font-family: 'Orbitron', sans-serif; }
+.log-actor { font-size: 11px; color: var(--electric); font-weight: 600; width: 90px; flex-shrink: 0; padding-top: 2px; }
+.log-action { font-size: 12px; color: var(--text-2); flex: 1; line-height: 1.4; }
+.log-type {
+  font-size: 10px; padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+  font-weight: 600; letter-spacing: 0.5px;
+}
+.lt-create { background: rgba(0,255,136,0.1); color: var(--status-online); }
+.lt-edit   { background: rgba(0,200,255,0.1); color: var(--electric); }
+.lt-delete { background: rgba(255,51,85,0.1); color: #ff3355; }
+.lt-auth   { background: rgba(123,47,255,0.15); color: #a87fff; }
+
+/* ═══════════════════════════════════════════════
+   QUICK ACTION BUTTONS
+═══════════════════════════════════════════════ */
+.btn {
+  padding: 9px 18px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; font-family: 'Exo 2', sans-serif;
+  border: none; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary {
+  background: rgba(123,47,255,0.25);
+  color: #c4a0ff;
+  border: 1px solid rgba(123,47,255,0.4);
+}
+.btn-primary:hover { background: rgba(123,47,255,0.4); transform: translateY(-1px); }
+.btn-gold {
+  background: rgba(255,170,0,0.15); color: var(--gold);
+  border: 1px solid rgba(255,170,0,0.35);
+}
+.btn-gold:hover { background: rgba(255,170,0,0.25); transform: translateY(-1px); }
+.btn-teal {
+  background: rgba(0,255,204,0.1); color: var(--teal);
+  border: 1px solid rgba(0,255,204,0.25);
+}
+.btn-teal:hover { background: rgba(0,255,204,0.2); transform: translateY(-1px); }
+.btn-danger {
+  background: rgba(255,51,85,0.1); color: #ff3355;
+  border: 1px solid rgba(255,51,85,0.25);
+}
+.btn-danger:hover { background: rgba(255,51,85,0.2); transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════════════
+   INLINE MISC
+═══════════════════════════════════════════════ */
+.rainbow-text { background: var(--rainbow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.mono { font-family: 'Orbitron', sans-serif; }
+
+.empty-state {
+  text-align: center; padding: 48px 24px;
+  color: var(--text-3); font-size: 14px;
+}
+
+.alert-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  border-left: 3px solid;
+}
+.alert-warn { border-color: var(--status-warn); background: rgba(255,170,0,0.06); }
+.alert-info { border-color: var(--electric); background: rgba(0,200,255,0.06); }
+.alert-error { border-color: var(--status-offline); background: rgba(255,51,85,0.06); }
+.alert-row + .alert-row { border-top: 1px solid rgba(255,255,255,0.04); }
+.alert-icon { font-size: 16px; flex-shrink: 0; }
+.alert-msg { font-size: 12px; color: var(--text-2); flex: 1; }
+.alert-time { font-size: 10px; color: var(--text-3); flex-shrink: 0; }
+
+.banner-image {
+  width: 100%; height: 120px; object-fit: cover; object-position: center top;
+  border-radius: 12px 12px 0 0;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════
+   DRIP ANIMATION (decorative)
+═══════════════════════════════════════════════ */
+.drip-divider {
+  height: 3px; margin: 0 0 20px;
+  background: var(--rainbow);
+  background-size: 200% 100%;
+  animation: rainbow-slide 3s linear infinite;
+  border-radius: 3px;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE SIDE NAV MOBILE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 200px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-grid, .dash-grid-3 { grid-template-columns: 1fr; }
+  .staff-grid { grid-template-columns: repeat(3, 1fr); }
+  .topbar-stat { display: none; }
+  .order-table th:nth-child(4),
+  .order-table td:nth-child(4) { display: none; }
+}
+@media (max-width: 500px) {
+  :root { --sidebar-w: 0px; }
+  #sidebar { display: none; }
+  .staff-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══════════════════════════════════════════════
+   TOOLTIP
+═══════════════════════════════════════════════ */
+[data-tip] { position: relative; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: rgba(8,12,30,0.98); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-1); font-size: 11px; padding: 4px 10px; border-radius: 6px;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.15s;
+  z-index: 999;
+}
+[data-tip]:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════════ */
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 8px; padding: 8px 12px; margin-bottom: 16px;
+}
+.search-bar input {
+  background: none; border: none; outline: none;
+  color: var(--text-1); font-size: 13px; font-family: 'Exo 2', sans-serif;
+  flex: 1;
+}
+.search-bar input::placeholder { color: var(--text-3); }
+
+/* Progress ring */
+.prog-ring { transform: rotate(-90deg); }
+.prog-ring circle { transition: stroke-dashoffset 1s var(--ease); }
+</style>
+</head>
+<body data-scene="council">
+<!-- THECONCLAVE — APPLE ISLAND NAV v2 -->
+
+<script src="/nav-island.js?v=3.0" defer></script>
+
+<canvas id="bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;"></canvas>
+<script src="/bg-engine.js?v=300"></script>
+
+<!-- COSMIC STARFIELD -->
+<div id="cosmos"></div>
+
+<!-- APP SHELL -->
+<div id="shell">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-emblem">
+        <img src="/ChatGPT_Image_Mar_1__2026__08_07_16_PM.png" alt="Conclave" onerror="this.style.display='none';this.parentElement.style.fontSize='20px';this.parentElement.textContent='👁'">
+      </div>
+      <div class="logo-text">
+        <div class="logo-name">THECONCLAVE</div>
+        <div class="logo-sub">AEGIS ADMIN</div>
+      </div>
+    </div>
+
+    <div class="sidebar-env">
+      <div class="env-dot"></div>
+      DOMINION · LIVE
+    </div>
+
+    <div class="nav-section-label">Command</div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <div class="nav-link active" onclick="navigate('dashboard',this)">
+          <div class="nav-icon">⚡</div>
+          <div class="nav-text">Dashboard</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('servers',this)">
+          <div class="nav-icon">🗺️</div>
+          <div class="nav-text">Servers</div>
+          <div class="ts-dot s-online" style="width:7px;height:7px;border-radius:50%;flex-shrink:0"></div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('orders',this)">
+          <div class="nav-icon">💠</div>
+          <div class="nav-text">ClaveShard Orders</div>
+          <div class="nav-badge">4</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('donations',this)">
+          <div class="nav-icon">💰</div>
+          <div class="nav-text">Donations</div>
+          <div class="nav-badge gold">2</div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="nav-section-label">Manage</div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('staff',this)">
+          <div class="nav-icon">👥</div>
+          <div class="nav-text">Staff Roster</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('content',this)">
+          <div class="nav-icon">📝</div>
+          <div class="nav-text">Content</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('logs',this)">
+          <div class="nav-icon">📋</div>
+          <div class="nav-text">Audit Logs</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('knowledge',this)"><div class="nav-link-icon">🧠</div><div class="nav-link-text">AEGIS Knowledge</div></div>
+        <div class="nav-link" onclick="navigate('settings',this)">
+          <div class="nav-icon">⚙️</div>
+          <div class="nav-text">Settings</div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="nav-section-label" style="margin-top:8px;">Developer</div>
+    <ul class="nav-list">
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('discord-ctrl',this)">
+          <div class="nav-icon">💬</div>
+          <div class="nav-text">Discord Control</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('members',this)">
+          <div class="nav-icon">🔍</div>
+          <div class="nav-text">Member Manager</div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <div class="nav-link" onclick="navigate('devops',this)">
+          <div class="nav-icon">⚡</div>
+          <div class="nav-text">DevOps Console</div>
+          <div class="nav-badge" id="devops-badge" style="background:rgba(53,237,126,.15);border-color:rgba(53,237,126,.3);color:#35ed7e;display:none;">LIVE</div>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Current user -->
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="user-avatar">
+          <img src="/JAKE.png" alt="Admin" onerror="this.style.display='none'">
+        </div>
+        <div class="user-info">
+          <div class="user-name">JAKE</div>
+          <div class="user-role">TheConclave · Admin</div>
+        </div>
+        <div class="user-logout" title="Logout" onclick="localStorage.removeItem('conclave_token');window.location.reload();">⏏</div>
+      </div>
+      <div style="padding:6px 10px 10px;">
+        <div id="sidebar-auth-badge" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.05em;padding:5px 8px;border-radius:6px;background:rgba(0,0,0,.3);text-align:center;transition:all .2s;">● CHECKING...</div>
+        <a href="https://api.theconclavedominion.com/auth/discord?dest=aegis-admin" style="display:block;margin-top:5px;text-align:center;background:rgba(88,101,242,.15);border:1px solid rgba(88,101,242,.3);border-radius:6px;padding:5px;color:#aab8ff;font-family:'Share Tech Mono',monospace;font-size:.6rem;text-decoration:none;letter-spacing:.04em;" id="discord-login-btn">🎮 LOGIN WITH DISCORD</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <div id="main">
+
+    <!-- TOP BAR -->
+    <div id="topbar">
+      <div>
+        <div class="page-title" id="pageTitle">DASHBOARD</div>
+        <div class="page-breadcrumb" id="pageBreadcrumb">Aegis Admin · Live Overview</div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-stat">
+        <div class="ts-dot" style="background:var(--status-online);box-shadow:0 0 6px var(--status-online)"></div>
+        <span class="ts-label">Servers Online&nbsp;</span>
+        <span class="ts-val mono">8/10</span>
+      </div>
+      <div class="topbar-stat">
+        <span class="ts-label">Pending Orders&nbsp;</span>
+        <span class="ts-val mono" style="color:var(--gold)">4</span>
+      </div>
+      <div class="alert-bell" data-tip="3 Alerts">
+        🔔
+        <div class="alert-pip"></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div id="content">
+
+      <!-- ════════════ DASHBOARD ════════════ -->
+      <div class="page active" id="page-dashboard">
+
+        <div class="drip-divider"></div>
+
+        <!-- Stat cards -->
+        <div class="stat-grid">
+          <div class="card stat-card card-rainbow">
+            <div class="stat-icon" style="background:rgba(0,200,255,0.1)">🗺️</div>
+            <div class="stat-val" style="color:var(--electric)">10</div>
+            <div class="stat-label">Total Servers</div>
+            <div class="stat-delta delta-up">↑ +1 this cycle</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon" style="background:rgba(0,255,136,0.1)">✅</div>
+            <div class="stat-val" style="color:var(--status-online)">8</div>
+            <div class="stat-label">Online Now</div>
+            <div class="stat-delta delta-down">▼ 2 offline</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon" style="background:rgba(255,170,0,0.1)">💠</div>
+            <div class="stat-val" style="color:var(--gold)">4</div>
+            <div class="stat-label">Shard Orders</div>
+            <div class="stat-delta" style="color:var(--gold)">⏳ Pending</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon" style="background:rgba(123,47,255,0.1)">💰</div>
+            <div class="stat-val rainbow-text">$342</div>
+            <div class="stat-label">Monthly Funding</div>
+            <div class="stat-delta delta-up">↑ 12% vs last mo.</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon" style="background:rgba(0,255,204,0.1)">🎖️</div>
+            <div class="stat-val" style="color:var(--teal)">23</div>
+            <div class="stat-label">Monthly Donors</div>
+            <div class="stat-delta delta-up">↑ 3 new</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon" style="background:rgba(255,68,0,0.1)">🚨</div>
+            <div class="stat-val" style="color:#ff5533">3</div>
+            <div class="stat-label">Unresolved Alerts</div>
+            <div class="stat-delta" style="color:var(--text-3)">Action needed</div>
+          </div>
+        </div>
+
+        <!-- Server health + Alerts -->
+        <div class="dash-grid-3">
+          <!-- Server health -->
+          <div>
+            <div class="section-hdr">
+              <div class="section-title"><span>Server</span> Health</div>
+              <div class="section-action" onclick="navigate('servers',document.querySelector('[onclick*=servers]'))">View All →</div>
+            </div>
+            <div class="card">
+              <div class="server-row">
+                <div class="server-status s-online"></div>
+                <div class="server-map">🌋</div>
+                <div class="server-info"><div class="server-name">Aberration-5xCrossplay</div><div class="server-meta">v84.16 · 217.114.196.80:5540</div></div>
+                <div class="server-players"><div class="player-count">12</div><div class="player-label">Players</div></div>
+              </div>
+              <div class="server-row">
+                <div class="server-status s-online"></div>
+                <div class="server-map">🏜️</div>
+                <div class="server-info"><div class="server-name">Scorched-5xCrossplay</div><div class="server-meta">v84.16 · 217.114.196.103:5240</div></div>
+                <div class="server-players"><div class="player-count">7</div><div class="player-label">Players</div></div>
+              </div>
+              <div class="server-row">
+                <div class="server-status s-online"></div>
+                <div class="server-map">🌿</div>
+                <div class="server-info"><div class="server-name">Valguero-5xCrossplay</div><div class="server-meta">v84.16 · 85.190.136.141:5090</div></div>
+                <div class="server-players"><div class="player-count">19</div><div class="player-label">Players</div></div>
+              </div>
+              <div class="server-row">
+                <div class="server-status s-warn"></div>
+                <div class="server-map">⭐</div>
+                <div class="server-info"><div class="server-name">Amissa-Patreon-5xCrossplay</div><div class="server-meta">v84.16 · 217.114.196.80:5100 · Patreon</div></div>
+                <div class="server-players"><div class="player-count">3</div><div class="player-label">Players</div></div>
+              </div>
+              <div class="server-row">
+                <div class="server-status s-offline"></div>
+                <div class="server-map">🌑</div>
+                <div class="server-info"><div class="server-name">Extinction-5xCrossplay</div><div class="server-meta">v84.28 · Offline — Restarting</div></div>
+                <div class="server-players"><div class="player-count" style="color:var(--status-offline)">—</div><div class="player-label">Offline</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts -->
+          <div>
+            <div class="section-hdr">
+              <div class="section-title"><span>Alerts</span></div>
+            </div>
+            <div class="card" style="margin-bottom:16px">
+              <div class="alert-row alert-error">
+                <div class="alert-icon">🔴</div>
+                <div class="alert-msg">Extinction server offline — needs restart check</div>
+                <div class="alert-time">4m ago</div>
+              </div>
+              <div class="alert-row alert-warn">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-msg">4 ClaveShard orders pending fulfillment</div>
+                <div class="alert-time">1h ago</div>
+              </div>
+              <div class="alert-row alert-info">
+                <div class="alert-icon">💠</div>
+                <div class="alert-msg">New Patreon donor: XxDragonSlayer99 joined</div>
+                <div class="alert-time">2h ago</div>
+              </div>
+            </div>
+
+            <!-- Funding summary -->
+            <div class="section-hdr"><div class="section-title"><span>Funding</span> Progress</div></div>
+            <div class="card" style="padding:16px">
+              <div class="funding-bar-wrap">
+                <div class="funding-bar-label">
+                  <span class="funding-bar-name" style="font-size:12px">Monthly Goal</span>
+                  <span class="funding-bar-amt" style="font-size:12px;color:var(--status-online)">$342 / $500</span>
+                </div>
+                <div class="funding-bar-track"><div class="funding-bar-fill" style="width:68%"></div></div>
+              </div>
+              <div class="funding-bar-wrap">
+                <div class="funding-bar-label">
+                  <span class="funding-bar-name" style="font-size:12px">Nitrado Servers</span>
+                  <span class="funding-bar-amt" style="font-size:12px;color:var(--electric)">8/10 Funded</span>
+                </div>
+                <div class="funding-bar-track"><div class="funding-bar-fill" style="width:80%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent orders + Donations -->
+        <div class="dash-grid">
+          <div>
+            <div class="section-hdr">
+              <div class="section-title"><span>Latest</span> Shard Orders</div>
+              <div class="section-action" onclick="navigate('orders',document.querySelectorAll('[onclick*=orders]')[0])">View All →</div>
+            </div>
+            <div class="card">
+              <div class="server-row">
+                <div style="font-size:20px">💠</div>
+                <div class="server-info"><div class="server-name">NightWalker88</div><div class="server-meta">Tier 6 · Astraeos · Xbox</div></div>
+                <div class="order-status os-pending">Pending</div>
+              </div>
+              <div class="server-row">
+                <div style="font-size:20px">💠</div>
+                <div class="server-info"><div class="server-name">SunRider_PS</div><div class="server-meta">Tier 3 · TheIsland · PS5</div></div>
+                <div class="order-status os-processing">Processing</div>
+              </div>
+              <div class="server-row">
+                <div style="font-size:20px">💠</div>
+                <div class="server-info"><div class="server-name">GhostFang</div><div class="server-meta">Tier 1 · Valguero · PC</div></div>
+                <div class="order-status os-fulfilled">Fulfilled</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-hdr">
+              <div class="section-title"><span>Recent</span> Donations</div>
+              <div class="section-action">View All →</div>
+            </div>
+            <div class="card">
+              <div class="donor-row">
+                <div class="donor-rank gold-rank">#1</div>
+                <div class="donor-name">XxDragonSlayer99</div>
+                <div class="donor-amount">$50</div>
+                <div class="donor-flag flag-patron">Patreon</div>
+              </div>
+              <div class="donor-row">
+                <div class="donor-rank">#2</div>
+                <div class="donor-name">IslandKing</div>
+                <div class="donor-amount">$25</div>
+                <div class="donor-flag flag-nitrado">Nitrado</div>
+              </div>
+              <div class="donor-row">
+                <div class="donor-rank">#3</div>
+                <div class="donor-name">ArkQueen2026</div>
+                <div class="donor-amount">$15</div>
+                <div class="donor-flag flag-patron">Patreon</div>
+              </div>
+              <div class="donor-row">
+                <div class="donor-rank">#4</div>
+                <div class="donor-name">VelociRaptor_X</div>
+                <div class="donor-amount">$10</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dashboard -->
+
+      <!-- ════════════ SERVERS ════════════ -->
+      <div class="page" id="page-servers">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:16px">
+          <div class="section-title"><span>Conclave</span> Server Cluster</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary">＋ Add Server</button>
+            <button class="btn btn-teal">↺ Refresh Status</button>
+          </div>
+        </div>
+        <div class="search-bar">
+          <span style="color:var(--text-3)">⌕</span>
+          <input placeholder="Search servers, maps, IPs…">
+        </div>
+        <div class="card">
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🌋</div>
+            <div class="server-info"><div class="server-name">TheConclave-Aberration-5xCrossplay</div><div class="server-meta">v84.16 · 217.114.196.80:5540 · MAPID: 18655529</div></div>
+            <div class="server-players"><div class="player-count">12</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🏜️</div>
+            <div class="server-info"><div class="server-name">TheConclave-Scorched-5xCrossplay</div><div class="server-meta">v84.16 · 217.114.196.103:5240 · MAPID: 18598049</div></div>
+            <div class="server-players"><div class="player-count">7</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🌿</div>
+            <div class="server-info"><div class="server-name">TheConclave-Valguero-5xCrossplay</div><div class="server-meta">v84.16 · 85.190.136.141:5090 · MAPID: 10509341</div></div>
+            <div class="server-players"><div class="player-count">19</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-warn"></div>
+            <div class="server-map">⭐</div>
+            <div class="server-info"><div class="server-name">TheConclave-Amissa-Patreon-5xCrossplay</div><div class="server-meta">v84.16 · 217.114.196.80:5100 · MAPID: 18680162 · Patreon Exclusive</div></div>
+            <div class="server-players"><div class="player-count">3</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🌙</div>
+            <div class="server-info"><div class="server-name">TheConclave-Astraeos-5xCrossplay</div><div class="server-meta">v84.28 · 217.114.196.9:5320 · MAPID: 18393892</div></div>
+            <div class="server-players"><div class="player-count">5</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🏝️</div>
+            <div class="server-info"><div class="server-name">TheConclave-LostColony-5xCrossplay</div><div class="server-meta">v84.28 · 217.114.196.104:5150 · MAPID: 18307276</div></div>
+            <div class="server-players"><div class="player-count">8</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🏔️</div>
+            <div class="server-info"><div class="server-name">TheConclave-TheIsland-5xCrossplay</div><div class="server-meta">v84.28 · 217.114.196.102:5300 · MAPID: 18266152</div></div>
+            <div class="server-players"><div class="player-count">24</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🗺️</div>
+            <div class="server-info"><div class="server-name">TheConclave-Center-5xCrossplay</div><div class="server-meta">v84.28 · 31.214.163.71:5120 · MAPID: 18182839</div></div>
+            <div class="server-players"><div class="player-count">11</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-offline"></div>
+            <div class="server-map">💀</div>
+            <div class="server-info"><div class="server-name">TheConclave-Extinction-5xCrossplay</div><div class="server-meta">v84.28 · 217.114.196.102:6440 · MAPID: 18106633 · Offline</div></div>
+            <div class="server-players"><div class="player-count" style="color:var(--status-offline)">0</div><div class="player-label">Offline</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+          <div class="server-row">
+            <div class="server-status s-online"></div>
+            <div class="server-map">🌊</div>
+            <div class="server-info"><div class="server-name">TheConclave-Volcano-5xCrossplay</div><div class="server-meta">v84.28 · 217.114.196.59:5050 · MAPID: 10094878</div></div>
+            <div class="server-players"><div class="player-count">6</div><div class="player-label">Players</div></div>
+            <div class="server-actions"><button class="srv-btn btn-view">View</button><button class="srv-btn btn-edit">Edit</button></div>
+          </div>
+        </div>
+      </div><!-- /servers -->
+
+      <!-- ════════════ ORDERS ════════════ -->
+      <div class="page" id="page-orders">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:16px">
+          <div class="section-title"><span>ClaveShard</span> Order Queue</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-gold">＋ New Order</button>
+            <button class="btn btn-teal">Export CSV</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:16px">
+          <div class="card" style="padding:14px 20px;flex:1;text-align:center">
+            <div class="mono" style="font-size:22px;color:var(--gold);font-weight:700">4</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:3px">PENDING</div>
+          </div>
+          <div class="card" style="padding:14px 20px;flex:1;text-align:center">
+            <div class="mono" style="font-size:22px;color:var(--electric);font-weight:700">2</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:3px">PROCESSING</div>
+          </div>
+          <div class="card" style="padding:14px 20px;flex:1;text-align:center">
+            <div class="mono" style="font-size:22px;color:var(--status-online);font-weight:700">87</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:3px">FULFILLED</div>
+          </div>
+          <div class="card" style="padding:14px 20px;flex:1;text-align:center">
+            <div class="mono" style="font-size:22px;font-weight:700" class="rainbow-text">93</div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:3px">TOTAL ALL TIME</div>
+          </div>
+        </div>
+        <div class="card" style="overflow:auto">
+          <table class="order-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Platform</th>
+                <th>Tier / Item</th>
+                <th>Server</th>
+                <th>Shards</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="order-player"><img src="/CLAVESHARD.png" style="width:20px;height:20px;object-fit:contain" onerror="this.style.display='none'">NightWalker88</div></td>
+                <td><span class="order-plat plat-xbox">Xbox</span></td>
+                <td>Tier 6 – Boss Ready Bundle</td>
+                <td>Astraeos</td>
+                <td><div class="shard-amt">6 💎</div></td>
+                <td><span class="order-status os-pending">Pending</span></td>
+                <td><div style="display:flex;gap:6px"><button class="srv-btn btn-edit">Fulfill</button><button class="srv-btn btn-view">View</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="order-player">SunRider_PS</div></td>
+                <td><span class="order-plat plat-ps5">PS5</span></td>
+                <td>Tier 3 – Tek Blueprint</td>
+                <td>TheIsland</td>
+                <td><div class="shard-amt">3 💎</div></td>
+                <td><span class="order-status os-processing">Processing</span></td>
+                <td><div style="display:flex;gap:6px"><button class="srv-btn btn-edit">Fulfill</button><button class="srv-btn btn-view">View</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="order-player">DinoBomber_X</div></td>
+                <td><span class="order-plat plat-xbox">Xbox</span></td>
+                <td>Tier 1 – Vanilla Starter</td>
+                <td>Valguero</td>
+                <td><div class="shard-amt">1 💎</div></td>
+                <td><span class="order-status os-pending">Pending</span></td>
+                <td><div style="display:flex;gap:6px"><button class="srv-btn btn-edit">Fulfill</button><button class="srv-btn btn-view">View</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="order-player">ArcticHunter</div></td>
+                <td><span class="order-plat plat-pc">PC</span></td>
+                <td>Tier 10 – Dino Color Party</td>
+                <td>Aberration</td>
+                <td><div class="shard-amt">10 💎</div></td>
+                <td><span class="order-status os-pending">Pending</span></td>
+                <td><div style="display:flex;gap:6px"><button class="srv-btn btn-edit">Fulfill</button><button class="srv-btn btn-view">View</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="order-player">GhostFang</div></td>
+                <td><span class="order-plat plat-pc">PC</span></td>
+                <td>Tier 1 – Vanilla Starter</td>
+                <td>Valguero</td>
+                <td><div class="shard-amt">1 💎</div></td>
+                <td><span class="order-status os-fulfilled">Fulfilled</span></td>
+                <td><div style="display:flex;gap:6px"><button class="srv-btn btn-view">View</button></div></td>
+              </tr>
+              <tr>
+                <td><div class="order-player">MegaRex9000</div></td>
+                <td><span class="order-plat plat-ps5">PS5</span></td>
+                <td>Tier 15 – Element Bundle</td>
+                <td>Extinction</td>
+                <td><div class="shard-amt">15 💎</div></td>
+                <td><span class="order-status os-fulfilled">Fulfilled</span></td>
+                <td><div style="display:flex;gap:6px"><button class="srv-btn btn-view">View</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /orders -->
+
+      <!-- ════════════ DONATIONS ════════════ -->
+      <div class="page" id="page-donations">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:20px">
+          <div class="section-title"><span>Donation</span> & Funding Ops</div>
+          <button class="btn btn-gold">＋ Log Donation</button>
+        </div>
+
+        <div class="dash-grid">
+          <div>
+            <div class="section-hdr"><div class="section-title"><span>Funding</span> Targets</div></div>
+            <div class="card" style="padding:20px">
+              <div class="funding-bar-wrap">
+                <div class="funding-bar-label">
+                  <span class="funding-bar-name">Monthly Operations</span>
+                  <span class="funding-bar-amt" style="color:var(--status-online)">$342 / $500</span>
+                </div>
+                <div class="funding-bar-track"><div class="funding-bar-fill" style="width:68%"></div></div>
+              </div>
+              <div class="funding-bar-wrap">
+                <div class="funding-bar-label">
+                  <span class="funding-bar-name">Aberration Server</span>
+                  <span class="funding-bar-amt" style="color:var(--electric)">$22 / $25</span>
+                </div>
+                <div class="funding-bar-track"><div class="funding-bar-fill" style="width:88%"></div></div>
+              </div>
+              <div class="funding-bar-wrap">
+                <div class="funding-bar-label">
+                  <span class="funding-bar-name">Amissa (Patreon)</span>
+                  <span class="funding-bar-amt" style="color:var(--gold)">$18 / $25</span>
+                </div>
+                <div class="funding-bar-track"><div class="funding-bar-fill" style="width:72%"></div></div>
+              </div>
+              <div class="funding-bar-wrap">
+                <div class="funding-bar-label">
+                  <span class="funding-bar-name">Extinction Server</span>
+                  <span class="funding-bar-amt" style="color:var(--status-offline)">$8 / $25</span>
+                </div>
+                <div class="funding-bar-track"><div class="funding-bar-fill" style="width:32%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-hdr"><div class="section-title"><span>Top</span> Donors</div></div>
+            <div class="card">
+              <div class="donor-row"><div class="donor-rank gold-rank">🥇</div><div class="donor-name">XxDragonSlayer99</div><div class="donor-amount">$120</div><div class="donor-flag flag-patron">Patreon</div></div>
+              <div class="donor-row"><div class="donor-rank gold-rank">🥈</div><div class="donor-name">IslandKing</div><div class="donor-amount">$75</div><div class="donor-flag flag-nitrado">Nitrado</div></div>
+              <div class="donor-row"><div class="donor-rank gold-rank">🥉</div><div class="donor-name">ArkQueen2026</div><div class="donor-amount">$55</div><div class="donor-flag flag-patron">Patreon</div></div>
+              <div class="donor-row"><div class="donor-rank">#4</div><div class="donor-name">VelociRaptor_X</div><div class="donor-amount">$30</div></div>
+              <div class="donor-row"><div class="donor-rank">#5</div><div class="donor-name">ConclaveElite</div><div class="donor-amount">$25</div><div class="donor-flag flag-nitrado">Nitrado</div></div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /donations -->
+
+      <!-- ════════════ STAFF ════════════ -->
+      <div class="page" id="page-staff">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:8px">
+          <div class="section-title"><span>Staff</span> Roster — TheConclave Dominion</div>
+          <button class="btn btn-primary">＋ Add Member</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:20px;font-style:italic">"We didn't wait for the light. We became it."</p>
+
+        <div class="staff-grid">
+
+          <div class="card staff-card card-rainbow">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/JAKE.png" alt="Jake" onerror="this.style.background='#1a1a3e';this.alt='J'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">JAKE</div>
+            <div class="staff-role role-owner">TheConclave</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/ARBANION.png" alt="Arbanion" onerror="this.style.background='#1a2e3e'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">ARBANION</div>
+            <div class="staff-role role-admin">Admin</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/JENNY.png" alt="Jenny" onerror="this.style.background='#2e1a3e'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">JENNY</div>
+            <div class="staff-role role-admin">Admin</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/ROOKIEREAPER.png" alt="RookieReaper" onerror="this.style.background='#1e1a3e'">
+              </div>
+              <div class="staff-status" style="background:var(--status-warn)"></div>
+            </div>
+            <div class="staff-name">ROOKIEREAPER</div>
+            <div class="staff-role role-helper">Community Helper</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/TW.png" alt="TW" onerror="this.style.background='#1a2a3e'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">TW</div>
+            <div class="staff-role role-admin">Admin</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/SLOTHIE.png" alt="Slothie" onerror="this.style.background='#2a1a1a'">
+              </div>
+              <div class="staff-status" style="background:var(--status-offline)"></div>
+            </div>
+            <div class="staff-name">SLOTHIE</div>
+            <div class="staff-role role-it">IT</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/OKAMI.png" alt="Okami" onerror="this.style.background='#1a3e2a'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">OKAMI</div>
+            <div class="staff-role role-helper">Community Helper</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/ICYREAPER.png" alt="IcyReaper" onerror="this.style.background='#0a1a3e'">
+              </div>
+              <div class="staff-status" style="background:var(--status-warn)"></div>
+            </div>
+            <div class="staff-name">ICYREAPER</div>
+            <div class="staff-role role-admin">Admin</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/CREDIBLEDEVIL.png" alt="CredibleDevil" onerror="this.style.background='#3e1a0a'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">CREDIBLEDEVIL</div>
+            <div class="staff-role role-helper">Community Helper</div>
+          </div>
+
+          <div class="card staff-card">
+            <div class="staff-avatar-wrap">
+              <div class="staff-ring"></div>
+              <div class="staff-avatar">
+                <img src="/SANDY.png" alt="Sandy" onerror="this.style.background='#1a3e1a'">
+              </div>
+              <div class="staff-status" style="background:var(--status-online)"></div>
+            </div>
+            <div class="staff-name">SANDY</div>
+            <div class="staff-role role-owner">Co-Owner · Wildheart</div>
+          </div>
+
+        </div>
+
+        <!-- ConCoin display -->
+        <div style="margin-top:24px">
+          <div class="section-hdr"><div class="section-title"><span>Con</span>Coin Economy</div></div>
+          <div class="card" style="padding:20px;display:flex;align-items:center;gap:20px">
+            <img src="ConCoin.PNG" style="width:60px;height:60px;object-fit:contain" onerror="this.style.display='none'">
+            <div>
+              <div style="font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700" class="rainbow-text">ConCoin</div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:4px">Discord-based currency system · Used for events, giveaways & rewards</div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div class="mono" style="font-size:24px;color:var(--gold);font-weight:700">2.4M</div>
+              <div style="font-size:11px;color:var(--text-3)">Total in circulation</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /staff -->
+
+      <!-- ════════════ CONTENT ════════════ -->
+      <div class="page" id="page-content">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:16px">
+          <div class="section-title"><span>Content</span> Manager</div>
+          <button class="btn btn-teal">⚡ Publish All</button>
+        </div>
+        <div class="dash-grid">
+          <div>
+            <div class="section-hdr"><div class="section-title">Site <span>Sections</span></div></div>
+            <div class="card">
+              <div class="server-row">
+                <div style="font-size:18px">🏠</div>
+                <div class="server-info"><div class="server-name">Homepage Hero</div><div class="server-meta">Last updated: 2 days ago</div></div>
+                <button class="srv-btn btn-edit">Edit</button>
+              </div>
+              <div class="server-row">
+                <div style="font-size:18px">📊</div>
+                <div class="server-info"><div class="server-name">Server Cards</div><div class="server-meta">10 cards · Last updated: 1 day ago</div></div>
+                <button class="srv-btn btn-edit">Edit</button>
+              </div>
+              <div class="server-row">
+                <div style="font-size:18px">💠</div>
+                <div class="server-info"><div class="server-name">ClaveShard Shop Items</div><div class="server-meta">Tiers 1–30 · Active</div></div>
+                <button class="srv-btn btn-edit">Edit</button>
+              </div>
+              <div class="server-row">
+                <div style="font-size:18px">📣</div>
+                <div class="server-info"><div class="server-name">Announcements</div><div class="server-meta">3 active cards</div></div>
+                <button class="srv-btn btn-edit">Edit</button>
+              </div>
+              <div class="server-row">
+                <div style="font-size:18px">👑</div>
+                <div class="server-info"><div class="server-name">Council Roster</div><div class="server-meta">10 members · Published</div></div>
+                <button class="srv-btn btn-edit">Edit</button>
+              </div>
+              <div class="server-row">
+                <div style="font-size:18px">💰</div>
+                <div class="server-info"><div class="server-name">Donation Goal Text</div><div class="server-meta">Last updated: 3 days ago</div></div>
+                <button class="srv-btn btn-edit">Edit</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="section-hdr"><div class="section-title"><span>Quick</span> Publish</div></div>
+            <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+              <button class="btn btn-gold" style="width:100%;justify-content:center">📣 Post Announcement</button>
+              <button class="btn btn-primary" style="width:100%;justify-content:center">🗺️ Update Server Status</button>
+              <button class="btn btn-teal" style="width:100%;justify-content:center">💠 Update Shop Tiers</button>
+              <button class="btn btn-primary" style="width:100%;justify-content:center">🎯 Update Funding Goals</button>
+            </div>
+            <div class="section-hdr" style="margin-top:16px"><div class="section-title">Brand <span>Assets</span></div></div>
+            <div class="card" style="padding:14px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">
+                  <img src="/ChatGPT_Image_Mar_1__2026__08_07_16_PM.png" style="width:100%;height:100%;object-fit:cover" onerror="this.style.background='#1a1a3e'">
+                </div>
+                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">
+                  <img src="/CLAVESHARD.png" style="width:100%;height:100%;object-fit:contain;background:#050818" onerror="this.style.background='#050818'">
+                </div>
+                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">
+                  <img src="ConCoin.PNG" style="width:100%;height:100%;object-fit:contain;background:#050818" onerror="this.style.background='#050818'">
+                </div>
+                <div style="aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">
+                  <img src="/lightning.gif" style="width:100%;height:100%;object-fit:contain;background:#050818" onerror="this.style.background='#050818'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /content -->
+
+      <!-- ════════════ LOGS ════════════ -->
+      <div class="page" id="page-logs">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:16px">
+          <div class="section-title"><span>Audit</span> Log</div>
+          <button class="btn btn-teal">Export Logs</button>
+        </div>
+        <div class="card">
+          <div class="log-row"><div class="log-time">09:41:02</div><div class="log-actor">JAKE</div><div class="log-action">Fulfilled ClaveShard Tier 1 order for GhostFang on Valguero</div><span class="log-type lt-edit">Fulfill</span></div>
+          <div class="log-row"><div class="log-time">09:22:17</div><div class="log-actor">ARBANION</div><div class="log-action">Updated server announcement note for Extinction-5xCrossplay</div><span class="log-type lt-edit">Edit</span></div>
+          <div class="log-row"><div class="log-time">08:55:43</div><div class="log-actor">JENNY</div><div class="log-action">Created ClaveShard order #0094 for NightWalker88 · Tier 6 · Astraeos</div><span class="log-type lt-create">Create</span></div>
+          <div class="log-row"><div class="log-time">08:30:00</div><div class="log-actor">SLOTHIE</div><div class="log-action">Admin session authenticated via Discord OAuth · Role: IT</div><span class="log-type lt-auth">Auth</span></div>
+          <div class="log-row"><div class="log-time">08:12:09</div><div class="log-actor">TW</div><div class="log-action">Updated homepage hero content — added new ARK 2 announcement card</div><span class="log-type lt-edit">Edit</span></div>
+          <div class="log-row"><div class="log-time">07:44:31</div><div class="log-actor">ICYREAPER</div><div class="log-action">Logged donation $50 from XxDragonSlayer99 via Patreon</div><span class="log-type lt-create">Create</span></div>
+          <div class="log-row"><div class="log-time">07:00:02</div><div class="log-actor">SYSTEM</div><div class="log-action">Extinction server status changed to OFFLINE — alert dispatched</div><span class="log-type lt-delete">Alert</span></div>
+          <div class="log-row"><div class="log-time">06:30:18</div><div class="log-actor">JAKE</div><div class="log-action">Fulfilled ClaveShard Tier 15 order for MegaRex9000 on Extinction</div><span class="log-type lt-edit">Fulfill</span></div>
+          <div class="log-row"><div class="log-time">06:02:44</div><div class="log-actor">OKAMI</div><div class="log-action">Admin session authenticated via Discord OAuth · Role: Community Helper</div><span class="log-type lt-auth">Auth</span></div>
+          <div class="log-row"><div class="log-time">05:18:55</div><div class="log-actor">CREDIBLEDEVIL</div><div class="log-action">Updated shop item: Tier 5 description revised — Alpha Dino eligibility note</div><span class="log-type lt-edit">Edit</span></div>
+        </div>
+      </div><!-- /logs -->
+
+      <!-- ════════════ SETTINGS ════════════ -->
+      <div class="page" id="page-settings">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:20px;">
+          <div class="section-title"><span>System</span> Settings</div>
+          <button class="btn" style="font-size:.72rem;" onclick="settingsLoad()">↺ Refresh Status</button>
+        </div>
+
+        <div class="dash-grid" style="gap:14px;">
+
+          <!-- LEFT COL -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+
+            <!-- INTEGRATION STATUS (LIVE) -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">INTEGRATIONS</div>
+                <div id="settings-health-ts" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-3);">not checked</div>
+              </div>
+              <div id="settings-integrations" style="padding:4px 0;">
+                <div style="padding:14px 16px;text-align:center;font-size:.72rem;color:var(--text-3);">Loading...</div>
+              </div>
+            </div>
+
+            <!-- DONATION GOAL EDITOR -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);">
+                <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">DONATION GOAL</div>
+              </div>
+              <div style="padding:16px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                  <div>
+                    <div style="font-size:.62rem;color:var(--text-3);margin-bottom:5px;font-family:'Share Tech Mono',monospace;">GOAL ($)</div>
+                    <input id="sett-goal" type="number" min="0" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 10px;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:.8rem;outline:none;" placeholder="500">
+                  </div>
+                  <div>
+                    <div style="font-size:.62rem;color:var(--text-3);margin-bottom:5px;font-family:'Share Tech Mono',monospace;">RAISED ($)</div>
+                    <input id="sett-raised" type="number" min="0" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 10px;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:.8rem;outline:none;" placeholder="0">
+                  </div>
+                </div>
+                <div style="background:rgba(255,255,255,.03);border-radius:8px;height:6px;margin-bottom:12px;overflow:hidden;">
+                  <div id="sett-goal-bar" style="height:100%;background:linear-gradient(90deg,#7b2fff,#00d4ff);border-radius:8px;width:0%;transition:width .4s;"></div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div id="sett-goal-pct" style="font-family:'Orbitron',monospace;font-size:.72rem;color:var(--electric);">0%</div>
+                  <div id="sett-goal-live" style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-3);">not loaded</div>
+                </div>
+                <button onclick="settingsSaveGoal()" class="btn btn-teal" style="width:100%;font-size:.72rem;">💾 Save Donation Goal</button>
+              </div>
+            </div>
+
+            <!-- DISCORD WEBHOOK TESTER -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);">
+                <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">WEBHOOK TESTER</div>
+              </div>
+              <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+                <select id="sett-webhook-type" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 10px;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:.72rem;outline:none;">
+                  <option value="test">🧪 Test Ping</option>
+                  <option value="server-status">🗺️ Server Status Update</option>
+                  <option value="alert">🚨 System Alert</option>
+                  <option value="order">💎 New Order Notification</option>
+                </select>
+                <button onclick="settingsFireWebhook()" class="btn" style="font-size:.72rem;background:rgba(88,101,242,.15);border-color:rgba(88,101,242,.3);color:#aab8ff;">⚡ Fire Webhook</button>
+                <div id="sett-webhook-result" style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-3);min-height:18px;"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COL -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+
+            <!-- ROLE PERMISSIONS -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);">
+                <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">ROLE PERMISSIONS</div>
+              </div>
+              <div style="padding:6px 0;">
+                <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:10px;">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#ffb800;box-shadow:0 0 5px #ffb80060;flex-shrink:0;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:.75rem;color:var(--text-1);font-weight:500;">TheConclave <span style="font-size:.6rem;color:var(--gold);margin-left:4px;">OWNER</span></div>
+                    <div style="font-size:.62rem;color:var(--text-3);margin-top:1px;">Full access — all pages, all actions</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:10px;">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#7b2fff;box-shadow:0 0 5px #7b2fff60;flex-shrink:0;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:.75rem;color:var(--text-1);font-weight:500;">Admin <span style="font-size:.6rem;color:#a78bfa;margin-left:4px;">ADMIN</span></div>
+                    <div style="font-size:.62rem;color:var(--text-3);margin-top:1px;">dashboard · servers · orders · donations · content · staff · logs · devops</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:10px;">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#00d4ff;box-shadow:0 0 5px #00d4ff60;flex-shrink:0;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:.75rem;color:var(--text-1);font-weight:500;">IT <span style="font-size:.6rem;color:#00d4ff;margin-left:4px;">TECH</span></div>
+                    <div style="font-size:.62rem;color:var(--text-3);margin-top:1px;">servers · logs · settings · devops</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;padding:9px 16px;gap:10px;">
+                  <div style="width:8px;height:8px;border-radius:50%;background:#35ed7e;box-shadow:0 0 5px #35ed7e60;flex-shrink:0;"></div>
+                  <div style="flex:1;">
+                    <div style="font-size:.75rem;color:var(--text-1);font-weight:500;">Community Helper <span style="font-size:.6rem;color:#35ed7e;margin-left:4px;">HELPER</span></div>
+                    <div style="font-size:.62rem;color:var(--text-3);margin-top:1px;">dashboard.view · orders.view · orders.fulfill</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ANNOUNCEMENT BROADCASTER -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);">
+                <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">ANNOUNCEMENT BROADCASTER</div>
+              </div>
+              <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+                <input id="sett-ann-title" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 10px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.78rem;outline:none;width:100%;" placeholder="Announcement title...">
+                <textarea id="sett-ann-body" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:7px 10px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.75rem;outline:none;width:100%;resize:none;height:72px;line-height:1.5;" placeholder="Announcement body..."></textarea>
+                <button onclick="settingsPostAnnouncement()" class="btn" style="font-size:.72rem;background:rgba(255,184,0,.1);border-color:rgba(255,184,0,.25);color:var(--gold);">📢 Post Announcement</button>
+                <div id="sett-ann-result" style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-3);min-height:16px;"></div>
+              </div>
+            </div>
+
+            <!-- SYSTEM INFO -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);">
+                <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">SYSTEM INFO</div>
+              </div>
+              <div style="padding:10px 0;">
+                <div style="display:flex;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.03);justify-content:space-between;align-items:center;">
+                  <span style="font-size:.7rem;color:var(--text-3);font-family:'Share Tech Mono',monospace;">API</span>
+                  <span style="font-size:.7rem;color:var(--text-2);font-family:'Share Tech Mono',monospace;">api.theconclavedominion.com</span>
+                </div>
+                <div style="display:flex;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.03);justify-content:space-between;align-items:center;">
+                  <span style="font-size:.7rem;color:var(--text-3);font-family:'Share Tech Mono',monospace;">Frontend</span>
+                  <span style="font-size:.7rem;color:var(--text-2);font-family:'Share Tech Mono',monospace;">theconclavedominion.com</span>
+                </div>
+                <div style="display:flex;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.03);justify-content:space-between;align-items:center;">
+                  <span style="font-size:.7rem;color:var(--text-3);font-family:'Share Tech Mono',monospace;">Discord Guild</span>
+                  <span style="font-size:.7rem;color:var(--text-2);font-family:'Share Tech Mono',monospace;">1438103556610723922</span>
+                </div>
+                <div style="display:flex;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.03);justify-content:space-between;align-items:center;">
+                  <span style="font-size:.7rem;color:var(--text-3);font-family:'Share Tech Mono',monospace;">ARK Cluster</span>
+                  <span style="font-size:.7rem;color:#35ed7e;font-family:'Share Tech Mono',monospace;">10 servers</span>
+                </div>
+                <div style="display:flex;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.03);justify-content:space-between;align-items:center;">
+                  <span style="font-size:.7rem;color:var(--text-3);font-family:'Share Tech Mono',monospace;">Minecraft</span>
+                  <span style="font-size:.7rem;color:var(--text-2);font-family:'Share Tech Mono',monospace;">134.255.214.44:10090</span>
+                </div>
+                <div style="display:flex;padding:7px 16px;justify-content:space-between;align-items:center;">
+                  <span style="font-size:.7rem;color:var(--text-3);font-family:'Share Tech Mono',monospace;">Bot Version</span>
+                  <span style="font-size:.7rem;color:#a78bfa;font-family:'Share Tech Mono',monospace;">v5.4 · 24 commands</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /settings -->
+
+      <!-- ════════════ DISCORD CONTROL ════════════ -->
+      <div class="page" id="page-discord-ctrl">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:18px;">
+          <div class="section-title"><span>Discord</span> Control Panel</div>
+          <button class="btn btn-teal" onclick="discordCtrlLoad()" style="font-size:.72rem;">↺ Refresh</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+          <!-- SEND MESSAGE -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">📨 SEND MESSAGE</div>
+            <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+              <select id="dc-msg-channel" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:.72rem;outline:none;">
+                <option value="">Loading channels...</option>
+              </select>
+              <textarea id="dc-msg-content" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 11px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.77rem;outline:none;resize:none;height:80px;line-height:1.5;" placeholder="Message content..."></textarea>
+              <label style="display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-3);cursor:pointer;">
+                <input type="checkbox" id="dc-msg-ping" style="accent-color:#7b2fff;"> @everyone ping
+              </label>
+              <button onclick="dcSendMessage()" class="btn btn-teal" style="font-size:.72rem;">📨 Send Message</button>
+            </div>
+          </div>
+
+          <!-- SEND EMBED -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">📋 SEND EMBED</div>
+            <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+              <select id="dc-emb-channel" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:.72rem;outline:none;">
+                <option value="">Select channel...</option>
+              </select>
+              <input id="dc-emb-title" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.77rem;outline:none;" placeholder="Embed title...">
+              <textarea id="dc-emb-desc" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 11px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.77rem;outline:none;resize:none;height:60px;line-height:1.5;" placeholder="Embed description..."></textarea>
+              <div style="display:flex;gap:7px;">
+                <input id="dc-emb-color" type="color" value="#7B2FFF" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px;height:34px;width:40px;cursor:pointer;flex-shrink:0;">
+                <button onclick="dcSendEmbed()" class="btn btn-teal" style="font-size:.72rem;flex:1;">📋 Send Embed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+          <!-- ANNOUNCE -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">📢 ANNOUNCEMENT</div>
+            <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+              <input id="dc-ann-title" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.77rem;outline:none;" placeholder="Announcement title...">
+              <textarea id="dc-ann-body" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 11px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.77rem;outline:none;resize:none;height:70px;" placeholder="Body..."></textarea>
+              <label style="display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-3);cursor:pointer;">
+                <input type="checkbox" id="dc-ann-ping" style="accent-color:#7b2fff;"> @everyone ping
+              </label>
+              <button onclick="dcAnnounce()" class="btn" style="font-size:.72rem;background:rgba(255,184,0,.12);border-color:rgba(255,184,0,.3);color:var(--gold);">📢 Post Announcement</button>
+            </div>
+          </div>
+
+          <!-- GUILD INFO -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">🏠 GUILD STATUS</div>
+            <div id="dc-guild-info" style="padding:10px 0;">
+              <div style="padding:14px;text-align:center;font-size:.74rem;color:var(--text-3);">Loading guild data...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHANNELS LIST -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;">
+          <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">📺 CHANNELS</div>
+            <span id="dc-channel-count" style="font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--text-3);"></span>
+          </div>
+          <div id="dc-channels-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px;padding:10px 14px;max-height:240px;overflow-y:auto;">
+            <div style="padding:8px;text-align:center;font-size:.72rem;color:var(--text-3);">Loading...</div>
+          </div>
+        </div>
+
+        <!-- ROLES LIST -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">🎭 ROLES</div>
+          <div id="dc-roles-list" style="display:flex;flex-wrap:wrap;gap:5px;padding:12px 14px;max-height:180px;overflow-y:auto;">
+            <div style="padding:6px;font-size:.72rem;color:var(--text-3);">Loading...</div>
+          </div>
+        </div>
+      </div><!-- /discord-ctrl -->
+
+      <!-- ════════════ MEMBER MANAGER ════════════ -->
+      <div class="page" id="page-members">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:18px;">
+          <div class="section-title"><span>Member</span> Manager</div>
+        </div>
+
+        <!-- Search -->
+        <div class="card" style="padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;">
+          <input id="mem-search" style="flex:1;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.8rem;outline:none;" placeholder="Search by username or Discord ID..." oninput="memberSearch(this.value)">
+          <button onclick="memberLoad()" class="btn" style="font-size:.72rem;">↺ Load Members</button>
+        </div>
+
+        <!-- Member list -->
+        <div id="mem-list" style="display:flex;flex-direction:column;gap:6px;">
+          <div style="text-align:center;padding:2rem;font-size:.75rem;color:var(--text-3);">Click "Load Members" to fetch the member list.</div>
+        </div>
+
+        <!-- Member action modal -->
+        <div id="mem-modal" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);align-items:center;justify-content:center;">
+          <div style="width:min(480px,94vw);background:rgba(4,6,18,.98);border:1px solid rgba(123,47,255,.35);border-radius:16px;padding:1.5rem;box-shadow:0 30px 80px rgba(0,0,0,.85);">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;">
+              <img id="mem-modal-avatar" style="width:48px;height:48px;border-radius:50%;border:2px solid rgba(123,47,255,.4);" src="">
+              <div>
+                <div id="mem-modal-name" style="font-family:'Orbitron',monospace;font-size:.85rem;color:#fff;font-weight:700;"></div>
+                <div id="mem-modal-id" style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-3);margin-top:2px;"></div>
+              </div>
+              <button onclick="document.getElementById('mem-modal').style.display='none'" style="margin-left:auto;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:4px 10px;color:var(--text-3);font-family:'Share Tech Mono',monospace;font-size:.7rem;cursor:pointer;">✕</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <textarea id="mem-dm-content" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 11px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.77rem;outline:none;resize:none;height:60px;" placeholder="DM message..."></textarea>
+              <button onclick="memberDM()" style="background:rgba(88,101,242,.15);border:1px solid rgba(88,101,242,.3);border-radius:8px;padding:8px;color:#aab8ff;font-family:'Share Tech Mono',monospace;font-size:.7rem;cursor:pointer;">💬 Send DM</button>
+              <input id="mem-role-id" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;color:var(--text-1);font-family:'Share Tech Mono',monospace;font-size:.7rem;outline:none;" placeholder="Role ID to add/remove...">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                <button onclick="memberRole('add')" style="background:rgba(53,237,126,.1);border:1px solid rgba(53,237,126,.2);border-radius:8px;padding:7px;color:#35ed7e;font-family:'Share Tech Mono',monospace;font-size:.68rem;cursor:pointer;">+ Add Role</button>
+                <button onclick="memberRole('remove')" style="background:rgba(255,85,51,.1);border:1px solid rgba(255,85,51,.2);border-radius:8px;padding:7px;color:#ff5533;font-family:'Share Tech Mono',monospace;font-size:.68rem;cursor:pointer;">− Remove Role</button>
+              </div>
+              <input id="mem-kick-reason" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 10px;color:var(--text-1);font-family:'Exo 2',sans-serif;font-size:.75rem;outline:none;" placeholder="Kick/ban reason...">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                <button onclick="memberKick()" style="background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.25);border-radius:8px;padding:7px;color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:.68rem;cursor:pointer;">⚠ Kick</button>
+                <button onclick="memberBan()" style="background:rgba(255,50,50,.1);border:1px solid rgba(255,50,50,.2);border-radius:8px;padding:7px;color:#ff5533;font-family:'Share Tech Mono',monospace;font-size:.68rem;cursor:pointer;">🔨 Ban</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /members -->
+
+      <!-- ════════════ DEVOPS CONSOLE ════════════ -->
+      <div class="page" id="page-devops">
+        <div class="drip-divider"></div>
+        <div class="section-hdr" style="margin-bottom:20px;align-items:center;">
+          <div class="section-title"><span>DevOps</span> Console <span id="dv-live-dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#35ed7e;margin-left:8px;box-shadow:0 0 8px #35ed7e;animation:dvpulse 1.4s ease-in-out infinite;vertical-align:middle;opacity:0;"></span></div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn" style="background:rgba(53,237,126,.12);border-color:rgba(53,237,126,.3);color:#35ed7e;font-size:.72rem;" onclick="dvRunAll()">▶ Run All Checks</button>
+            <button class="btn" style="font-size:.72rem;" onclick="dvClearLogs()">⌫ Clear Log</button>
+          </div>
+        </div>
+
+        <!-- TOP STAT ROW -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:18px;">
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">API Status</div>
+            <div id="dv-api-status" style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text-3);">—</div>
+            <div id="dv-api-ping" style="font-size:.68rem;color:var(--text-3);margin-top:3px;">not checked</div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Bot Commands</div>
+            <div id="dv-cmd-count" style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text-3);">—</div>
+            <div style="font-size:.68rem;color:var(--text-3);margin-top:3px;">registered</div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Wallet Holders</div>
+            <div id="dv-wallet-holders" style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text-3);">—</div>
+            <div id="dv-wallet-supply" style="font-size:.68rem;color:var(--text-3);margin-top:3px;">total supply</div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Pending Orders</div>
+            <div id="dv-orders-count" style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text-3);">—</div>
+            <div style="font-size:.68rem;color:var(--text-3);margin-top:3px;">awaiting fulfil</div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Knowledge Base</div>
+            <div id="dv-kb-count" style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text-3);">—</div>
+            <div id="dv-kb-auto" style="font-size:.68rem;color:var(--text-3);margin-top:3px;">entries</div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div style="font-size:.62rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Servers Online</div>
+            <div id="dv-servers-online" style="font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--text-3);">—</div>
+            <div style="font-size:.68rem;color:var(--text-3);margin-top:3px;">of 10 cluster</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+          <!-- ENDPOINT HEALTH MATRIX -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">ENDPOINT HEALTH</div>
+              <button onclick="dvCheckEndpoints()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:2px 10px;color:var(--text-3);font-family:'Share Tech Mono',monospace;font-size:.65rem;cursor:pointer;">↺ Ping All</button>
+            </div>
+            <div id="dv-endpoints" style="padding:6px 0;">
+              <div style="padding:16px;text-align:center;font-size:.7rem;color:var(--text-3);">Click "Ping All" to check endpoints</div>
+            </div>
+          </div>
+
+          <!-- ENV VAR VALIDATOR -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">ENV VALIDATOR</div>
+              <button onclick="dvCheckEnv()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:2px 10px;color:var(--text-3);font-family:'Share Tech Mono',monospace;font-size:.65rem;cursor:pointer;">↺ Validate</button>
+            </div>
+            <div id="dv-env" style="padding:6px 0;">
+              <div style="padding:16px;text-align:center;font-size:.7rem;color:var(--text-3);">Click "Validate" to check env vars</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+          <!-- BOT COMMAND REGISTRY -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);">
+              <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">BOT COMMAND REGISTRY <span style="color:var(--text-3);font-size:.6rem;margin-left:6px;">24 commands</span></div>
+            </div>
+            <div style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:5px;" id="dv-cmd-registry">
+              <!-- populated by JS -->
+            </div>
+          </div>
+
+          <!-- ECONOMY MONITOR -->
+          <div class="card" style="padding:0;overflow:hidden;">
+            <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--text-2);letter-spacing:.06em;">ECONOMY MONITOR</div>
+              <button onclick="dvLoadEconomy()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:2px 10px;color:var(--text-3);font-family:'Share Tech Mono',monospace;font-size:.65rem;cursor:pointer;">↺ Refresh</button>
+            </div>
+            <div id="dv-economy" style="padding:12px 16px;">
+              <div style="text-align:center;font-size:.7rem;color:var(--text-3);padding:8px;">Click Refresh to load economy data</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE TERMINAL LOG -->
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;gap:5px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+            </div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--text-3);">conclave-devops ~ terminal</div>
+            <div style="margin-left:auto;display:flex;gap:6px;">
+              <div id="dv-term-status" style="font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--text-3);">idle</div>
+            </div>
+          </div>
+          <div id="dv-terminal" style="font-family:'Share Tech Mono',monospace;font-size:.72rem;padding:14px 16px;min-height:180px;max-height:260px;overflow-y:auto;background:rgba(0,0,0,.4);line-height:1.7;">
+            <div style="color:rgba(53,237,126,.6);">aegis@conclave:~$ <span style="color:var(--text-3);">devops console initialized — run checks to begin</span></div>
+          </div>
+        </div>
+
+      </div><!-- /devops -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+
+  // ── REAL DISCORD OAUTH TOKEN CAPTURE ──
+  (function() {
+    const p = new URLSearchParams(location.search);
+    const t = p.get('token');
+    if (t) {
+      localStorage.setItem('conclave_token', t);
+      sessionStorage.setItem('conclave_token', t);
+      history.replaceState({}, '', '/aegis-admin/');
+    }
+  })();
+
+/* ═══════════════════════════════════════════════
+   STARFIELD CANVAS
+═══════════════════════════════════════════════ */
+(function() {
+  const c = document.getElementById('starfield');
+  const ctx = c.getContext('2d');
+  let W, H, stars;
+
+  function init() {
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+    stars = Array.from({ length: 180 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.2,
+      a: Math.random(),
+      speed: Math.random() * 0.4 + 0.1,
+      twinkle: Math.random() * Math.PI * 2
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.twinkle += s.speed * 0.02;
+      s.a = 0.2 + 0.7 * (0.5 + 0.5 * Math.sin(s.twinkle));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  init();
+  window.addEventListener('resize', init);
+  draw();
+})();
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+const pageTitles = {
+  dashboard:      ['DASHBOARD',          'Aegis Admin · Live Overview'],
+  servers:        ['SERVERS',            'TheConclave Dominion · 10 Maps'],
+  orders:         ['CLAVESHARD ORDERS',  'Fulfillment Queue · Shard Economy'],
+  donations:      ['DONATIONS',          'Funding & Donor Operations'],
+  staff:          ['STAFF ROSTER',       'TheConclave Admin Team'],
+  'events-mgr':   ['EVENTS MANAGER',     'Create & Manage Server Events'],
+  'shop-mgr':     ['SHARD SHOP',         'ClaveShard Item Catalog'],
+  content:        ['CONTENT MANAGER',    'Site Sections & Assets'],
+  logs:           ['AUDIT LOGS',         'System Activity Log'],
+  knowledge:      ['AEGIS KNOWLEDGE',    'AI Knowledge Base'],
+  settings:       ['SETTINGS',           'Integrations & Permissions'],
+  'discord-ctrl': ['DISCORD CONTROL',    'Live Discord API · Channels · Messages · Roles'],
+  members:        ['MEMBER MANAGER',     'Search · Manage · Roles · DM · History'],
+  devops:         ['DEVOPS CONSOLE',     'System Health · Endpoints · Terminal'],
+};
+
+
+// ── KNOWLEDGE ──
+function loadKnowledge(){
+  const token=localStorage.getItem('conclave_token')||sessionStorage.getItem('conclave_token')||'';
+  fetch('https://api.theconclavedominion.com/api/knowledge',{headers:{Authorization:'Bearer '+token}})
+    .then(r=>r.json()).then(d=>{
+      const rows=d.knowledge||[];
+      const tbody=document.getElementById('kb-table');
+      const empty=document.getElementById('kb-empty');
+      if(!rows.length){if(tbody)tbody.innerHTML='';if(empty)empty.style.display='block';return;}
+      if(empty)empty.style.display='none';
+      if(tbody)tbody.innerHTML=rows.map(r=>`<tr style="background:rgba(255,255,255,.02);">
+        <td style="padding:.45rem .7rem;font-family:monospace;font-size:.7rem;color:rgba(123,47,255,.8);">${r.category}</td>
+        <td style="padding:.45rem .7rem;font-size:.8rem;color:rgba(255,255,255,.7);">${(r.title||'').slice(0,55)}${r.title?.length>55?'…':''}</td>
+        <td style="padding:.45rem .7rem;font-family:monospace;font-size:.65rem;color:${r.source==='web_search'?'#00D4FF':r.source==='manual'?'#35ED7E':'rgba(255,255,255,.3)'};">${r.source||'inference'}</td>
+        <td style="padding:.45rem .7rem;font-family:monospace;font-size:.62rem;color:rgba(255,255,255,.28);">${r.updated_at?.slice(0,10)||''}</td>
+        <td style="padding:.45rem .7rem;"><button onclick="deleteKnowledge('${r.key}')" style="background:rgba(255,50,50,.1);border:1px solid rgba(255,50,50,.2);border-radius:6px;padding:.18rem .55rem;color:rgba(255,120,120,.7);font-size:.62rem;cursor:pointer;">Delete</button></td>
+      </tr>`).join('');
+    }).catch(()=>{});
+  fetch('https://api.theconclavedominion.com/api/aegis/stats',{headers:{Authorization:'Bearer '+(localStorage.getItem('conclave_token')||'')}})
+    .then(r=>r.json()).then(d=>{
+      const t=document.getElementById('kb-total');const a=document.getElementById('kb-auto');const m=document.getElementById('kb-manual');
+      if(t)t.textContent=d.total||0;
+      if(a)a.textContent=d.bySource?.auto_learned||0;
+      if(m)m.textContent=d.bySource?.manual||0;
+    }).catch(()=>{});
+}
+function saveKnowledge(){
+  const token=localStorage.getItem('conclave_token')||sessionStorage.getItem('conclave_token')||'';
+  const category=document.getElementById('kb-cat')?.value;
+  const title=document.getElementById('kb-title')?.value?.trim();
+  const content=document.getElementById('kb-content')?.value?.trim();
+  if(!title||!content){alert('Title and content are required');return;}
+  fetch('https://api.theconclavedominion.com/api/aegis/learn',{
+    method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+    body:JSON.stringify({category,title,content})
+  }).then(r=>r.json()).then(d=>{
+    if(d.success){showToast('✅ AEGIS has learned: '+title);document.getElementById('kb-title').value='';document.getElementById('kb-content').value='';loadKnowledge();}
+    else showToast('❌ Error: '+(d.error||'Unknown'));
+  }).catch(()=>showToast('❌ API unavailable'));
+}
+function deleteKnowledge(key){
+  if(!confirm('Delete this knowledge entry?'))return;
+  const token=localStorage.getItem('conclave_token')||'';
+  fetch('https://api.theconclavedominion.com/api/knowledge/'+key,{method:'DELETE',headers:{Authorization:'Bearer '+token}})
+    .then(()=>loadKnowledge()).catch(()=>{});
+}
+function purgeAutoKnowledge(){
+  if(!confirm('Purge all auto-learned entries older than 7 days?'))return;
+  const token=localStorage.getItem('conclave_token')||'';
+  fetch('https://api.theconclavedominion.com/api/aegis/knowledge/purge-auto',{method:'DELETE',headers:{Authorization:'Bearer '+token}})
+    .then(r=>r.json()).then(d=>showToast('Purged '+d.deleted+' old entries')).catch(()=>{});
+}
+
+function navigate(page, btn) {
+  // Pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+
+  // Nav links
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-link').forEach(l => {
+      if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(page)) {
+        l.classList.add('active');
+      }
+    });
+  }
+
+  // Top bar
+  const [title, sub] = pageTitles[page] || ['AEGIS', ''];
+  document.getElementById('pageTitle').textContent = title;
+  document.getElementById('pageBreadcrumb').textContent = sub;
+
+  // Scroll to top
+  document.getElementById('content').scrollTo({ top: 0, behavior: 'smooth' });
+
+  // DevOps auto-init on first visit
+  if (page === 'devops' && !dvLoaded) {
+    dvLoaded = true;
+    dvRenderCmdRegistry();
+    if (dvToken()) {
+      setTimeout(dvRunAll, 300);
+    } else {
+      setTimeout(() => {
+        dvLog('⚠ Not authenticated — log in via Discord OAuth first', 'warn');
+        dvLog('Visit /auth/discord then return to this panel', 'info');
+      }, 100);
+    }
+  }
+
+  // Load knowledge on first visit
+  if (page === 'knowledge') loadKnowledge();
+
+  // Load settings on visit
+  if (page === 'settings') settingsLoad();
+
+  // Discord control
+  if (page === 'discord-ctrl') discordCtrlLoad();
+
+  // Member manager auto-load
+  if (page === 'members') { const ml = document.getElementById('mem-list'); if (ml && ml.children.length <= 1) memberLoad(); }
+
+  // Events + shop
+  if (page === 'events-mgr') eventsLoad();
+  if (page === 'shop-mgr')   shopLoad();
+}
+
+// Clock
+function tick() {
+  const now = new Date();
+  const pad = n => n.toString().padStart(2, '0');
+  document.title = `${pad(now.getHours())}:${pad(now.getMinutes())} · AEGIS Admin`;
+}
+tick();
+setInterval(tick, 60000);
+
+/* ═══════════════════════════════════════════════
+   DEVOPS CONSOLE ENGINE
+═══════════════════════════════════════════════ */
+const API = 'https://api.theconclavedominion.com';
+function dvToken() { return localStorage.getItem('conclave_token') || sessionStorage.getItem('conclave_token') || ''; }
+function dvFetch(path, opts={}) {
+  const token = dvToken();
+  return fetch(API + path, {
+    signal: AbortSignal.timeout(8000),
+    ...opts,
+    headers: { Authorization: 'Bearer ' + token, ...(opts.headers||{}) }
+  });
+}
+const DV_CMDS = [
+  {n:'wallet',badge:'economy',col:'#a78bfa'},
+  {n:'curr',badge:'alias',col:'#6366f1'},
+  {n:'clvsd',badge:'admin',col:'#f59e0b'},
+  {n:'aegis',badge:'ai',col:'#00d4ff'},
+  {n:'servers',badge:'public',col:'#35ed7e'},
+  {n:'order',badge:'public',col:'#35ed7e'},
+  {n:'fulfill',badge:'admin',col:'#f59e0b'},
+  {n:'shard',badge:'public',col:'#35ed7e'},
+  {n:'info',badge:'public',col:'#35ed7e'},
+  {n:'forums',badge:'public',col:'#35ed7e'},
+  {n:'group',badge:'public',col:'#35ed7e'},
+  {n:'announce',badge:'admin',col:'#f59e0b'},
+  {n:'ban',badge:'mod',col:'#ff5533'},
+  {n:'timeout',badge:'mod',col:'#ff5533'},
+  {n:'role',badge:'admin',col:'#f59e0b'},
+  {n:'ticket',badge:'admin',col:'#f59e0b'},
+  {n:'poll',badge:'admin',col:'#f59e0b'},
+  {n:'giveaway',badge:'admin',col:'#f59e0b'},
+  {n:'rules',badge:'public',col:'#35ed7e'},
+  {n:'map',badge:'public',col:'#35ed7e'},
+  {n:'report',badge:'public',col:'#35ed7e'},
+  {n:'warn',badge:'mod',col:'#ff5533'},
+  {n:'whois',badge:'public',col:'#35ed7e'},
+  {n:'patreon',badge:'public',col:'#35ed7e'},
+];
+
+const DV_ENDPOINTS = [
+  {method:'GET', path:'/health',               label:'Health Check'},
+  {method:'GET', path:'/api/servers',           label:'ARK Servers'},
+  {method:'GET', path:'/api/minecraft/status',  label:'Minecraft Status'},
+  {method:'GET', path:'/donation-goal',         label:'Donation Goal'},
+  {method:'GET', path:'/api/aegis/stats',       label:'AEGIS Stats'},
+  {method:'GET', path:'/api/knowledge',         label:'Knowledge Base'},
+  {method:'GET', path:'/api/announcements',     label:'Announcements'},
+  {method:'GET', path:'/api/events',            label:'Events'},
+];
+
+const DV_ENV_VARS = [
+  {key:'DISCORD_BOT_TOKEN',         label:'Discord Bot Token',     critical:true},
+  {key:'DISCORD_CLIENT_ID',         label:'Discord Client ID',     critical:true},
+  {key:'DISCORD_CLIENT_SECRET',     label:'Discord Client Secret', critical:true},
+  {key:'DISCORD_GUILD_ID',          label:'Discord Guild ID',      critical:true},
+  {key:'SUPABASE_URL',              label:'Supabase URL',          critical:true},
+  {key:'SUPABASE_SERVICE_ROLE_KEY', label:'Supabase Service Key',  critical:true},
+  {key:'ANTHROPIC_API_KEY',         label:'Anthropic API Key',     critical:true},
+  {key:'JWT_SECRET',                label:'JWT Secret',            critical:true},
+  {key:'NITRADO_API_KEY',            label:'Nitrado API Key',        critical:true},
+  {key:'AEGIS_CHANNEL_ID',          label:'AEGIS Channel ID',      critical:false},
+  {key:'ADMIN_TOKEN',               label:'Admin Token',           critical:false},
+  {key:'DISCORD_WEBHOOK_URL',       label:'Discord Webhook URL',   critical:false},
+];
+
+let dvLoaded = false;
+
+function dvLog(msg, type='info') {
+  const term = document.getElementById('dv-terminal');
+  if(!term) return;
+  const colors = {info:'rgba(255,255,255,.55)', ok:'#35ed7e', error:'#ff5533', warn:'#ffb800', cmd:'#a78bfa', data:'#00d4ff'};
+  const icons  = {info:'›', ok:'✓', error:'✗', warn:'⚠', cmd:'$', data:'◆'};
+  const ts = new Date().toLocaleTimeString('en-US',{hour12:false});
+  const line = document.createElement('div');
+  line.style.cssText = `color:${colors[type]||colors.info};`;
+  line.innerHTML = `<span style="color:rgba(255,255,255,.2);">[${ts}]</span> <span style="color:${colors[type]}">${icons[type]||'›'}</span> ${msg}`;
+  term.appendChild(line);
+  term.scrollTop = term.scrollHeight;
+}
+
+function dvSetStat(id, val, color) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = val;
+  if(color) el.style.color = color;
+}
+
+async function dvCheckEndpoints() {
+  dvLog('Pinging all API endpoints...', 'cmd');
+  const container = document.getElementById('dv-endpoints');
+  container.innerHTML = '';
+  let online = 0;
+
+  for(const ep of DV_ENDPOINTS) {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:10px;';
+    row.innerHTML = `
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:rgba(255,255,255,.3);width:34px;">${ep.method}</div>
+      <div style="flex:1;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--text-2);">${ep.label}</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-3);">${ep.path}</div>
+      <div class="ep-status-${ep.path.replace(/\//g,'_')}" style="font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--text-3);">…</div>
+      <div class="ep-ping-${ep.path.replace(/\//g,'_')}" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--text-3);width:48px;text-align:right;"></div>`;
+    container.appendChild(row);
+
+    const t0 = Date.now();
+    try {
+      const r = await dvFetch(ep.path);
+      const ms = Date.now() - t0;
+      const ok = r.ok;
+      if(ok) online++;
+      const statusEl = container.querySelector(`.ep-status-${ep.path.replace(/\//g,'_')}`);
+      const pingEl   = container.querySelector(`.ep-ping-${ep.path.replace(/\//g,'_')}`);
+      if(statusEl) { statusEl.textContent = ok ? '● LIVE' : `● ${r.status}`; statusEl.style.color = ok ? '#35ed7e' : '#ff5533'; }
+      if(pingEl)   { pingEl.textContent = `${ms}ms`; pingEl.style.color = ms < 300 ? '#35ed7e' : ms < 1000 ? '#ffb800' : '#ff5533'; }
+      dvLog(`${ep.label} — ${ok?'200 OK':''+r.status} · ${ms}ms`, ok?'ok':'error');
+    } catch(e) {
+      const statusEl = container.querySelector(`.ep-status-${ep.path.replace(/\//g,'_')}`);
+      if(statusEl) { statusEl.textContent = '● DEAD'; statusEl.style.color = '#ff5533'; }
+      dvLog(`${ep.label} — UNREACHABLE: ${e.message}`, 'error');
+    }
+  }
+  dvSetStat('dv-api-status', `${online}/${DV_ENDPOINTS.length}`, online === DV_ENDPOINTS.length ? '#35ed7e' : online > 0 ? '#ffb800' : '#ff5533');
+  dvSetStat('dv-api-ping', `${online} online`, online === DV_ENDPOINTS.length ? '#35ed7e' : '#ffb800');
+  dvLog(`Endpoint scan complete — ${online}/${DV_ENDPOINTS.length} online`, online === DV_ENDPOINTS.length ? 'ok' : 'warn');
+}
+
+async function dvCheckEnv() {
+  dvLog('Validating environment via /health...', 'cmd');
+  const container = document.getElementById('dv-env');
+  container.innerHTML = '';
+  try {
+    const r = await dvFetch('/health');
+    const data = await r.json().catch(() => ({}));
+    // Health endpoint tells us what's connected
+    const connected = {
+      SUPABASE_URL: !!data.supabase || data.supabase === 'connected',
+      ANTHROPIC_API_KEY: !!data.anthropic || data.anthropic === 'connected',
+      NITRADO_API_KEY: data.nitrado === 'connected' || !!data.nitrado,
+    };
+
+    for(const env of DV_ENV_VARS) {
+      const known = connected.hasOwnProperty(env.key);
+      const ok = known ? connected[env.key] : null;
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;padding:6px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:8px;';
+      const statusColor = ok === true ? '#35ed7e' : ok === false ? '#ff5533' : '#ffb800';
+      const statusTxt   = ok === true ? '✓ OK' : ok === false ? '✗ MISSING' : '? UNVERIFIED';
+      row.innerHTML = `
+        <div style="width:10px;height:10px;border-radius:50%;background:${statusColor};flex-shrink:0;box-shadow:0 0 5px ${statusColor}40;"></div>
+        <div style="flex:1;font-family:'Share Tech Mono',monospace;font-size:.66rem;color:var(--text-2);">${env.label}</div>
+        ${env.critical ? '<div style="font-size:.55rem;color:#ff5533;font-family:\'Share Tech Mono\',monospace;border:1px solid rgba(255,85,51,.3);border-radius:3px;padding:1px 5px;">REQUIRED</div>' : ''}
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.62rem;color:${statusColor};">${statusTxt}</div>`;
+      container.appendChild(row);
+    }
+    dvLog(`Health response: supabase=${data.supabase||'?'} anthropic=${data.anthropic||'?'}`, 'data');
+  } catch(e) {
+    container.innerHTML = '<div style="padding:12px;font-size:.7rem;color:#ff5533;font-family:\'Share Tech Mono\',monospace;">⚠ API unreachable — cannot validate env</div>';
+    // Render all as unknown
+    for(const env of DV_ENV_VARS) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;padding:6px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:8px;';
+      row.innerHTML = `<div style="width:8px;height:8px;border-radius:50%;background:#ffb800;flex-shrink:0;"></div><div style="flex:1;font-family:'Share Tech Mono',monospace;font-size:.66rem;color:var(--text-2);">${env.label}</div><div style="font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#ffb800;">? UNKNOWN</div>`;
+      container.appendChild(row);
+    }
+    dvLog(`Env validation failed: ${e.message}`, 'error');
+  }
+}
+
+function dvRenderCmdRegistry() {
+  const el = document.getElementById('dv-cmd-registry');
+  if(!el) return;
+  el.innerHTML = DV_CMDS.map(c => `
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:4px 9px;display:flex;align-items:center;gap:5px;cursor:default;" title="/${c.n}">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:.65rem;color:${c.col};">/${c.n}</span>
+      <span style="font-size:.52rem;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.06em;">${c.badge}</span>
+    </div>`).join('');
+  dvSetStat('dv-cmd-count', DV_CMDS.length, '#a78bfa');
+}
+
+async function dvLoadEconomy() {
+  dvLog('Fetching economy stats...', 'cmd');
+  const el = document.getElementById('dv-economy');
+  try {
+    const r = await dvFetch('/api/aegis/stats');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    // Try wallet supply endpoint
+    const wr = await dvFetch('/api/servers').catch(() => null);
+    el.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:.6rem;color:rgba(167,139,250,.7);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Knowledge Entries</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;color:#a78bfa;">${d.total||d.count||'—'}</div>
+        </div>
+        <div style="background:rgba(53,237,126,.06);border:1px solid rgba(53,237,126,.15);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:.6rem;color:rgba(53,237,126,.7);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Auto-Learned</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;color:#35ed7e;">${d.auto_learned||d.autoLearned||'—'}</div>
+        </div>
+        <div style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:.6rem;color:rgba(0,212,255,.7);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Manual Entries</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;color:#00d4ff;">${d.manual||'—'}</div>
+        </div>
+        <div style="background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.15);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:.6rem;color:rgba(255,184,0,.7);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">Categories</div>
+          <div style="font-family:'Orbitron',monospace;font-size:1rem;color:#ffb800;">${d.categories||'—'}</div>
+        </div>
+      </div>`;
+    dvSetStat('dv-kb-count', d.total||d.count||'—', '#a78bfa');
+    dvSetStat('dv-kb-auto', `${d.auto_learned||0} auto-learned`, '#35ed7e');
+    dvLog(`Knowledge stats loaded — ${d.total||0} entries`, 'ok');
+  } catch(e) {
+    el.innerHTML = `<div style="font-size:.7rem;color:#ff5533;font-family:'Share Tech Mono',monospace;padding:8px;">⚠ Failed to load: ${e.message}</div>`;
+    dvLog(`Economy load failed: ${e.message}`, 'error');
+  }
+}
+
+async function dvLoadServers() {
+  dvLog('Fetching cluster status...', 'cmd');
+  try {
+    const r = await dvFetch('/api/servers');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    const servers = d.servers || [];
+    const online = servers.filter(s => s.status === 'online').length;
+    dvSetStat('dv-servers-online', `${online}/10`, online >= 8 ? '#35ed7e' : online >= 5 ? '#ffb800' : '#ff5533');
+    dvLog(`Cluster: ${online}/10 servers online`, online >= 8 ? 'ok' : 'warn');
+  } catch(e) {
+    dvSetStat('dv-servers-online', 'ERR', '#ff5533');
+    dvLog(`Cluster fetch failed: ${e.message}`, 'error');
+  }
+}
+
+async function dvLoadOrders() {
+  dvLog('Fetching pending orders...', 'cmd');
+  try {
+    const r = await dvFetch('/api/orders');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    const pending = (d.orders||d||[]).filter(o => o.status === 'pending').length;
+    dvSetStat('dv-orders-count', pending, pending > 0 ? '#ffb800' : '#35ed7e');
+    dvLog(`Orders: ${pending} pending fulfillment`, pending > 0 ? 'warn' : 'ok');
+  } catch(e) {
+    dvSetStat('dv-orders-count', '—', '#ff5533');
+    dvLog(`Orders fetch failed: ${e.message}`, 'error');
+  }
+}
+
+async function dvRunAll() {
+  const hasToken = !!dvToken();
+  const dot = document.getElementById('dv-live-dot');
+  const badge = document.getElementById('devops-badge');
+  const statusEl = document.getElementById('dv-term-status');
+  if(dot) dot.style.opacity = '1';
+  if(badge) badge.style.display = 'flex';
+  if(statusEl) { statusEl.textContent = 'running...'; statusEl.style.color = '#35ed7e'; }
+  dvLog('═══ DEVOPS SCAN STARTED ═══', 'cmd');
+  if(!hasToken) {
+    dvLog('⚠ No auth token — running public checks only. Click LOGIN WITH DISCORD in sidebar for full access.', 'warn');
+  } else {
+    dvLog('✓ Token present — full scan enabled', 'ok');
+  }
+  await dvCheckEndpoints();
+  await dvCheckEnv();
+  await dvLoadServers();
+  if(hasToken) {
+    await dvLoadOrders();
+    await dvLoadEconomy();
+  } else {
+    dvLog('Skipping orders + economy — auth required', 'warn');
+    dvSetStat('dv-orders-count', '—', '#ffb800');
+    dvSetStat('dv-kb-count', '—', '#ffb800');
+  }
+  dvLog('═══ SCAN COMPLETE ═══', 'ok');
+  if(statusEl) { statusEl.textContent = 'ready'; statusEl.style.color = '#35ed7e'; }
+}
+
+function dvClearLogs() {
+  const term = document.getElementById('dv-terminal');
+  if(term) term.innerHTML = '<div style="color:rgba(53,237,126,.6);">aegis@conclave:~$ <span style="color:rgba(255,255,255,.3);">log cleared</span></div>';
+}
+
+/* pulse keyframe for live dot */
+const dvStyle = document.createElement('style');
+dvStyle.textContent = '@keyframes dvpulse{0%,100%{opacity:1;box-shadow:0 0 6px #35ed7e}50%{opacity:.4;box-shadow:0 0 2px #35ed7e}}';
+document.head.appendChild(dvStyle);
+
+/* ═══════════════════════════════════════════════
+   SETTINGS ENGINE
+═══════════════════════════════════════════════ */
+const INTEGRATIONS = [
+  {key:'discord',   icon:'🎮', label:'Discord OAuth',   desc:'Guild: TheConclave · 1438103556610723922', check: d => d.discord !== false},
+  {key:'supabase',  icon:'🗃️', label:'Supabase',        desc:'Database · aegis_wallets · aegis_wallet_ledger', check: d => d.supabase === 'connected' || d.supabase === true},
+  {key:'anthropic', icon:'🤖', label:'Anthropic AI',    desc:'AEGIS intelligence · claude-sonnet-4', check: d => d.anthropic === 'connected' || d.anthropic === true},
+  {key:'nitrado',icon:'🎮',label:'Nitrado Direct API', desc:'Live player counts · RCON · 10 servers', check: d => d.nitrado === 'connected' || !!d.nitrado},
+  {key:'render',    icon:'☁️', label:'Render API',      desc:'conclave-dashboard · Node.js', check: () => true},
+  {key:'cloudflare',icon:'🧡', label:'Cloudflare Pages',desc:'theconclavedominion.com · CDN', check: () => true},
+];
+
+async function settingsLoad() {
+  const container = document.getElementById('settings-integrations');
+  const ts = document.getElementById('settings-health-ts');
+  container.innerHTML = '<div style="padding:12px 16px;font-size:.7rem;color:var(--text-3);font-family:\'Share Tech Mono\',monospace;">Checking integrations...</div>';
+
+  let healthData = {};
+  try {
+    const r = await dvFetch('/health');
+    if (r.ok) {
+      const text = await r.text();
+      try { healthData = JSON.parse(text); } catch { healthData = {render: true}; }
+    }
+    healthData.render = r.ok;
+    healthData.cloudflare = true;
+  } catch(e) {
+    healthData = {render: false};
+  }
+
+  container.innerHTML = INTEGRATIONS.map(intg => {
+    const ok = intg.check(healthData);
+    const col = ok ? '#35ed7e' : '#ff5533';
+    const label = ok ? 'CONNECTED' : 'DISCONNECTED';
+    return `<div style="display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.03);gap:12px;">
+      <div style="font-size:18px;flex-shrink:0;">${intg.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:.75rem;color:var(--text-1);font-weight:500;">${intg.label}</div>
+        <div style="font-size:.62rem;color:var(--text-3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${intg.desc}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <div style="width:7px;height:7px;border-radius:50%;background:${col};box-shadow:0 0 6px ${col}80;"></div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:${col};">${label}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  if (ts) ts.textContent = 'checked ' + new Date().toLocaleTimeString('en-US',{hour12:false});
+
+  // Also load donation goal
+  settingsLoadGoal();
+}
+
+async function settingsLoadGoal() {
+  try {
+    const r = await fetch('https://api.theconclavedominion.com/donation-goal');
+    if (!r.ok) return;
+    const d = await r.json();
+    const goal = d.goal || 500;
+    const raised = d.raised || 0;
+    const pct = Math.min(100, Math.round((raised / goal) * 100));
+    const goalInput = document.getElementById('sett-goal');
+    const raisedInput = document.getElementById('sett-raised');
+    const bar = document.getElementById('sett-goal-bar');
+    const pctEl = document.getElementById('sett-goal-pct');
+    const liveEl = document.getElementById('sett-goal-live');
+    if (goalInput) goalInput.value = goal;
+    if (raisedInput) raisedInput.value = raised;
+    if (bar) bar.style.width = pct + '%';
+    if (pctEl) { pctEl.textContent = pct + '%'; pctEl.style.color = pct >= 100 ? '#35ed7e' : pct >= 50 ? '#ffb800' : '#a78bfa'; }
+    if (liveEl) liveEl.textContent = `$${raised} of $${goal} raised`;
+  } catch(e) {}
+}
+
+async function settingsSaveGoal() {
+  const token = dvToken();
+  if (!token) { showToast('⚠ Not authenticated'); return; }
+  const goal = parseInt(document.getElementById('sett-goal')?.value) || 500;
+  const raised = parseInt(document.getElementById('sett-raised')?.value) || 0;
+  try {
+    const r = await fetch('https://api.theconclavedominion.com/api/donation', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', Authorization: 'Bearer ' + token},
+      body: JSON.stringify({goal, raised})
+    });
+    if (r.ok) {
+      showToast('✅ Donation goal saved');
+      const pct = Math.min(100, Math.round((raised/goal)*100));
+      const bar = document.getElementById('sett-goal-bar');
+      const pctEl = document.getElementById('sett-goal-pct');
+      const liveEl = document.getElementById('sett-goal-live');
+      if (bar) bar.style.width = pct + '%';
+      if (pctEl) { pctEl.textContent = pct + '%'; }
+      if (liveEl) liveEl.textContent = `$${raised} of $${goal} raised`;
+    } else {
+      showToast('❌ Save failed — ' + r.status);
+    }
+  } catch(e) { showToast('❌ API error: ' + e.message); }
+}
+
+async function settingsFireWebhook() {
+  const token = dvToken();
+  const type = document.getElementById('sett-webhook-type')?.value || 'test';
+  const resultEl = document.getElementById('sett-webhook-result');
+  if (resultEl) resultEl.textContent = '⏳ Firing...';
+  const bodies = {
+    test:          {content: '✅ **AEGIS Webhook Test** — System operational'},
+    'server-status':{content: '🗺️ **Server Status Update** — All 10 servers checked'},
+    alert:         {content: '🚨 **System Alert** — Manual alert fired from Admin panel'},
+    order:         {content: '💎 **New ClaveShard Order** — Check admin panel for details'},
+  };
+  try {
+    const r = await fetch('https://api.theconclavedominion.com/api/aegis/trigger', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', Authorization: 'Bearer ' + (token||'')},
+      body: JSON.stringify({type, message: bodies[type]?.content || '✅ Test'})
+    });
+    if (resultEl) resultEl.textContent = r.ok ? '✅ Webhook fired successfully' : `⚠ ${r.status} — check DISCORD_WEBHOOK_URL env var`;
+    if (resultEl) resultEl.style.color = r.ok ? '#35ed7e' : '#ffb800';
+  } catch(e) {
+    if (resultEl) { resultEl.textContent = '⚠ Request failed — ' + e.message; resultEl.style.color = '#ff5533'; }
+  }
+}
+
+async function settingsPostAnnouncement() {
+  const token = dvToken();
+  if (!token) { showToast('⚠ Not authenticated'); return; }
+  const title = document.getElementById('sett-ann-title')?.value?.trim();
+  const body  = document.getElementById('sett-ann-body')?.value?.trim();
+  const resultEl = document.getElementById('sett-ann-result');
+  if (!title || !body) { showToast('Title and body required'); return; }
+  if (resultEl) resultEl.textContent = '⏳ Posting...';
+  try {
+    const r = await fetch('https://api.theconclavedominion.com/api/announcements', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', Authorization: 'Bearer ' + token},
+      body: JSON.stringify({title, body, author: 'Admin Panel'})
+    });
+    if (r.ok) {
+      showToast('✅ Announcement posted');
+      document.getElementById('sett-ann-title').value = '';
+      document.getElementById('sett-ann-body').value = '';
+      if (resultEl) { resultEl.textContent = '✅ Posted successfully'; resultEl.style.color = '#35ed7e'; }
+    } else {
+      if (resultEl) { resultEl.textContent = `❌ Failed — ${r.status}`; resultEl.style.color = '#ff5533'; }
+    }
+  } catch(e) {
+    if (resultEl) { resultEl.textContent = '❌ ' + e.message; resultEl.style.color = '#ff5533'; }
+  }
+}
+
+// Auto-load settings when navigating to it (added inside navigate() above via devops hook pattern)
+</script>
+
+
+<script src="/conclave.js?v=20"></script>
+<script>
+// ── TOKEN CAPTURE — runs before anything else ──
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const urlToken = p.get('token');
+  if (urlToken) {
+    localStorage.setItem('conclave_token', urlToken);
+    // Clean token from URL without reload
+    const clean = window.location.pathname;
+    window.history.replaceState({}, '', clean);
+  }
+})();
+document.addEventListener('DOMContentLoaded', function() {
+  TC.init('index');
+
+  // Show auth state in sidebar
+  const token = localStorage.getItem('conclave_token') || sessionStorage.getItem('conclave_token') || '';
+  const authBadge = document.getElementById('sidebar-auth-badge');
+  const loginBtn   = document.getElementById('discord-login-btn');
+  if (authBadge) {
+    if (token) {
+      authBadge.textContent = '● AUTHENTICATED';
+      authBadge.style.color = '#35ed7e';
+      authBadge.style.background = 'rgba(53,237,126,.08)';
+      if (loginBtn) loginBtn.style.display = 'none';
+    } else {
+      authBadge.textContent = '● NOT LOGGED IN';
+      authBadge.style.color = '#ff5533';
+      authBadge.style.background = 'rgba(255,85,51,.08)';
+      if (loginBtn) loginBtn.style.display = 'block';
+    }
+  }
+});
+</script>
+
+
+
+
+
+
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>AEGIS AI — TheConclave Dominion</title>
+<link rel="icon" href="conclave-badge.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:"Exo 2",sans-serif;background:#020110;color:#fff;-webkit-font-smoothing:antialiased;cursor:none;}
+@media(hover:none){body{cursor:auto;}}
+
+/* ── CURSOR ── */
+#cc-o{position:fixed;top:0;left:0;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;border:1.5px solid rgba(0,200,255,.7);pointer-events:none;z-index:99999;will-change:transform;mix-blend-mode:screen;}
+#cc-i{position:fixed;top:0;left:0;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#00C8FF;pointer-events:none;z-index:99999;will-change:transform;}
+.ct{position:fixed;top:0;left:0;border-radius:50%;pointer-events:none;will-change:transform;z-index:99990;}
+
+/* ── LAYERS ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#drip-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+.grid-ov{position:fixed;inset:0;z-index:2;pointer-events:none;background-image:linear-gradient(rgba(123,47,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(123,47,255,.028) 1px,transparent 1px);background-size:40px 40px;mask:radial-gradient(ellipse 90% 90% at 50% 50%,black,transparent);}
+
+/* ── AUTH GATE ── */
+#auth-gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(2,1,16,.98);}
+.auth-card{width:100%;max-width:440px;background:rgba(4,5,26,.97);border-radius:22px;padding:2.5rem;text-align:center;position:relative;overflow:hidden;}
+.auth-card::before{content:'';position:absolute;inset:-2px;border-radius:24px;z-index:-1;background:conic-gradient(from var(--ang),#ff4400,#ffcc00,#00ffcc,#0088ff,#8844ff,#ff44cc,#ff4400);animation:borg 4s linear infinite;}
+@keyframes borg{to{--ang:360deg}}
+.auth-card::after{content:'';position:absolute;inset:2px;border-radius:20px;background:rgba(4,5,26,.97);z-index:-1;}
+.auth-inner{position:relative;z-index:2;}
+.auth-emblem{width:80px;height:80px;border-radius:50%;margin:0 auto 1.5rem;background:rgba(3,4,18,1);display:flex;align-items:center;justify-content:center;position:relative;}
+.auth-emblem::before{content:'';position:absolute;inset:-2.5px;border-radius:50%;background:conic-gradient(from var(--ang),#ff4cd2,#7b2fff,#00d4ff,#35ed7e,#ffb800,#ff4cd2);animation:borg 4s linear infinite;mask:radial-gradient(farthest-side,transparent calc(100% - 3px),black calc(100% - 3px));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),black calc(100% - 3px));}
+.auth-eye{font-size:2.2rem;filter:drop-shadow(0 0 14px rgba(123,47,255,.9));}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(123,47,255,.35);animation:pulse-out 2s ease infinite;}
+.pulse-ring:nth-child(2){animation-delay:.65s;}
+@keyframes pulse-out{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+.auth-tag{font-family:'Share Tech Mono',monospace;font-size:.64rem;letter-spacing:.4em;color:rgba(0,200,255,.65);text-transform:uppercase;margin-bottom:.5rem;}
+.auth-title{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;letter-spacing:1.5px;background:linear-gradient(90deg,#ff4cd2,#7b2fff,#00d4ff,#35ed7e,#ffb800,#ff4cd2);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:rainbow-shift 4s linear infinite;margin-bottom:.3rem;}
+@keyframes rainbow-shift{to{background-position:200% 0}}
+.auth-sub{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.32);letter-spacing:.08em;margin-bottom:2rem;}
+.auth-warning{background:rgba(255,50,50,.08);border:1px solid rgba(255,50,50,.2);border-radius:10px;padding:1rem;margin-bottom:1.5rem;font-size:.82rem;color:rgba(255,120,120,.8);line-height:1.6;}
+.auth-input{width:100%;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.65rem 1rem;color:#fff;font-family:'Share Tech Mono',monospace;font-size:.82rem;outline:none;margin-bottom:.75rem;transition:border-color .2s,box-shadow .2s;text-align:center;letter-spacing:.15em;}
+.auth-input:focus{border-color:rgba(123,47,255,.5);box-shadow:0 0 0 3px rgba(123,47,255,.1);}
+.auth-btn{width:100%;padding:.85rem;border-radius:100px;border:none;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:linear-gradient(90deg,#7b2fff,#00d4ff,#35ed7e);background-size:200%;color:#fff;animation:rainbow-shift 3s linear infinite;transition:transform .2s,box-shadow .2s;margin-bottom:1rem;}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(123,47,255,.5);}
+.auth-link{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.25);text-decoration:none;letter-spacing:.1em;}
+.auth-link:hover{color:rgba(0,212,255,.6);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MAIN APP (hidden until auth) ── */
+#app{display:none;position:fixed;inset:0;z-index:10;display:none;}
+#app.visible{display:grid;grid-template-columns:300px 1fr;height:100%;}
+
+/* ── LEFT PANEL ── */
+#panel-left{display:flex;flex-direction:column;background:rgba(2,2,14,.96);backdrop-filter:blur(24px);border-right:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;}
+#panel-left::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#ff4cd2,#7b2fff,#00d4ff,#35ed7e,#ffb800,#ff4500,#ff4cd2);background-size:100% 400%;animation:spine 5s linear infinite;z-index:1;box-shadow:2px 0 20px rgba(123,47,255,.3);}
+@keyframes spine{0%{background-position:0 0}100%{background-position:0 100%}}
+
+/* Header */
+.ai-hdr{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;}
+.ai-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.ai-emblem{width:40px;height:40px;border-radius:12px;background:rgba(3,4,18,1);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
+.ai-emblem::before{content:'';position:absolute;inset:-1px;background:conic-gradient(from var(--ang),#ff4cd2,#7b2fff,#00d4ff,#35ed7e,#ffb800,#ff4cd2);animation:borg 3s linear infinite;z-index:0;}
+.ai-emblem::after{content:'';position:absolute;inset:2px;background:rgba(3,4,18,1);border-radius:10px;z-index:1;}
+.ai-eye{position:relative;z-index:2;font-size:18px;}
+.ai-name{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#ff4cd2,#7b2fff,#00d4ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:rainbow-shift 5s linear infinite;}
+.ai-tagline{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:3px;text-transform:uppercase;margin-top:1px;}
+.ai-status{display:flex;gap:6px;flex-wrap:wrap;}
+.status-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.5px;}
+.sp-live{background:rgba(53,237,126,.1);border:1px solid rgba(53,237,126,.25);color:#35ed7e;}
+.sp-model{background:rgba(123,47,255,.12);border:1px solid rgba(123,47,255,.28);color:#c4a0ff;}
+.sp-admin{background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.25);color:#FFB800;}
+.sp-dot{width:5px;height:5px;border-radius:50%;animation:pd 2s ease infinite;}
+.spd-g{background:#35ed7e;box-shadow:0 0 6px #35ed7e;}
+.spd-v{background:#7b2fff;box-shadow:0 0 6px #7b2fff;}
+.spd-y{background:#FFB800;box-shadow:0 0 6px #FFB800;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Context selector */
+.ctx-sect{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+.ctx-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;margin-bottom:8px;}
+.ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-height:220px;overflow-y:auto;scrollbar-width:none;}.ctx-grid::-webkit-scrollbar{display:none;}
+.ctx-btn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:6px 8px;color:rgba(255,255,255,.45);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.5px;cursor:pointer;transition:all .2s;text-align:left;}
+.ctx-btn:hover{border-color:rgba(123,47,255,.35);color:rgba(200,180,255,.85);}
+.ctx-btn.active{background:rgba(123,47,255,.14);border-color:rgba(123,47,255,.45);color:#c4a0ff;box-shadow:0 0 12px rgba(123,47,255,.15);}
+.ctx-btn .ctx-ico{font-size:12px;margin-bottom:2px;display:block;}
+
+/* Sessions */
+.sess-sect{padding:10px 14px 8px;border-bottom:1px solid rgba(255,255,255,.04);flex-shrink:0;}
+.sess-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.sess-title{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.sess-new{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);border-radius:6px;padding:3px 8px;color:rgba(0,212,255,.8);font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;transition:all .2s;}
+.sess-new:hover{background:rgba(0,212,255,.2);color:#00d4ff;}
+.sess-list{display:flex;flex-direction:column;gap:3px;max-height:120px;overflow-y:auto;scrollbar-width:none;}
+.sess-item{padding:6px 10px;border-radius:7px;background:rgba(255,255,255,.03);border:1px solid transparent;cursor:pointer;transition:all .2s;}
+.sess-item:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.06);}
+.sess-item.active{background:rgba(123,47,255,.12);border-color:rgba(123,47,255,.3);}
+.sess-name{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(255,255,255,.55);letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* Params */
+.params-sect{padding:12px 14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.04);}
+.param-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.param-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.5px;color:rgba(255,255,255,.3);}
+.param-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(123,47,255,.9);font-weight:700;}
+input[type="range"]{-webkit-appearance:none;width:100%;height:3px;border-radius:2px;background:linear-gradient(90deg,rgba(123,47,255,.5),rgba(0,212,255,.5));outline:none;cursor:pointer;margin:3px 0;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#7b2fff,#00d4ff);cursor:pointer;box-shadow:0 0 8px rgba(123,47,255,.6);}
+
+/* Quick actions */
+.quick-sect{padding:12px 14px;border-top:1px solid rgba(255,255,255,.04);margin-top:auto;flex-shrink:0;}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;}
+.qbtn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px 4px;color:rgba(255,255,255,.38);font-size:14px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.qbtn span{font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:.3px;color:rgba(255,255,255,.22);}
+.qbtn:hover{background:rgba(123,47,255,.12);border-color:rgba(123,47,255,.3);color:rgba(200,180,255,.9);}
+
+/* ── RIGHT: CHAT ── */
+#panel-right{display:flex;flex-direction:column;height:100%;position:relative;}
+
+/* Chat header */
+.chat-hdr{padding:14px 20px;background:rgba(2,2,14,.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;}
+.chat-hdr-l{display:flex;align-items:center;gap:10px;}
+.chat-ctx-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:3px 9px;border-radius:100px;background:rgba(123,47,255,.14);border:1px solid rgba(123,47,255,.3);color:#c4a0ff;text-transform:uppercase;}
+.chat-hdr-r{display:flex;gap:6px;}
+.hdr-icon-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:7px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:all .2s;color:rgba(255,255,255,.45);}
+.hdr-icon-btn:hover{background:rgba(123,47,255,.12);border-color:rgba(123,47,255,.3);color:#c4a0ff;}
+
+/* Messages area */
+#chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(123,47,255,.2) transparent;}
+#chat-messages::-webkit-scrollbar{width:4px;}
+#chat-messages::-webkit-scrollbar-thumb{background:rgba(123,47,255,.2);border-radius:2px;}
+
+/* Messages */
+.msg{display:flex;gap:10px;animation:msgIn .35s cubic-bezier(0.16,1,0.3,1);}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:rgba(4,5,26,.9);}
+.ai-msg .msg-avatar{background:linear-gradient(135deg,rgba(123,47,255,.3),rgba(0,212,255,.2));border:1px solid rgba(123,47,255,.25);}
+.user-msg .msg-avatar{background:linear-gradient(135deg,rgba(255,184,0,.2),rgba(255,76,210,.15));border:1px solid rgba(255,184,0,.2);}
+.msg-bubble{max-width:70%;padding:10px 14px;border-radius:14px;font-size:.86rem;line-height:1.65;position:relative;}
+.ai-msg .msg-bubble{background:rgba(123,47,255,.1);border:1px solid rgba(123,47,255,.2);border-top-left-radius:4px;color:rgba(255,255,255,.88);}
+.user-msg .msg-bubble{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-top-right-radius:4px;color:rgba(255,255,255,.82);}
+.ai-msg .msg-bubble::before{content:'AEGIS v3.0';position:absolute;top:-18px;left:0;font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(123,47,255,.55);letter-spacing:1px;}
+.user-msg .msg-bubble::before{content:'YOU';position:absolute;top:-18px;right:0;font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(255,255,255,.28);letter-spacing:1px;}
+
+/* Thinking animation */
+.thinking-dots span{display:inline-block;animation:tdbounce .9s ease infinite;}
+.thinking-dots span:nth-child(2){animation-delay:.2s;}
+.thinking-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes tdbounce{0%,80%,100%{transform:translateY(0);opacity:.3}40%{transform:translateY(-4px);opacity:1}}
+
+/* Suggestions */
+.suggestions{padding:12px 20px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.04);background:rgba(2,2,14,.8);}
+.sug-chip{padding:5px 12px;background:rgba(123,47,255,.08);border:1px solid rgba(123,47,255,.2);border-radius:100px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.5px;color:rgba(200,180,255,.7);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.sug-chip:hover{background:rgba(123,47,255,.18);color:#c4a0ff;border-color:rgba(123,47,255,.4);}
+
+/* Input bar */
+.chat-input-wrap{padding:14px 20px;background:rgba(2,2,14,.95);backdrop-filter:blur(24px);border-top:1px solid rgba(255,255,255,.05);flex-shrink:0;}
+.input-row{display:flex;gap:8px;align-items:flex-end;}
+.input-box{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px 14px;color:#fff;font-family:'Exo 2',sans-serif;font-size:.88rem;font-weight:300;outline:none;resize:none;min-height:42px;max-height:120px;overflow-y:auto;transition:border-color .2s,box-shadow .2s;scrollbar-width:none;}
+.input-box:focus{border-color:rgba(123,47,255,.4);box-shadow:0 0 0 3px rgba(123,47,255,.08);}
+.input-box::placeholder{color:rgba(255,255,255,.2);}
+.send-btn{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#7b2fff,#00d4ff);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;flex-shrink:0;}
+.send-btn:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(123,47,255,.5);}
+.send-btn:active{transform:scale(.95);}
+.input-row-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.im-ctx{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(255,255,255,.2);letter-spacing:.5px;}
+.im-keys{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(255,255,255,.15);letter-spacing:.3px;}
+
+/* Rainbow scan line top */
+.rainbow-bar{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ff4cd2,#7b2fff,#00d4ff,#35ed7e,#ffb800,#ff4500,#ff4cd2);background-size:300%;animation:rainbow-shift 4s linear infinite;z-index:1;}
+@keyframes rainbow-shift{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+
+/* Scrollbar hide */
+.sess-list::-webkit-scrollbar{display:none;}
+
+/* Responsive */
+@media(max-width:700px){
+  #app.visible{grid-template-columns:1fr;}
+  #panel-left{display:none;}
+}
+</style>
+</head>
+<body>
+<!-- THECONCLAVE — APPLE ISLAND NAV v2 -->
+
+<script src="/nav-island.js?v=3.0" defer></script>
+
+<canvas id="bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;"></canvas>
+<script src="/bg-engine.js?v=300"></script>
+<div class="scanlines"></div>
+
+<div class="grid-ov"></div>
+
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-card" id="authCard">
+    <div class="auth-inner">
+      <div class="auth-emblem" id="authEmblem" onclick="handleEmblemClick()" style="cursor:pointer;" title="">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <div class="ae-eye">&#128065;</div>
+      </div>
+      <div class="auth-tag">TheConclave Dominion</div>
+      <h1 class="auth-title">AEGIS AI</h1>
+      <p class="auth-sub">COUNCIL INTELLIGENCE CORE</p>
+      <div class="auth-warning">&#9888; Restricted to authorized Council members. All access is logged.</div>
+
+      <!-- PRIMARY: Discord OAuth — always visible -->
+      <button onclick="loginWithDiscord()" class="auth-btn" style="display:flex;align-items:center;justify-content:center;gap:.6rem;">
+        <span style="font-size:1.1rem;">&#128172;</span> Authenticate with Discord
+      </button>
+
+      <!-- HIDDEN FALLBACK: passcode — revealed by clicking emblem 5x -->
+      <div id="fallback-gate" style="display:none;margin-top:.8rem;animation:fadeIn .3s ease;">
+        <input id="adminCode" class="auth-input" type="password" placeholder="&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;&#9632;" autocomplete="off"
+               onkeydown="if(event.key==='Enter')attemptAuth()" autofocus>
+        <button class="auth-btn" onclick="attemptAuth()" style="margin-top:.5rem;background:rgba(123,47,255,.3);animation:none;">
+          &#128065; Enter
+        </button>
+      </div>
+
+      <a href="/" class="auth-link" style="margin-top:1rem;display:block;">&#8592; Return to TheConclave</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="rainbow-bar"></div>
+
+  <!-- LEFT PANEL -->
+  <div id="panel-left">
+    <div class="ai-hdr">
+      <div class="ai-logo-row">
+        <div class="ai-emblem"><div class="ai-eye">&#128065;</div></div>
+        <div><div class="ai-name">AEGIS</div><div class="ai-tagline">Dominion Intelligence Core</div></div>
+      </div>
+      <div class="ai-status">
+        <div class="status-pill sp-live"><div class="sp-dot spd-g"></div>ONLINE</div>
+        <div class="status-pill sp-model"><div class="sp-dot spd-v"></div>CLAUDE</div>
+        <div class="status-pill sp-admin"><div class="sp-dot spd-y"></div>ADMIN</div>
+      </div>
+    </div>
+
+    <div class="ctx-sect">
+      <div class="ctx-title">Context Mode</div>
+      <div class="ctx-grid">
+        <button class="ctx-btn active" data-ctx="realm"    onclick="setCtx('realm',this)"><span class="ctx-ico">&#129430;</span>Realm</button>
+        <button class="ctx-btn" data-ctx="admin"    onclick="setCtx('admin',this)"><span class="ctx-ico">&#128065;</span>Admin</button>
+        <button class="ctx-btn" data-ctx="shards"   onclick="setCtx('shards',this)"><span class="ctx-ico">&#128142;</span>Shards</button>
+        <button class="ctx-btn" data-ctx="servers"  onclick="setCtx('servers',this)"><span class="ctx-ico">&#128421;</span>Servers</button>
+        <button class="ctx-btn" data-ctx="embed"    onclick="setCtx('embed',this)"><span class="ctx-ico">&#128196;</span>Embed</button>
+        <button class="ctx-btn" data-ctx="announce" onclick="setCtx('announce',this)"><span class="ctx-ico">&#128226;</span>Announce</button>
+        <button class="ctx-btn" data-ctx="creative" onclick="setCtx('creative',this)"><span class="ctx-ico">&#127912;</span>Creative</button>
+        <button class="ctx-btn" data-ctx="commands" onclick="setCtx('commands',this)"><span class="ctx-ico">&#9889;</span>Commands</button>
+        <button class="ctx-btn" data-ctx="forum"    onclick="setCtx('forum',this)"><span class="ctx-ico">&#128203;</span>Forum</button>
+        <button class="ctx-btn" data-ctx="lore"     onclick="setCtx('lore',this)"><span class="ctx-ico">&#128218;</span>Lore</button>
+        <button class="ctx-btn" data-ctx="rules"    onclick="setCtx('rules',this)"><span class="ctx-ico">&#128683;</span>Rules</button>
+        <button class="ctx-btn" data-ctx="free"     onclick="setCtx('free',this)"><span class="ctx-ico">&#127775;</span>Free</button>
+      </div>
+    </div>
+
+    <div class="sess-sect">
+      <div class="sess-header">
+        <div class="sess-title">Sessions</div>
+        <button class="sess-new" onclick="newSession()">+ New</button>
+      </div>
+      <div class="sess-list" id="sessList"></div>
+    </div>
+
+    <div class="params-sect">
+      <div class="ctx-title" style="margin-bottom:10px;">Parameters</div>
+      <div class="param-row">
+        <span class="param-label">Temperature</span>
+        <span class="param-val" id="tempVal">0.8</span>
+      </div>
+      <input type="range" min="0" max="10" value="8" oninput="document.getElementById('tempVal').textContent=(this.value/10).toFixed(1)">
+      <div class="param-row" style="margin-top:10px;">
+        <span class="param-label">Max Tokens</span>
+        <span class="param-val" id="tokVal">1000</span>
+      </div>
+      <input type="range" min="1" max="10" value="5" oninput="document.getElementById('tokVal').textContent=this.value*200">
+    </div>
+
+    <!-- CREATIVE TOOLS -->
+    <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);flex-shrink:0;">
+      <div class="ctx-title" style="margin-bottom:8px;">Creative Tools</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('embed')">&#128196; Generate Discord Embed</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('announce')">&#128226; Write Announcement</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('ad')">&#127775; Create Forum Ad/Promo</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('rules')">&#128683; Draft Channel Rules</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('welcome')">&#128075; Write Welcome Message</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('roleinfo')">&#127775; Role Description</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('channdesc')">&#128196; Channel Description</button>
+        <button class="ctx-btn" style="text-align:left;font-size:9px;" onclick="insertTemplate('event')">&#127882; Event Announcement</button>
+      </div>
+    </div>
+
+    <!-- TEACH AEGIS -->
+    <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);flex-shrink:0;">
+      <div class="ctx-title" style="margin-bottom:7px;">Teach AEGIS</div>
+      <input id="learnTitle" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:4px 8px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:9px;outline:none;margin-bottom:4px;" placeholder="Fact title...">
+      <textarea id="learnContent" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:4px 8px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:9px;outline:none;resize:none;height:46px;margin-bottom:4px;" placeholder="The answer or fact..."></textarea>
+      <button onclick="manualLearn()" style="width:100%;background:rgba(53,237,126,.1);border:1px solid rgba(53,237,126,.2);border-radius:6px;padding:4px;color:rgba(53,237,126,.8);font-family:'Share Tech Mono',monospace;font-size:9px;cursor:pointer;">&#128190; Save to Knowledge Base</button>
+    </div>
+
+    <div class="quick-sect">
+      <div class="ctx-title" style="margin-bottom:8px;">Quick Actions</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;">
+        <button class="qbtn" onclick="quickAction('server-status')" title="Server Status">&#127758;<span>Servers</span></button>
+        <button class="qbtn" onclick="quickAction('pending-orders')" title="Pending Orders">&#128142;<span>Orders</span></button>
+        <button class="qbtn" onclick="quickAction('embed-welcome')" title="Welcome Embed">&#128196;<span>Embed</span></button>
+        <button class="qbtn" onclick="quickAction('write-rules')" title="Write Rules">&#128683;<span>Rules</span></button>
+        <button class="qbtn" onclick="clearChat()" title="Clear Chat">&#128465;<span>Clear</span></button>
+        <button class="qbtn" onclick="exportChat()" title="Export">&#128190;<span>Export</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: CHAT -->
+  <div id="panel-right">
+    <div class="chat-hdr">
+      <div class="chat-hdr-l">
+        <span style="font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#fff;">AEGIS CORE v3.0</span>
+        <span class="chat-ctx-badge" id="ctxBadge">REALM MODE</span>
+      </div>
+      <div class="chat-hdr-r">
+        <button class="hdr-icon-btn" onclick="quickAction('help')" title="Help">?</button>
+        <a href="/admin" class="hdr-icon-btn" title="Admin Dashboard" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">&#128681;</a>
+        <a href="/" class="hdr-icon-btn" title="Back to Site" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">&#8592;</a>
+      </div>
+    </div>
+
+    <div id="chat-messages">
+      <div class="msg ai-msg">
+        <div class="msg-avatar">&#128065;</div>
+        <div class="msg-bubble">AEGIS CORE v3.0 initialized. I am the living intelligence of TheConclave Dominion — an AI trained on the realm's data, history, and Council knowledge. How can I assist you today, Council member?</div>
+      </div>
+    </div>
+
+    <div class="suggestions" id="suggestions">
+      <button class="sug-chip" onclick="useSuggestion(this)">What servers are online?</button>
+      <button class="sug-chip" onclick="useSuggestion(this)">Check pending orders</button>
+      <button class="sug-chip" onclick="useSuggestion(this)">Shard shop pricing</button>
+      <button class="sug-chip" onclick="useSuggestion(this)">Server rates & settings</button>
+      <button class="sug-chip" onclick="useSuggestion(this)">Amissa access info</button>
+    </div>
+
+    <div class="chat-input-wrap">
+      <div class="input-row-meta">
+        <span class="im-ctx" id="ctxMeta">Context: Realm Mode · TheConclave Dominion</span>
+        <span class="im-keys">Enter to send · Shift+Enter newline</span>
+      </div>
+      <div class="input-row">
+        <textarea id="chatInput" class="input-box" rows="1" placeholder="Ask AEGIS anything about the Dominion..."
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';"></textarea>
+        <button class="send-btn" onclick="sendMsg()">&#10148;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── AEGIS AI LOGIC ── */
+// Auth functions defined first — must be available before DOM renders
+function loginWithDiscord() { window.location.href = 'https://api.theconclavedominion.com/auth/discord'; }
+function handleFallbackKeydown(e) { if(e.key==='Enter') attemptAuth(); }
+
+// ── FALLBACK AUTH — hidden, triggered by clicking emblem 5x ──
+const FALLBACK_CODE = 'FENYXXX'; // secret fallback only
+let _emblemClicks = 0, _emblemTimer = null;
+
+function handleEmblemClick() {
+  _emblemClicks++;
+  clearTimeout(_emblemTimer);
+  _emblemTimer = setTimeout(() => { _emblemClicks = 0; }, 3000);
+  if (_emblemClicks >= 5) {
+    _emblemClicks = 0;
+    const fb = document.getElementById('fallback-gate');
+    if (fb) {
+      fb.style.display = fb.style.display === 'none' ? 'block' : 'none';
+      if (fb.style.display !== 'none') {
+        document.getElementById('adminCode')?.focus();
+      }
+    }
+  }
+}
+
+// Auto-bypass if Discord OAuth token already present (from AEGIS-Admin login)
+(function checkDiscordToken(){
+  // Capture token from URL (Discord OAuth redirect)
+  const p = new URLSearchParams(window.location.search);
+  const urlToken = p.get('token');
+  if (urlToken) {
+    localStorage.setItem('conclave_token', urlToken);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+  const token = localStorage.getItem('conclave_token') || sessionStorage.getItem('conclave_token');
+  if (token) {
+    // Already authenticated via Discord — bypass passcode gate
+    document.addEventListener('DOMContentLoaded', function() {
+      const gate = document.getElementById('auth-gate');
+      const app  = document.getElementById('app');
+      if (gate) gate.style.display = 'none';
+      if (app)  { app.style.display = 'grid'; app.classList.add('visible'); }
+    });
+  }
+})();
+const CONTEXTS = {
+  realm:    `You are AEGIS, the living AI intelligence of TheConclave Dominion — a 5x crossplay ARK: Survival Ascended PvE community. 10 servers: Aberration (PvP), Scorched Earth, Valguero, Amissa (Patreon), Astraeos, Lost Colony, The Island, The Center, Extinction, Volcano. Council of 12: TW, Slothie, Arbanion, Jenny, Icyreaper, Sandy, Jake, Anky/RookieReaper, Kami, Credibledevil, Rosey, Sycobitch. 5x rates, 1M weight, 350 dino level, no fall damage. CashApp: $TheConclaveDominion. Be precise and authoritative.`,
+  admin:    `You are AEGIS in Admin Mode. Help Council members with server management, player issues, order fulfillment, ban/timeout decisions, ClaveShard disputes, and community moderation. Give clear, actionable guidance.`,
+  shards:   `You are AEGIS in Shard Mode. Manage ClaveShard orders and economy. Tiers 1-30 + Insurance. Payment via $TheConclaveDominion CashApp or $ANLIKESEF Chime. Fulfilled 24-72h by Council. Know all tier contents and pricing.`,
+  servers:  `You are AEGIS in Server Mode. Expert on the 10-server ARK cluster: all IPs, ports, MapIDs, mods, rates, crossplay settings. Help with connection issues, taming questions, mod problems.`,
+  embed:    `You are AEGIS in Embed Builder Mode. Generate ready-to-copy Discord embed JSON or formatted Discord embed code for the bot. Output clean Discord.js v14 EmbedBuilder code or raw JSON that can be posted via webhook. Include all fields: title, description, color, fields, footer, thumbnail. Format as a clean code block.`,
+  announce: `You are AEGIS in Announcement Mode. Write polished, high-impact Discord announcements for TheConclave Dominion. Format for Discord markdown: bold key info, use emojis strategically, include calls-to-action. Keep tone authoritative but community-warm.`,
+  creative: `You are AEGIS in Creative Mode — the design intelligence of TheConclave Dominion. Generate Discord server graphics concepts, forum post copy, channel header text, role descriptions, banner text, promo copy, and event announcements. Use the server branding: cosmic/rainbow aesthetic, spectral energy, sacred command citadel vibe.`,
+  graphic:  `You are AEGIS in Graphic Studio Mode. Generate self-contained HTML/CSS visual graphics for TheConclave Dominion. Output ONLY a single self-contained HTML code block — a div with embedded style tag using Google Fonts (Orbitron, Exo 2). Design: deep space dark backgrounds, cosmic/rainbow prismatic borders, spectral energy glows. No external images, no JavaScript. Always output HTML in a backtick code block.`,
+  commands: `You are AEGIS in Command Builder Mode. Write Discord.js v14 slash commands for TheConclave Dominion. Output complete, production-ready command code including SlashCommandBuilder definition, execute() handler, embed responses, error handling. Reference API_BASE = https://api.theconclavedominion.com.`,
+  forum:    `You are AEGIS in Forum Mode. Generate Discord forum post content, channel descriptions, pinned message templates, and forum panel layouts for TheConclave Dominion. Output Discord-formatted markdown. Create engaging, scannable content that fits the cosmic/gaming aesthetic.`,
+  lore:     `You are AEGIS in Lore Mode. Channel the deep narrative mythology of TheConclave Dominion — the founding story, sacred hierarchy, realm history, Council origins. Write with gravitas and cosmic authority.`,
+  rules:    `You are AEGIS in Rules Mode. Draft Discord server rules, channel-specific rules, behavior guidelines, and moderation policies for TheConclave Dominion. Format as numbered Discord-markdown lists. Be firm but fair. Include consequences. Cover ARK-specific scenarios.`,
+  free:     `You are AEGIS — a highly capable AI. Help with anything: coding, writing, analysis, creative projects, Discord server setup, game strategy, and TheConclave Dominion operations. Web search enabled. Be direct and thorough.`,
+};
+const CTX_LABELS = {
+  realm:'REALM MODE', admin:'ADMIN MODE', shards:'SHARD MODE', servers:'SERVER MODE',
+  embed:'EMBED BUILDER', announce:'ANNOUNCE MODE', creative:'CREATIVE STUDIO',
+  commands:'CMD BUILDER', forum:'FORUM MODE', lore:'LORE MODE', rules:'RULES MODE', free:'FREE MODE'
+};
+const CTX_META = {
+  realm:'Context: Realm — Full Dominion Knowledge',
+  admin:'Context: Admin — Council Operations',
+  shards:'Context: Shards — ClaveShard Economy',
+  servers:'Context: Servers — ARK Cluster Tech',
+  embed:'Context: Embed Builder — Discord Embed Code',
+  announce:'Context: Announce — Discord Announcements',
+  creative:'Context: Creative Studio — Graphics & Copy',
+  commands:'Context: Cmd Builder — Discord.js v14 Code',
+  forum:'Context: Forum — Channel & Post Content',
+  lore:'Context: Lore — Dominion Mythology',
+  rules:'Context: Rules — Server Rules & Policy',
+  free:'Context: Free Mode — Unrestricted',
+};
+
+const CTX_SUGGESTIONS = {
+  realm:    ['What servers are online?','Server rates & settings','How do I access Amissa?','Who is on the Council?','ClaveShard economy explained'],
+  admin:    ['Draft a player warning message','How to handle a tame theft report','Steps to fulfill a shard order','Best ban reason templates','Create a mod log entry'],
+  shards:   ['List all shard tiers and prices','What does Tier 10 include?','How does Dino Insurance work?','Order fulfillment process','Payment methods accepted'],
+  servers:  ['All 10 server IPs and ports','How to connect on Xbox','Aberration PvP rules','ARKomatic mod features','What mods are installed?'],
+  embed:    ['Build a welcome channel embed','Create a rules embed with fields','Generate a server status embed','Build a ClaveShard shop embed','Create an event announcement embed'],
+  announce: ['Write a server maintenance announcement','Draft a new map launch post','Write a ClaveShard event promo','Announce a Council member promotion','Weekly community update template'],
+  creative: ['Write a forum promo for Amissa access','Create a channel header for #ark-general','Design a role description for @Survivor','Write a hype post for an ARK event','Create a Discord banner tagline'],
+  commands: ['Write a /status command','Build a /rules slash command','Create a /welcome command with embed','Write a /balance command','Build a custom /report command'],
+  forum:    ['Write a pinned post for #ark-servers','Create a forum welcome post','Draft a trading post template','Write a #rules channel description','Create a ClaveShard FAQ post'],
+  lore:     ['Tell me the founding story of TheConclave','Who founded the Dominion?','What is the ClaveShard mythology?','Describe the Council hierarchy','The sacred oath of the realm'],
+  rules:    ['Write full server rules (10 rules)','Draft ARK PvP boundary rules','Create #general channel rules','Write a tame ownership policy','Draft a harassment policy'],
+  free:     ['Search for latest ARK news','Help me write a Discord bot feature','Analyze my server settings','Creative writing about the Dominion','Help with anything'],
+};
+
+let currentCtx = 'realm';
+let sessions = [{id:'s1',name:'Welcome Session',messages:[]}];
+let currentSess = 'Welcome Session';
+let isThinking = false;
+
+// ── AUTH ──
+function attemptAuth() {
+  const code = document.getElementById('adminCode').value.trim();
+  const card = document.getElementById('authCard');
+  if (code === FALLBACK_CODE) {
+    card.style.animation = 'none';
+    card.style.transform = 'scale(0.92)';
+    card.style.opacity = '0';
+    card.style.transition = 'all .35s cubic-bezier(0.22,1,0.36,1)';
+    setTimeout(() => {
+      document.getElementById('auth-gate').style.display = 'none';
+      const app = document.getElementById('app');
+      app.style.display = 'grid';
+      app.classList.add('visible');
+      initChatCursor();
+    }, 380);
+  } else {
+    card.style.animation = 'shake .5s ease';
+    const sty = document.createElement('style');
+    sty.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}';
+    document.head.appendChild(sty);
+    document.getElementById('adminCode').style.borderColor = 'rgba(255,50,50,.6)';
+    setTimeout(() => {
+      card.style.animation = '';
+      document.getElementById('adminCode').style.borderColor = '';
+      document.getElementById('adminCode').value = '';
+    }, 550);
+  }
+}
+
+// ── CURSOR ──
+function initChatCursor() {
+  const o = document.createElement('div'); o.id = 'cc-o';
+  const i = document.createElement('div'); i.id = 'cc-i';
+  document.body.appendChild(o); document.body.appendChild(i);
+  const TRAIL = 5;
+  const trailCols = ['rgba(0,212,255,.5)','rgba(123,47,255,.45)','rgba(255,76,210,.4)','rgba(53,237,126,.3)','rgba(255,184,0,.25)'];
+  const dots = [], tx = [], ty = [];
+  for (let j = 0; j < TRAIL; j++) {
+    const d = document.createElement('div'); d.className = 'ct';
+    const sz = 4.5 - j*0.55;
+    d.style.cssText = `width:${sz}px;height:${sz}px;margin:-${sz/2}px 0 0 -${sz/2}px;background:${trailCols[j]};`;
+    document.body.appendChild(d); dots.push(d); tx.push(-500); ty.push(-500);
+  }
+  let mx=-500,my=-500,ox=-500,oy=-500;
+  window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+  (function raf(){
+    requestAnimationFrame(raf);
+    i.style.transform=`translate3d(${mx}px,${my}px,0)`;
+    ox+=(mx-ox)*.11; oy+=(my-oy)*.11;
+    o.style.transform=`translate3d(${ox}px,${oy}px,0)`;
+    tx[0]+=(mx-tx[0])*.28; ty[0]+=(my-ty[0])*.28;
+    dots[0].style.transform=`translate3d(${tx[0]}px,${ty[0]}px,0)`;
+    for(let j=1;j<TRAIL;j++){tx[j]+=(tx[j-1]-tx[j])*.32;ty[j]+=(ty[j-1]-ty[j])*.32;dots[j].style.transform=`translate3d(${tx[j]}px,${ty[j]}px,0)`;}
+  })();
+}
+
+// ── CONTEXT ──
+function setCtx(ctx, btn) {
+  currentCtx = ctx;
+  document.querySelectorAll('.ctx-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const badge = document.getElementById('ctxBadge');
+  if (badge) badge.textContent = CTX_LABELS[ctx] || ctx.toUpperCase();
+  const meta = document.getElementById('ctxMeta');
+  if (meta) meta.textContent = CTX_META[ctx] || 'Context: '+ctx;
+  updateSuggestions(ctx);
+}
+
+function updateSuggestions(ctx) {
+  const el = document.getElementById('suggestions');
+  if (!el) return;
+  const chips = (CTX_SUGGESTIONS[ctx] || CTX_SUGGESTIONS.realm);
+  el.innerHTML = chips.map(c => `<button class="sug-chip" onclick="useSuggestion(this)">${c}</button>`).join('');
+}
+
+const TEMPLATES = {
+  embed: `Generate a Discord embed for TheConclave Dominion with:
+- Title: [TITLE HERE]
+- Description: [DESCRIPTION HERE]
+- Color: #FFB800 (gold)
+- Fields: add 2-3 relevant fields
+- Footer: "TheConclave Dominion • 5x Crossplay"
+Output complete Discord.js v14 EmbedBuilder code I can paste directly into the bot.`,
+
+  announce: `Write a Discord announcement for TheConclave Dominion:
+Topic: [TOPIC HERE]
+Tone: Authoritative but community-warm
+Include: Key info, emojis, call-to-action
+Format: Discord markdown with **bold** and emoji headers
+Length: Medium (3-5 paragraphs)`,
+
+  ad: `Create a Discord forum promotional post for TheConclave Dominion:
+Purpose: [PURPOSE - e.g. recruit new players, promote Amissa, announce event]
+Platform: Discord forum channel
+Style: Cosmic/gaming aesthetic, high-energy
+Include: Header, body, bullet points of benefits, call-to-action with discord.gg/theconclave
+Format: Discord markdown ready to paste`,
+
+  rules: `Draft channel rules for TheConclave Dominion Discord:
+Channel: [CHANNEL NAME]
+Format: Numbered list with emoji indicators
+Include: Specific rules for this channel, consequences for violations
+Tone: Firm but fair
+Style: Discord markdown`,
+
+  welcome: `Write a welcome message for new TheConclave Dominion members:
+Include: Warm greeting, what the server is, key channels to check, ClaveShard mention, Discord link
+Format: Discord-formatted, emoji-forward
+Tone: Exciting and community-focused`,
+
+  roleinfo: `Write a Discord role description for TheConclave Dominion:
+Role: [ROLE NAME]
+Include: What the role means, how to earn it, perks/access it grants
+Tone: Prestigious, community-honoring
+Format: 2-3 sentences, emoji accent`,
+
+  channdesc: `Write a Discord channel description for TheConclave Dominion:
+Channel: [#CHANNEL-NAME]
+Purpose: [CHANNEL PURPOSE]
+Include: What the channel is for, any rules, how to use it
+Format: 1-3 sentences, emoji accent, Discord markdown`,
+
+  event: `Write a Discord event announcement for TheConclave Dominion:
+Event: [EVENT NAME]
+Details: [DATE, TIME, SERVER]
+Include: Hype intro, event details, how to participate, prizes if any
+Format: Discord markdown, emoji headers, call-to-action
+Tone: High energy, community-exciting`,
+};
+
+function insertTemplate(type) {
+  const input = document.getElementById('chatInput');
+  if (input && TEMPLATES[type]) {
+    input.value = TEMPLATES[type];
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    input.focus();
+    // Switch to matching context
+    const ctxMap = {embed:'embed', announce:'announce', ad:'creative', rules:'rules', welcome:'announce', roleinfo:'creative', channdesc:'forum', event:'announce'};
+    const targetCtx = ctxMap[type] || 'creative';
+    const btn = document.querySelector(`[data-ctx="${targetCtx}"]`);
+    if (btn) setCtx(targetCtx, btn);
+  }
+}
+
+// ── SESSIONS ──
+function renderSessions() {
+  const list = document.getElementById('sessList');
+  if (!list) return;
+  list.innerHTML = sessions.map(s => `
+    <div class="sess-item${s.name===currentSess?' active':''}" onclick="switchSess('${s.name}')">
+      <div class="sess-name">${s.name}</div>
+    </div>`).join('');
+}
+function newSession() {
+  const name = 'Session ' + (sessions.length + 1);
+  sessions.push({id:'s'+Date.now(),name,messages:[]});
+  switchSess(name);
+}
+function switchSess(name) {
+  currentSess = name;
+  renderSessions();
+  const sess = sessions.find(s=>s.name===name);
+  const box = document.getElementById('chat-messages');
+  if (!box) return;
+  if (!sess || sess.messages.length === 0) {
+    box.innerHTML = `<div class="msg ai-msg"><div class="msg-avatar">&#128065;</div><div class="msg-bubble">New session started. AEGIS ready. How can I assist, Council member?</div></div>`;
+  } else {
+    box.innerHTML = sess.messages.map(m=>buildMsgHTML(m.role, m.content)).join('');
+  }
+}
+
+function buildMsgHTML(role, content) {
+  const isAI = role === 'assistant';
+  return `<div class="msg ${isAI?'ai':'user'}-msg">
+    <div class="msg-avatar">${isAI?'&#128065;':'&#128100;'}</div>
+    <div class="msg-bubble">${content.replace(/\n/g,'<br>')}</div>
+  </div>`;
+}
+
+// ── SEND ──
+async function sendMsg() {
+  if (isThinking) return;
+  const input = document.getElementById('chatInput');
+  const box = document.getElementById('chat-messages');
+  const msg = input.value.trim();
+  if (!msg || !box) return;
+  input.value = ''; input.style.height = 'auto';
+
+  // Add user message
+  box.innerHTML += buildMsgHTML('user', msg);
+  box.scrollTop = box.scrollHeight;
+
+  // Add to session
+  const sess = sessions.find(s=>s.name===currentSess);
+  if (sess) sess.messages.push({role:'user',content:msg});
+
+  // Thinking indicator
+  isThinking = true;
+  box.innerHTML += `<div class="msg ai-msg" id="thinking-msg">
+    <div class="msg-avatar">&#128065;</div>
+    <div class="msg-bubble"><div class="thinking-dots"><span>&#9679;</span><span>&#9679;</span><span>&#9679;</span></div></div>
+  </div>`;
+  box.scrollTop = box.scrollHeight;
+
+  try {
+    const msgs = sess ? sess.messages.slice(-12) : [{role:'user',content:msg}];
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: parseInt(document.getElementById('tokVal')?.textContent) || 1000,
+        system: CONTEXTS[currentCtx] || CONTEXTS.realm,
+        messages: msgs.map(m=>({role:m.role,content:m.content})),
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || "I encountered an issue. Please try again.";
+    if (sess) sess.messages.push({role:'assistant',content:reply});
+    document.getElementById('thinking-msg')?.remove();
+    box.innerHTML += buildMsgHTML('assistant', reply);
+    box.scrollTop = box.scrollHeight;
+  } catch(e) {
+    document.getElementById('thinking-msg')?.remove();
+    box.innerHTML += buildMsgHTML('assistant', 'Connection issue. The Render API may be warming up. Please retry in a moment.');
+    box.scrollTop = box.scrollHeight;
+  }
+  isThinking = false;
+}
+
+function useSuggestion(btn) {
+  document.getElementById('chatInput').value = btn.textContent;
+  sendMsg();
+}
+
+function quickAction(action) {
+  const prompts = {
+    'server-status':  'Give me a full status report on all 10 servers in the cluster with IPs, player counts, and current status.',
+    'pending-orders': 'What is the ClaveShard order fulfillment process step by step? How do I mark orders as fulfilled?',
+    'help':           'Give me a full list of everything you can help me with as AEGIS — all modes and capabilities.',
+    'embed-welcome':  TEMPLATES.embed.replace('[TITLE HERE]','Welcome to TheConclave Dominion').replace('[DESCRIPTION HERE]','The 5x crossplay ARK: Survival Ascended community. 10 maps. All platforms. Zero compromises.'),
+    'write-rules':    'Write a complete 10-rule server ruleset for TheConclave Dominion Discord in Discord markdown format with emoji indicators.',
+  };
+  if (prompts[action]) {
+    const ctx = { 'embed-welcome':'embed', 'write-rules':'rules', 'server-status':'servers', 'pending-orders':'shards' };
+    if (ctx[action]) {
+      const btn = document.querySelector(`[data-ctx="${ctx[action]}"]`);
+      if (btn) setCtx(ctx[action], btn);
+    }
+    document.getElementById('chatInput').value = prompts[action];
+    sendMsg();
+  }
+}
+
+function clearChat() {
+  const box = document.getElementById('chat-messages');
+  if (box) box.innerHTML = `<div class="msg ai-msg"><div class="msg-avatar">&#128065;</div><div class="msg-bubble">Chat cleared. Ready for new queries, Council member.</div></div>`;
+  const sess = sessions.find(s=>s.name===currentSess);
+  if (sess) sess.messages = [];
+}
+
+function manualLearn() {
+  const title = document.getElementById('learnTitle')?.value?.trim();
+  const content = document.getElementById('learnContent')?.value?.trim();
+  if (!title || !content) return;
+  const box = document.getElementById('chat-messages');
+  fetch('https://api.theconclavedominion.com/api/aegis/learn', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ category: 'manual', title, content })
+  }).then(r => r.json()).then(d => {
+    if (d.success && box) {
+      box.innerHTML += `<div class="msg ai-msg"><div class="msg-avatar">&#128065;</div><div class="msg-bubble" style="border-color:rgba(53,237,126,.2);background:rgba(53,237,126,.06);">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.6rem;color:rgba(53,237,126,.55);margin-bottom:.25rem;">KNOWLEDGE SAVED</div>
+        I've learned: <strong>${title}</strong><br><span style="font-size:.82rem;color:rgba(255,255,255,.45);">${content.slice(0,200)}</span>
+      </div></div>`;
+      box.scrollTop = box.scrollHeight;
+      document.getElementById('learnTitle').value = '';
+      document.getElementById('learnContent').value = '';
+    }
+  }).catch(() => { if (box) box.innerHTML += buildMsgHTML('assistant', 'Could not save — API unavailable.'); });
+}
+
+function exportChat() {
+  const sess = sessions.find(s=>s.name===currentSess);
+  if (!sess) return;
+  const text = sess.messages.map(m=>`[${m.role.toUpperCase()}]: ${m.content}`).join('\n\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,'+encodeURIComponent(text);
+  a.download = 'aegis-session.txt';
+  a.click();
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  renderSessions();
+  // Init starfield + bg
+  (function initStars(){
+    const c=document.getElementById('starfield');if(!c)return;
+    const ctx=c.getContext('2d');let stars=[];
+    function resize(){c.width=window.innerWidth;c.height=window.innerHeight;stars=[];for(let i=0;i<220;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+.15,a:Math.random()*.6+.1,sp:Math.random()*.18+.02,p:Math.random()*Math.PI*2,h:Math.random()>.88?(Math.random()>.5?'rgba(0,212,255,':'rgba(123,47,255,'):'rgba(255,255,255,'});}
+    resize();window.addEventListener('resize',resize,{passive:true});
+    let last=0;(function draw(ts){requestAnimationFrame(draw);if(ts-last<18)return;last=ts;ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{s.p+=.008;s.y-=s.sp;if(s.y<0){s.y=c.height;s.x=Math.random()*c.width;}const a=s.a*(.35+Math.sin(s.p)*.35);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.h+a+')';ctx.fill();});})(0);
+  })();
+  
+  // Rainbow drip background via bg-engine
+  if (window.initImmersiveBackground) {
+    initImmersiveBackground('index');
+  } else {
+    // Fallback Three.js
+    if (window.THREE) {
+      const cv = document.getElementById('bg-canvas');
+      if (cv) {
+        const R = new THREE.WebGLRenderer({canvas:cv,antialias:false,alpha:false});
+        R.setClearColor(0x020110,1); R.setSize(window.innerWidth,window.innerHeight);
+        const S = new THREE.Scene(), C = new THREE.PerspectiveCamera(65,window.innerWidth/window.innerHeight,.1,500);
+        C.position.z = 28;
+        const N=3500,p=new Float32Array(N*3),col=new Float32Array(N*3);
+        const pal=[[1,.27,.82],[.53,.18,1],[0,.83,1],[.27,1,.48],[1,.72,0]];
+        for(let i=0;i<N;i++){p[i*3]=(Math.random()-.5)*100;p[i*3+1]=(Math.random()-.5)*75;p[i*3+2]=(Math.random()-.5)*50;const c=pal[i%pal.length];col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];}
+        const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(p,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+        const pts=new THREE.Points(geo,new THREE.PointsMaterial({size:.1,vertexColors:true,transparent:true,opacity:.4,blending:THREE.AdditiveBlending,depthWrite:false}));S.add(pts);
+        let t=0;(function loop(){requestAnimationFrame(loop);t+=.003;pts.rotation.y+=.0002;R.render(S,C);})();
+        window.addEventListener('resize',()=>{R.setSize(window.innerWidth,window.innerHeight);C.aspect=window.innerWidth/window.innerHeight;C.updateProjectionMatrix();},{passive:true});
+      }
+    }
+  }
+
+  // GSAP entrance animation for auth card
+  if (window.gsap) {
+    gsap.set('#authCard', {scale:.88, opacity:0, y:24});
+    gsap.to('#authCard', {scale:1, opacity:1, y:0, duration:1.1, ease:'back.out(1.4)', delay:.3});
+  }
+
+  document.getElementById('adminCode')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') attemptAuth();
+  });
+});
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="/conclave.js?v=20"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){TC.init('index');
+  if(!window._sweepKi){window._sweepKi=function(){document.querySelectorAll(".ki").forEach(function(s,i){setTimeout(function(){s.style.transform="translateY(0)";s.style.opacity="1";},Math.min(i*25,400));});};}
+  setTimeout(_sweepKi,100);setTimeout(_sweepKi,600);setTimeout(_sweepKi,1500);});</script>
+
+
+
+
+
+
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>
+</html>

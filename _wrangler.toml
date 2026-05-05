@@ -1,0 +1,7 @@
+# ═══════════════════════════════════════════════════════════════
+# THECONCLAVE DOMINION — Cloudflare Pages wrangler.toml
+# Project: theconclave  (collectiveradiance6-spec/conclave-dashboard frontend)
+# Deploy:  npx wrangler pages deploy . --project-name=theconclave
+# ═══════════════════════════════════════════════════════════════
+name = "theconclave"
+pages_build_output_dir = "."

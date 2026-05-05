@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sol Parade — Official Music Partner | TheConclave Dominion</title>
+<meta name="description" content="Sol Parade is the official music partner of TheConclave Dominion. Indie rock, alternative, and psychedelic vibes fueling the realm.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Share+Tech+Mono&display=swap">
+<style>
+:root{
+  --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;--gd:#FFB800;--gr:#35ED7E;
+  --bg:#020108;--glass:rgba(10,4,28,.78);--border:rgba(255,76,210,.15);
+  --fm:'Share Tech Mono',monospace;--ft:'Orbitron',sans-serif;--fe:'Exo 2',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:var(--fe);overflow-x:hidden}
+
+/* NAV */
+#nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+  background:rgba(4,1,12,.94);border-radius:100px;padding:7px 20px 7px 14px;
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  box-shadow:0 0 0 1px rgba(255,76,210,.22),0 8px 40px rgba(0,0,0,.7);}
+.n-logo{font-family:var(--ft);font-size:.6rem;font-weight:900;color:#fff;letter-spacing:.14em;text-decoration:none;}
+.n-dot{width:7px;height:7px;border-radius:50%;background:var(--pk);box-shadow:0 0 10px var(--pk);animation:pd 2s infinite;}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
+.n-links{display:flex;gap:16px;margin-left:6px;}
+.n-links a{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.38);text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.n-links a:hover,.n-links a.on{color:var(--pk);}
+@media(max-width:640px){.n-links{display:none}}
+
+/* CONCERT VIDEO HERO */
+#hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.25;
+  filter:saturate(2) hue-rotate(280deg) brightness(.85);z-index:0;pointer-events:none;}
+.hvl{position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 85% 55% at 50% 0%,rgba(255,76,210,.25),transparent 58%),
+             radial-gradient(ellipse 60% 75% at 10% 110%,rgba(123,47,255,.2),transparent 55%),
+             radial-gradient(ellipse 45% 55% at 90% 80%,rgba(255,184,0,.08),transparent 55%),
+             linear-gradient(180deg,rgba(2,1,8,.1) 0%,rgba(2,1,8,.94) 100%);}
+.hsc{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.35;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);
+  animation:sc 9s linear infinite;}
+@keyframes sc{to{background-position:0 80px}}
+
+/* Audio visualizer bars (purely decorative CSS) */
+.viz-bar-row{
+  position:absolute;bottom:0;left:0;right:0;z-index:2;
+  height:80px;display:flex;align-items:flex-end;justify-content:center;
+  gap:3px;padding:0 10%;pointer-events:none;overflow:hidden;
+}
+.vb{
+  width:4px;border-radius:2px 2px 0 0;
+  background:linear-gradient(to top,rgba(255,76,210,.6),rgba(123,47,255,.2));
+  animation:vba var(--d,.6s) ease-in-out infinite alternate;
+  transform-origin:bottom;
+}
+@keyframes vba{0%{transform:scaleY(.1)}100%{transform:scaleY(1)}}
+
+.hc{position:relative;z-index:3;text-align:center;padding:0 24px;max-width:820px;}
+.hk{font-family:var(--fm);font-size:.52rem;letter-spacing:.3em;color:rgba(255,76,210,.6);text-transform:uppercase;
+  margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem;}
+.hk::before,.hk::after{content:'';width:30px;height:1px;background:rgba(255,76,210,.28);}
+.ht{font-family:var(--ft);font-size:clamp(3.2rem,12vw,8rem);font-weight:900;line-height:.85;
+  background:linear-gradient(135deg,#FFB800 0%,#FF4CD2 40%,#7B2FFF 75%,#00D4FF 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:1rem;animation:hg 5s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 60px rgba(255,76,210,.35));}
+@keyframes hg{0%{filter:drop-shadow(0 0 40px rgba(255,76,210,.25))}100%{filter:drop-shadow(0 0 90px rgba(255,76,210,.6))}}
+.hsub{font-family:var(--fe);font-size:clamp(.85rem,2vw,1.08rem);color:rgba(255,255,255,.45);
+  max-width:520px;margin:0 auto 2rem;line-height:1.8;font-weight:300;}
+.htags{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
+.htag{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.28rem .78rem;border-radius:100px;border:1px solid rgba(255,76,210,.22);
+  background:rgba(255,76,210,.07);color:var(--pk);}
+.hbtns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
+.btn-pk{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.62rem 1.7rem;border-radius:100px;text-decoration:none;
+  background:linear-gradient(135deg,var(--pk),var(--pl));color:#fff;
+  box-shadow:0 4px 24px rgba(255,76,210,.4);transition:all .22s;display:inline-block;}
+.btn-pk:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(255,76,210,.58);}
+.btn-gs{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.62rem 1.7rem;border-radius:100px;text-decoration:none;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.45);transition:all .22s;display:inline-block;}
+.btn-gs:hover{border-color:rgba(255,76,210,.35);color:var(--pk);}
+
+/* LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+.sec{padding:5rem 0;}
+.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.3em;color:rgba(255,76,210,.42);
+  text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem;}
+.sl::after{content:'';flex:1;height:1px;background:rgba(255,76,210,.1);}
+.st{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;
+  margin-bottom:.65rem;line-height:1.05;}
+.st em{font-style:normal;background:linear-gradient(135deg,var(--pk),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ABOUT CARD */
+.about-card{background:var(--glass);border:1px solid var(--border);border-radius:24px;
+  padding:2.5rem 2rem;position:relative;overflow:hidden;}
+.about-card::before{content:'';position:absolute;top:0;right:0;width:40%;height:100%;
+  background:radial-gradient(ellipse at 100% 50%,rgba(255,76,210,.06),transparent 65%);pointer-events:none;}
+.about-card p{font-family:var(--fe);font-size:.95rem;color:rgba(255,255,255,.5);
+  line-height:1.88;font-weight:300;max-width:700px;}
+.about-card p strong{color:var(--pk);}
+
+/* STATS BAR */
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;overflow:hidden;margin:2rem 0;}
+@media(max-width:600px){.sbar{grid-template-columns:repeat(2,1fr)}}
+.sb{background:var(--glass);padding:1.5rem 1rem;text-align:center;transition:background .2s;}
+.sb:hover{background:rgba(255,76,210,.07);}
+.sbn{font-family:var(--ft);font-size:1.8rem;font-weight:900;
+  background:linear-gradient(135deg,var(--pk),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.sbl{font-family:var(--fm);font-size:.48rem;letter-spacing:.14em;
+  color:rgba(255,255,255,.22);text-transform:uppercase;margin-top:.35rem;}
+
+/* ── SPINNING RADIAL GALLERY ── */
+.radial-sec{padding:5rem 24px;text-align:center;overflow:hidden;position:relative;}
+.radial-sec::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(123,47,255,.06),transparent 65%);
+  pointer-events:none;}
+.rsec-label{font-family:var(--fm);font-size:.5rem;letter-spacing:.28em;
+  color:rgba(255,76,210,.4);text-transform:uppercase;margin-bottom:.6rem;
+  display:inline-flex;align-items:center;gap:.6rem;}
+.rsec-label::before,.rsec-label::after{content:'';width:24px;height:1px;background:rgba(255,76,210,.2);}
+.rsec-title{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;
+  color:#fff;margin-bottom:.5rem;}
+.rsec-title em{font-style:normal;background:linear-gradient(135deg,var(--pk),var(--pl));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rsec-hint{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;
+  color:rgba(255,255,255,.18);text-transform:uppercase;margin:.5rem 0 0;}
+
+/* 3D Stage */
+.radial-stage{
+  position:relative;width:100%;height:620px;
+  display:flex;align-items:center;justify-content:center;
+  perspective:1100px;margin:2rem auto;max-width:920px;
+}
+.radial-ring{
+  position:relative;width:520px;height:520px;
+  transform-style:preserve-3d;
+  animation:rspin 24s linear infinite;
+}
+.radial-ring.paused{animation-play-state:paused;}
+@keyframes rspin{
+  0%{transform:rotateY(0deg) rotateX(7deg)}
+  100%{transform:rotateY(360deg) rotateX(7deg)}
+}
+
+.rp{
+  position:absolute;top:50%;left:50%;
+  width:190px;height:230px;
+  margin-top:-115px;margin-left:-95px;
+  border-radius:18px;overflow:hidden;
+  background:var(--glass);border:1px solid var(--border);
+  backdrop-filter:blur(16px);cursor:pointer;
+  transition:box-shadow .3s,border-color .3s;
+}
+.rp:hover{
+  border-color:rgba(255,76,210,.55);
+  box-shadow:0 20px 60px rgba(255,76,210,.3),0 0 40px rgba(123,47,255,.2);
+}
+.rp-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  transition:transform .4s;
+}
+.rp:hover .rp-bg{transform:scale(1.1);}
+.rp-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(2,1,13,.97) 0%,rgba(2,1,13,.4) 55%,transparent 100%);
+}
+.rp-badge{
+  position:absolute;top:10px;right:10px;
+  font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.22rem .55rem;border-radius:100px;
+  background:rgba(255,76,210,.15);border:1px solid rgba(255,76,210,.3);color:var(--pk);
+}
+.rp-body{position:absolute;bottom:0;left:0;right:0;padding:12px;}
+.rp-label{font-family:var(--fm);font-size:.44rem;letter-spacing:.12em;
+  color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:.22rem;}
+.rp-title{font-family:var(--ft);font-size:.74rem;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.35rem;}
+.rp-link{
+  display:inline-flex;align-items:center;gap:.3rem;
+  font-family:var(--fm);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--pk);text-decoration:none;transition:gap .2s;
+}
+.rp-link:hover{gap:.5rem;}
+
+/* Center hub */
+.r-hub{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:10;width:98px;height:98px;border-radius:50%;
+  background:rgba(4,1,14,.96);border:2px solid rgba(255,76,210,.3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 0 40px rgba(255,76,210,.2),0 0 80px rgba(123,47,255,.1);
+  pointer-events:none;
+}
+.r-hub-icon{font-size:1.6rem;line-height:1;}
+.r-hub-txt{font-family:var(--fm);font-size:.36rem;letter-spacing:.14em;
+  color:rgba(255,76,210,.6);text-transform:uppercase;margin-top:.2rem;}
+
+/* Orbit glow ring */
+.r-orbit{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:550px;height:550px;border-radius:50%;
+  border:1px solid rgba(255,76,210,.06);
+  animation:orb 5s ease-in-out infinite;pointer-events:none;
+}
+@keyframes orb{
+  0%,100%{box-shadow:0 0 40px rgba(255,76,210,.04) inset,0 0 40px rgba(255,76,210,.04)}
+  50%{box-shadow:0 0 90px rgba(255,76,210,.09) inset,0 0 90px rgba(255,76,210,.07)}
+}
+@media(max-width:768px){
+  .r-orbit{width:360px;height:360px}
+  .radial-ring{width:340px;height:340px}
+  .rp{width:138px;height:168px;margin-top:-84px;margin-left:-69px}
+}
+@media(max-width:480px){
+  .radial-stage{height:420px}
+  .r-orbit{width:280px;height:280px}
+  .radial-ring{width:260px;height:260px}
+  .rp{width:108px;height:130px;margin-top:-65px;margin-left:-54px}
+}
+
+.r-controls{display:flex;gap:.65rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;}
+.rc{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.32rem .95rem;border-radius:100px;cursor:pointer;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.38);transition:all .2s;}
+.rc:hover,.rc.on{background:rgba(255,76,210,.1);border-color:rgba(255,76,210,.35);color:var(--pk);}
+
+/* CONNECT GRID */
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem;}
+.cc{background:var(--glass);border:1px solid rgba(255,255,255,.07);border-radius:18px;
+  padding:1.5rem 1.2rem;display:flex;flex-direction:column;gap:.55rem;
+  text-decoration:none;color:#fff;transition:all .22s;}
+.cc:hover{border-color:rgba(255,76,210,.35);background:rgba(255,76,210,.05);
+  transform:translateY(-3px);box-shadow:0 12px 36px rgba(255,76,210,.15);}
+.cc-icon{font-size:1.5rem;}
+.cc-lb{font-family:var(--fm);font-size:.44rem;letter-spacing:.14em;color:rgba(255,76,210,.45);text-transform:uppercase;}
+.cc-nm{font-family:var(--ft);font-size:.82rem;font-weight:700;}
+.cc-ds{font-family:var(--fe);font-size:.78rem;color:rgba(255,255,255,.32);line-height:1.5;font-weight:300;}
+.cc-ar{font-family:var(--fm);font-size:.46rem;color:var(--pk);margin-top:auto;
+  display:flex;align-items:center;gap:.3rem;transition:gap .2s;}
+.cc:hover .cc-ar{gap:.5rem;}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 24px;text-align:center;
+  font-family:var(--fm);font-size:.47rem;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase;}
+footer a{color:rgba(255,76,210,.35);text-decoration:none;}footer a:hover{color:var(--pk);}
+
+/* DISCORD FLOAT */
+#df{position:fixed;bottom:24px;right:24px;z-index:9998;
+  font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.58rem 1.2rem;border-radius:100px;
+  background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;
+  text-decoration:none;box-shadow:0 4px 24px rgba(88,101,242,.4);
+  transition:all .22s;display:flex;align-items:center;gap:.4rem;}
+#df:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(88,101,242,.55);}
+
+/* REVEAL */
+.r{opacity:0;transform:translateY(26px);transition:opacity .68s ease,transform .68s ease;}
+.r.in{opacity:1;transform:none;}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="n-logo" href="/">THECONCLAVE®</a>
+  <span class="n-dot"></span>
+  <div class="n-links">
+    <a href="/">Home</a>
+    <a href="/ark">ARK</a>
+    <a href="/promotor" class="on">Partners</a>
+    <a href="/donate">Donate</a>
+    <a href="/ai">AEGIS</a>
+  </div>
+</nav>
+
+<!-- CONCERT VIDEO HERO -->
+<section id="hero">
+  <!--
+    VIDEO: Place a live concert / music video footage at /assets/video/concert-bg.mp4
+    Free sources: Pexels.com search "concert crowd" or "music festival" — free to use.
+    Or use any performance footage you own.
+  -->
+  <video id="cv" autoplay muted loop playsinline preload="auto">
+    <source src="/assets/video/concert-bg.mp4" type="video/mp4">
+    <source src="https://cdn.pixabay.com/video/2019/11/12/28977-372221340_large.mp4" type="video/mp4">
+  </video>
+
+  <!-- Visualizer bars -->
+  <div class="viz-bar-row" id="vizBars"></div>
+
+  <div class="hvl"></div>
+  <div class="hsc"></div>
+
+  <div class="hc">
+    <div class="hk">TheConclave Dominion · Official Music Partner</div>
+    <h1 class="ht">SOL<br>PARADE</h1>
+    <p class="hsub">The Band of the Dominion — indie rock, alternative, and psychedelic vibes fueling every raid, build, and late-night tame.</p>
+    <div class="htags">
+      <span class="htag">🎸 Indie Rock</span>
+      <span class="htag">🎵 Alternative</span>
+      <span class="htag">🌀 Psychedelic</span>
+      <span class="htag">⬡ Official Partner</span>
+    </div>
+    <div class="hbtns">
+      <a class="btn-pk" href="https://linktr.ee/solparade" target="_blank" rel="noopener">🔗 All Links</a>
+      <a class="btn-gs" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Discord</a>
+      <a class="btn-gs" href="/promotor">← All Partners</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<div class="wrap">
+  <section class="sec">
+    <div class="sl r">⬡ About</div>
+    <h2 class="st r d1">The Band of <em>The Dominion</em></h2>
+    <div class="about-card r d2">
+      <p>Sol Parade is TheConclave Dominion's <strong>official music partner</strong> — the soundtrack to late-night tames, boss raids, and community events across all 10 maps. Born from within the community, a <strong>Conclave brother's own band</strong>, Sol Parade's sound is a sonic journey through indie rock and alternative vibes that perfectly captures the energy of the Dominion.<br><br>
+      Support real music from real people in our community. Every stream, share, and show ticket keeps the spirit of the realm alive — both in-game and out.</p>
+    </div>
+
+    <div class="sbar r d3">
+      <div class="sb"><div class="sbn">⬡</div><div class="sbl">Official Partner</div></div>
+      <div class="sb"><div class="sbn">🎸</div><div class="sbl">Live Shows</div></div>
+      <div class="sb"><div class="sbn">💿</div><div class="sbl">Original Music</div></div>
+      <div class="sb"><div class="sbn">🌞</div><div class="sbl">Sol Vibes</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- SPINNING RADIAL GALLERY -->
+<div class="radial-sec">
+  <div class="rsec-label r">🎬 Music & Media</div>
+  <h2 class="rsec-title r d1">Spinning <em>Radial Stage</em></h2>
+  <p class="rsec-hint r d2">Hover to pause · Click to open · Drag to spin</p>
+
+  <div class="radial-stage">
+    <div class="r-orbit"></div>
+    <div class="radial-ring" id="radialRing"></div>
+    <div class="r-hub">
+      <div class="r-hub-icon">🎵</div>
+      <div class="r-hub-txt">Sol Parade</div>
+    </div>
+  </div>
+
+  <div class="r-controls">
+    <button class="rc on" id="rcPause" onclick="toggleSpin()">⏸ Pause</button>
+    <button class="rc" onclick="setSpin(8)">⚡ Fast</button>
+    <button class="rc" onclick="setSpin(24)">◎ Normal</button>
+    <button class="rc" onclick="setSpin(48)">🌙 Slow</button>
+  </div>
+</div>
+
+<!-- CONNECT -->
+<div class="wrap">
+  <section class="sec">
+    <div class="sl r">🔗 Connect</div>
+    <h2 class="st r d1">Find Sol Parade <em>Everywhere</em></h2>
+    <div class="cc-grid r d2">
+      <a class="cc" href="https://linktr.ee/solparade" target="_blank" rel="noopener">
+        <div class="cc-icon">🔗</div><div class="cc-lb">All Platforms</div>
+        <div class="cc-nm">Linktree</div>
+        <div class="cc-ds">Spotify, Apple Music, Instagram — all in one place.</div>
+        <div class="cc-ar">Open →</div>
+      </a>
+      <a class="cc" href="https://linktr.ee/solparade" target="_blank" rel="noopener">
+        <div class="cc-icon">🎧</div><div class="cc-lb">Streaming</div>
+        <div class="cc-nm">Spotify</div>
+        <div class="cc-ds">Full discography. Stream on Spotify.</div>
+        <div class="cc-ar">Listen →</div>
+      </a>
+      <a class="cc" href="https://linktr.ee/solparade" target="_blank" rel="noopener">
+        <div class="cc-icon">🎬</div><div class="cc-lb">Video</div>
+        <div class="cc-nm">YouTube</div>
+        <div class="cc-ds">Official music videos and live performances.</div>
+        <div class="cc-ar">Watch →</div>
+      </a>
+      <a class="cc" href="https://linktr.ee/solparade" target="_blank" rel="noopener">
+        <div class="cc-icon">📸</div><div class="cc-lb">Social</div>
+        <div class="cc-nm">Instagram</div>
+        <div class="cc-ds">Photos, stories, and behind-the-scenes.</div>
+        <div class="cc-ar">Follow →</div>
+      </a>
+      <a class="cc" href="https://linktr.ee/solparade" target="_blank" rel="noopener">
+        <div class="cc-icon">🎙️</div><div class="cc-lb">Events</div>
+        <div class="cc-nm">Live Shows</div>
+        <div class="cc-ds">Upcoming shows and events — catch Sol Parade live.</div>
+        <div class="cc-ar">Shows →</div>
+      </a>
+      <a class="cc" href="https://discord.gg/theconclave" target="_blank" rel="noopener">
+        <div class="cc-icon">💬</div><div class="cc-lb">Community</div>
+        <div class="cc-nm">Discord</div>
+        <div class="cc-ds">Talk music, gaming, and vibes with the Dominion.</div>
+        <div class="cc-ar">Join →</div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div style="margin-bottom:.5rem;">
+    <a href="/">TheConclave Dominion</a> · <a href="/promotor">Partners</a> · <a href="https://discord.gg/theconclave">Discord</a>
+  </div>
+  © 2026 TheConclave Dominion · ARK: Survival Ascended · 10 Maps · 5× CrossPlay
+</footer>
+
+<a id="df" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Join Discord</a>
+
+<script>
+'use strict';
+
+/* ── VISUALIZER BARS ── */
+(function(){
+  const row = document.getElementById('vizBars');
+  for(let i=0;i<80;i++){
+    const b = document.createElement('div');
+    b.className = 'vb';
+    b.style.cssText = `--d:${0.3+Math.random()*.8}s;height:${10+Math.random()*70}%;animation-delay:${Math.random()*1.5}s;opacity:${0.3+Math.random()*.5}`;
+    row.appendChild(b);
+  }
+})();
+
+/* ── SPINNING RADIAL GALLERY ── */
+const PANELS = [
+  {label:'Latest Single',title:'Original Music',badge:'🎵 Music',
+   bg:'linear-gradient(135deg,#1a0530,#300860,rgba(255,76,210,.2))',
+   href:'https://linktr.ee/solparade',icon:'💿'},
+  {label:'Music Video',title:'Official Video',badge:'🎬 Video',
+   bg:'linear-gradient(135deg,#050820,#0a1840,rgba(0,212,255,.2))',
+   href:'https://linktr.ee/solparade',icon:'🎬'},
+  {label:'Live Set',title:'Live Performance',badge:'🎙️ Live',
+   bg:'linear-gradient(135deg,#120430,#200840,rgba(123,47,255,.2))',
+   href:'https://linktr.ee/solparade',icon:'🎙️'},
+  {label:'Press Kit',title:'Media & Press',badge:'🎨 Press',
+   bg:'linear-gradient(135deg,#0a1a00,#152800,rgba(53,237,126,.2))',
+   href:'https://linktr.ee/solparade',icon:'🎨'},
+  {label:'Instagram',title:'@SolParade',badge:'📸 Social',
+   bg:'linear-gradient(135deg,#1a0a00,#2a1200,rgba(255,184,0,.2))',
+   href:'https://linktr.ee/solparade',icon:'📸'},
+  {label:'Spotify',title:'Stream Now',badge:'🎧 Spotify',
+   bg:'linear-gradient(135deg,#001a0a,#002814,rgba(29,185,84,.2))',
+   href:'https://linktr.ee/solparade',icon:'🎧'},
+];
+
+const ring = document.getElementById('radialRing');
+let spinning = true;
+let currentDur = 24;
+
+function getRadius(){
+  const w = window.innerWidth;
+  return w<480?110:w<768?145:195;
+}
+
+function buildPanels(){
+  ring.innerHTML='';
+  const N = PANELS.length;
+  const R = getRadius();
+  PANELS.forEach((p,i)=>{
+    const angle = (360/N)*i;
+    const rad = angle*(Math.PI/180);
+    const x = R*Math.sin(rad);
+    const z = R*Math.cos(rad);
+    const el = document.createElement('div');
+    el.className='rp';
+    el.style.transform=`translateX(${x}px) translateZ(${z}px)`;
+    el.innerHTML=`
+      <div class="rp-bg" style="background:${p.bg}"></div>
+      <div class="rp-overlay"></div>
+      <div class="rp-badge">${p.badge}</div>
+      <div class="rp-body">
+        <div class="rp-label">${p.label}</div>
+        <div class="rp-title">${p.icon} ${p.title}</div>
+        <a class="rp-link" href="${p.href}" target="_blank" rel="noopener">Open →</a>
+      </div>`;
+    el.addEventListener('mouseenter',()=>ring.classList.add('paused'));
+    el.addEventListener('mouseleave',()=>{ if(spinning) ring.classList.remove('paused'); });
+    ring.appendChild(el);
+  });
+}
+
+/* Drag to spin */
+let isDragging=false, dragStart=0, currentAngle=0;
+ring.addEventListener('mousedown',e=>{isDragging=true;dragStart=e.clientX;ring.classList.add('paused');});
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  const delta=(e.clientX-dragStart)*0.3;
+  currentAngle+=delta;
+  ring.style.transform=`rotateY(${currentAngle}deg) rotateX(7deg)`;
+  dragStart=e.clientX;
+});
+window.addEventListener('mouseup',()=>{
+  isDragging=false;
+  if(spinning) ring.classList.remove('paused');
+});
+
+function toggleSpin(){
+  spinning=!spinning;
+  ring.classList.toggle('paused',!spinning);
+  const btn=document.getElementById('rcPause');
+  btn.textContent=spinning?'⏸ Pause':'▶ Resume';
+  btn.classList.toggle('on',spinning);
+}
+function setSpin(dur){
+  currentDur=dur;
+  ring.style.animationDuration=dur+'s';
+  spinning=true;
+  ring.classList.remove('paused');
+  document.getElementById('rcPause').textContent='⏸ Pause';
+}
+window.toggleSpin=toggleSpin;
+window.setSpin=setSpin;
+
+buildPanels();
+window.addEventListener('resize',buildPanels);
+
+/* ── REVEAL ── */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

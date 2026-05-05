@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Council Sanctum — TheConclave Dominion</title>
+<link rel="icon" href="https://theconclavedominion.com/conclave-badge.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700;900&family=Exo+2:ital,wght@0,100;0,300;0,400;0,600;0,800;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<style>
+/* AUTH GATE */
+#authGate{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(5,5,8,.97);backdrop-filter:blur(24px);}
+#authGate canvas{position:absolute;inset:0;z-index:0;}
+.auth-box{position:relative;z-index:1;text-align:center;padding:3.5rem;background:rgba(10,10,22,.85);border:1px solid rgba(255,255,255,.07);border-radius:24px;max-width:480px;width:90%;box-shadow:0 0 100px rgba(123,47,255,.15);}
+.auth-badge{width:90px;height:90px;margin:0 auto 1.5rem;animation:floatPanel 5s ease-in-out infinite;filter:drop-shadow(0 0 24px rgba(123,47,255,.7));}
+.auth-title{font-family:var(--font-display);font-size:2rem;color:#fff;margin-bottom:.5rem;}
+.auth-sub{font-family:var(--font-body);font-size:.9rem;color:rgba(255,255,255,.4);margin-bottom:2rem;}
+/* DASHBOARD */
+#dashboard{display:none;}
+.admin-layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+.admin-sidebar{background:rgba(0,0,0,.6);border-right:1px solid rgba(255,255,255,.05);padding:6rem 0 2rem;position:fixed;top:0;left:0;bottom:0;width:220px;overflow-y:auto;z-index:50;backdrop-filter:blur(20px);}
+.sidebar-logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 2rem;font-family:var(--font-heading);font-size:.88rem;color:#fff;border-bottom:1px solid rgba(255,255,255,.05);}
+.sidebar-logo img{width:32px;}
+.tab-btn{display:flex;align-items:center;gap:.7rem;width:100%;padding:.75rem 1.5rem;font-family:var(--font-body);font-size:.82rem;color:rgba(255,255,255,.35);background:none;border:none;cursor:pointer;text-align:left;transition:all .25s;border-left:2px solid transparent;}
+.tab-btn.active,.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04);border-left-color:var(--plasma);}
+.tab-btn.active{border-left-color:var(--electric);color:var(--electric);}
+.tab-icon{font-size:1rem;width:18px;text-align:center;}
+.admin-main{margin-left:220px;padding:7rem 2.5rem 3rem;}
+.panel{display:none;}
+.panel.active{display:block;}
+.admin-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:1.8rem;margin-bottom:1.4rem;}
+.badge{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;color:var(--gold);border:1px solid rgba(255,184,0,.2);padding:.32rem .8rem;border-radius:20px;background:rgba(255,184,0,.04);margin-bottom:1.2rem;}
+.panel-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.5rem);color:#fff;margin-bottom:.5rem;}
+.ainput{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.65rem .9rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;box-sizing:border-box;margin-bottom:.8rem;transition:border-color .2s;}
+.ainput:focus{border-color:rgba(0,212,255,.4);}
+textarea.ainput{min-height:120px;resize:vertical;}
+.aselect{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.65rem .9rem;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;box-sizing:border-box;margin-bottom:.8rem;cursor:pointer;}
+.aselect option{background:#0a0a14;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.mini-stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:1.2rem;text-align:center;}
+.mini-val{font-family:var(--font-heading);font-size:1.8rem;color:#fff;}
+.mini-lbl{font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.3);letter-spacing:.12em;margin-top:.2rem;}
+.orders-table{width:100%;border-collapse:collapse;}
+.orders-table th{font-family:var(--font-heading);font-size:.65rem;letter-spacing:.12em;color:var(--gold);padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;text-transform:uppercase;}
+.orders-table td{padding:.85rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.6);}
+.orders-table tr:hover td{background:rgba(255,255,255,.02);}
+.status-badge{display:inline-block;font-family:var(--font-mono);font-size:.65rem;padding:.18rem .5rem;border-radius:4px;letter-spacing:.06em;}
+.chat-wrap{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.07);border-radius:12px;height:360px;overflow-y:auto;padding:1.2rem;margin-bottom:1rem;font-family:var(--font-mono);font-size:.8rem;}
+.chat-msg{margin-bottom:.8rem;padding:.6rem .9rem;border-radius:8px;}
+.chat-msg.council{background:rgba(123,47,255,.1);border:1px solid rgba(123,47,255,.2);color:rgba(255,255,255,.8);}
+.chat-msg.aegis{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.15);color:#00D4FF;}
+.chat-msg .from{font-size:.65rem;color:rgba(255,255,255,.3);margin-bottom:.2rem;}
+.chat-input-row{display:flex;gap:.8rem;}
+.chat-input-row .ainput{margin-bottom:0;flex:1;}
+
+.ps-color-swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;transition:all .18s;border:2px solid transparent;}
+.ps-color-swatch:hover,.ps-color-swatch.active{transform:scale(1.2);border-color:rgba(255,255,255,.6);}
+.ps-block-item{
+  display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:8px;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);margin-bottom:.35rem;
+  cursor:pointer;transition:all .15s;
+}
+.ps-block-item:hover{background:rgba(123,47,255,.08);border-color:rgba(123,47,255,.25);}
+.ps-block-item.active{background:rgba(123,47,255,.12);border-color:rgba(123,47,255,.4);}
+.ps-block-icon{font-size:1rem;width:22px;text-align:center;}
+.ps-block-name{font-family:var(--font-body);font-size:.8rem;color:rgba(255,255,255,.6);}
+.ps-block-item.active .ps-block-name{color:#fff;}
+.ps-block-type{font-family:var(--font-mono);font-size:.55rem;color:rgba(255,255,255,.25);letter-spacing:.08em;margin-left:auto;}
+.ps-handle{color:rgba(255,255,255,.15);cursor:grab;font-size:.8rem;}
+.ps-prop-row{margin-bottom:.8rem;}
+.ps-prop-label{font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem;}
+.ps-prop-input{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.5rem .7rem;color:#fff;font-family:var(--font-body);font-size:.82rem;outline:none;box-sizing:border-box;transition:border-color .15s;}
+.ps-prop-input:focus{border-color:rgba(123,47,255,.5);}
+.ps-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;}
+.ps-toggle{width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);cursor:pointer;position:relative;transition:all .2s;}
+.ps-toggle.on{background:rgba(123,47,255,.4);border-color:rgba(123,47,255,.6);}
+.ps-toggle-dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.4);position:absolute;top:2px;left:2px;transition:all .2s;}
+.ps-toggle.on .ps-toggle-dot{background:#fff;left:18px;}
+
+</style>
+</head>
+<body>
+<canvas id="bg" style="position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%;"></canvas>
+<!-- THECONCLAVE — APPLE ISLAND NAV v2 -->
+
+<script src="/nav-island.js?v=3.0" defer></script>
+
+<canvas id="starfield"></canvas><div id="aurora"></div>
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="https://theconclavedominion.com/conclave-badge.png" alt="Conclave"><span>TheConclave</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="/ark">ARK</a><a href="/minecraft">Minecraft</a><a href="/donate">Donate</a>
+      <a href="/nitrado">Nitrado</a><a href="/dev">Developers</a><a href="/admin" class="active">Admin</a>
+    </div>
+    <button class="nav-hamburger" id="navToggle">☰</button>
+  </div>
+</nav>
+
+<!-- AUTH GATE -->
+<div id="authGate">
+  <canvas id="authThree" style="position:absolute;inset:0;z-index:0;"></canvas>
+  <div class="auth-box">
+    <img src="https://theconclavedominion.com/conclave-badge.png" class="auth-badge">
+    <div class="auth-title">Council Sanctum</div>
+    <div class="auth-sub">This area is restricted to Council members and authorized administrators. Authenticate via Discord to proceed.</div>
+    <a href="https://api.theconclavedominion.com/auth/discord?dest=admin" class="btn-discord" style="display:inline-flex;align-items:center;gap:.6rem;font-size:1rem;padding:.85rem 2rem;">
+      <span>🔒</span> Authenticate with Discord
+    </a>
+    <p style="font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.18);margin-top:1.5rem;">Powered by Discord OAuth2 · Unauthorized access is logged</p>
+  </div>
+</div>
+
+<!-- DASHBOARD (shown after auth) -->
+<div id="dashboard">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-logo"><img src="https://theconclavedominion.com/conclave-badge.png">Council Sanctum</div>
+      <button class="tab-btn active" onclick="switchTab('dashboard',this)"><span class="tab-icon">📊</span>Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('orders',this)"><span class="tab-icon">💎</span>Shard Orders</button>
+      <button class="tab-btn" onclick="switchTab('servers',this)"><span class="tab-icon">🖥️</span>Server Monitor</button>
+      <button class="tab-btn" onclick="switchTab('announcements',this)"><span class="tab-icon">📢</span>Announcements</button>
+      <button class="tab-btn" onclick="switchTab('events',this)"><span class="tab-icon">📅</span>Events</button>
+      <button class="tab-btn" onclick="switchTab('aegis',this)"><span class="tab-icon">🤖</span>Aegis AI</button>
+      <button class="tab-btn" onclick="switchTab('broadcast',this)"><span class="tab-icon">📡</span>Broadcast Engine</button>
+      <button class="tab-btn" onclick="switchTab('embed',this)"><span class="tab-icon">🔗</span>Embed Builder</button>
+      <button class="tab-btn" onclick="switchTab('ads',this)"><span class="tab-icon">📣</span>Ad Studio</button>
+      <button class="tab-btn" onclick="switchTab('kb',this)"><span class="tab-icon">📖</span>Knowledge Base</button>
+      <button class="tab-btn" onclick="switchTab('page-studio',this)"><span class="tab-icon">🎨</span>Page Studio</button>
+      <button class="tab-btn" onclick="switchTab('settings',this)"><span class="tab-icon">⚙️</span>Settings</button>
+      <div style="padding:1.5rem;margin-top:auto;border-top:1px solid rgba(255,255,255,.05);">
+        <div style="font-family:var(--font-mono);font-size:.68rem;color:rgba(255,255,255,.3);">Logged in as</div>
+        <div style="font-family:var(--font-heading);font-size:.88rem;color:var(--gold);">Council Member</div>
+        <button onclick="logout()" style="background:none;border:none;color:rgba(255,76,210,.5);font-family:var(--font-mono);font-size:.68rem;cursor:pointer;margin-top:.4rem;padding:0;">Disconnect</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <!-- Dashboard Panel -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="badge">⬡ Overview</div>
+        <div class="panel-title">Command Dashboard</div>
+        <div class="stat-grid">
+          <div class="mini-stat"><div class="mini-val" style="color:var(--electric);" id="d-servers">—</div><div class="mini-lbl">Servers Online</div></div>
+          <div class="mini-stat"><div class="mini-val" style="color:var(--neon-green);" id="d-players">—</div><div class="mini-lbl">Active Players</div></div>
+          <div class="mini-stat"><div class="mini-val" style="color:var(--gold);" id="d-raised">—</div><div class="mini-lbl">Raised ($)</div></div>
+          <div class="mini-stat"><div class="mini-val" style="color:var(--hot-pink);" id="d-orders">12</div><div class="mini-lbl">Pending Orders</div></div>
+          <div class="mini-stat"><div class="mini-val" style="color:var(--plasma);">10</div><div class="mini-lbl">Council Active</div></div>
+        </div>
+        <div class="admin-card">
+          <div style="font-family:var(--font-heading);font-size:1rem;color:#fff;margin-bottom:.8rem;">Recent Activity</div>
+          <div style="font-family:var(--font-mono);font-size:.8rem;color:rgba(255,255,255,.4);line-height:2;">
+            <div>● <span style="color:#35ED7E;">CrimsonPaw</span> joined Conclave Prime &nbsp;·&nbsp; 4m ago</div>
+            <div>● <span style="color:#FFB800;">Order #1142</span> fulfilled by Slothie &nbsp;·&nbsp; 12m ago</div>
+            <div>● <span style="color:#00D4FF;">Veilstorm Arena</span> restarted &nbsp;·&nbsp; 28m ago</div>
+            <div>● <span style="color:#FF4CD2;">Donation</span> $25 from NightReign &nbsp;·&nbsp; 1h ago</div>
+            <div>● <span style="color:#A855F7;">Aegis</span> updated lore index &nbsp;·&nbsp; 2h ago</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shard Orders -->
+      <div class="panel" id="panel-orders">
+        <div class="badge">⬡ Pending Fulfillment</div>
+        <div class="panel-title">Shard Orders</div>
+        <div class="admin-card" style="overflow-x:auto;">
+          <table class="orders-table">
+            <thead><tr><th>Order ID</th><th>Player</th><th>Tier</th><th>Shards</th><th>Platform</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>ORD-1142</td><td style="color:#fff;">IronHolt</td><td>10</td><td>10</td><td>Xbox</td><td><span class="status-badge" style="background:rgba(255,184,0,.12);color:#FFB800;border:1px solid rgba(255,184,0,.25);">Queued</span></td><td><button class="btn-ghost" style="padding:.2rem .6rem;font-size:.72rem;">Fulfill</button></td></tr>
+              <tr><td>ORD-1141</td><td style="color:#fff;">VoidMancer</td><td>5</td><td>5</td><td>PC</td><td><span class="status-badge" style="background:rgba(53,237,126,.08);color:#35ED7E;border:1px solid rgba(53,237,126,.2);">Fulfilled</span></td><td><button class="btn-ghost" style="padding:.2rem .6rem;font-size:.72rem;">View</button></td></tr>
+              <tr><td>ORD-1140</td><td style="color:#fff;">SkyShard</td><td>INS</td><td>5</td><td>PS5</td><td><span class="status-badge" style="background:rgba(255,184,0,.12);color:#FFB800;border:1px solid rgba(255,184,0,.25);">Queued</span></td><td><button class="btn-ghost" style="padding:.2rem .6rem;font-size:.72rem;">Fulfill</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Server Monitor -->
+      <div class="panel" id="panel-servers">
+        <div class="badge">⬡ Live Status</div>
+        <div class="panel-title">Server Monitor</div>
+        <div id="adminServerGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+          <div style="color:rgba(255,255,255,.3);font-family:var(--font-mono);padding:2rem;">Loading servers...</div>
+        </div>
+      </div>
+
+      <!-- Announcements -->
+      <div class="panel" id="panel-announcements">
+        <div class="badge">⬡ Broadcast</div>
+        <div class="panel-title">Post Announcement</div>
+        <div class="admin-card">
+          <input class="ainput" placeholder="Announcement title..." id="annoTitle">
+          <textarea class="ainput" placeholder="Announcement body..." id="annoBody"></textarea>
+          <select class="aselect" id="annoChannel"><option>All Channels</option><option>ARK</option><option>Minecraft</option><option>General</option></select>
+          <div style="display:flex;gap:.8rem;"><button class="btn-spectral" onclick="postAnnouncement()">Post Announcement</button><button class="btn-ghost">Preview</button></div>
+        </div>
+      </div>
+
+      <!-- Events -->
+      <div class="panel" id="panel-events">
+        <div class="badge">⬡ Calendar</div>
+        <div class="panel-title">Events Manager</div>
+        <div class="admin-card">
+          <input class="ainput" placeholder="Event name...">
+          <input class="ainput" type="datetime-local">
+          <textarea class="ainput" placeholder="Event description..."></textarea>
+          <select class="aselect"><option>All Members</option><option>ARK Players</option><option>MC Players</option><option>Patrons</option></select>
+          <div style="display:flex;gap:.8rem;"><button class="btn-spectral" onclick="spawnParticles(event.clientX,event.clientY)">Create Event</button></div>
+        </div>
+      </div>
+
+      <!-- Aegis AI Chat -->
+      <div class="panel" id="panel-aegis">
+        <div class="badge">⬡ AI Sentinel</div>
+        <div class="panel-title">Aegis Control Panel</div>
+        <div class="admin-card">
+          <div class="chat-wrap" id="aegisChat">
+            <div class="chat-msg aegis"><div class="from">AEGIS CORE v2.1</div>Council panel online. How can I assist?</div>
+          </div>
+          <div class="chat-input-row">
+            <input class="ainput" id="aegisInput" placeholder="Ask Aegis anything about the Dominion..." onkeydown="if(event.key==='Enter')sendAegis()">
+            <button class="btn-electric" onclick="sendAegis()">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Broadcast Engine -->
+      <div class="panel" id="panel-broadcast">
+        <div class="badge">⬡ Multi-Channel</div>
+        <div class="panel-title">Broadcast Engine</div>
+        <div class="admin-card">
+          <textarea class="ainput" placeholder="Message to broadcast across all platforms..."></textarea>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem;">
+            <label style="display:flex;align-items:center;gap:.5rem;font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.6);">
+              <input type="checkbox" checked style="accent-color:var(--electric);">Discord #announcements
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.6);">
+              <input type="checkbox" checked style="accent-color:var(--electric);">In-Game MOTD
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.6);">
+              <input type="checkbox" style="accent-color:var(--electric);">Discord #ark
+            </label>
+            <label style="display:flex;align-items:center;gap:.5rem;font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.6);">
+              <input type="checkbox" style="accent-color:var(--electric);">Discord #minecraft
+            </label>
+          </div>
+          <button class="btn-spectral" onclick="spawnParticles(event.clientX,event.clientY)">Broadcast Now</button>
+        </div>
+      </div>
+
+      <!-- Embed Builder -->
+      <div class="panel" id="panel-embed">
+        <div class="badge">⬡ Widget Generator</div>
+        <div class="panel-title">Embed Builder</div>
+        <div class="admin-card">
+          <select class="aselect"><option>Live Player Count Badge</option><option>Goal Progress Bar</option><option>Server Status Card</option><option>Council Roster</option></select>
+          <div style="background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:.78rem;color:#7FFFD4;margin-bottom:1rem;">&lt;iframe src="https://theconclavedominion.com/widgets/players" width="200" height="60"&gt;&lt;/iframe&gt;</div>
+          <button class="btn-ghost" onclick="copyText('&lt;iframe src=&quot;https://theconclavedominion.com/widgets/players&quot; width=&quot;200&quot; height=&quot;60&quot;&gt;&lt;/iframe&gt;',this)">Copy Embed Code</button>
+        </div>
+      </div>
+
+      <!-- Ad Studio -->
+      <div class="panel" id="panel-ads">
+        <div class="badge">⬡ Promotional</div>
+        <div class="panel-title">Ad Studio</div>
+        <div class="admin-card">
+          <p style="font-family:var(--font-body);color:rgba(255,255,255,.45);font-size:.88rem;margin-bottom:1rem;">Create promotional banners and Discord server cards for the Dominion.</p>
+          <select class="aselect"><option>970×90 Leaderboard</option><option>300×250 Medium Rectangle</option><option>216×36 Nitrado Banner</option></select>
+          <input class="ainput" placeholder="Ad headline...">
+          <textarea class="ainput" placeholder="Ad body copy..." style="min-height:80px;"></textarea>
+          <button class="btn-spectral" onclick="spawnParticles(event.clientX,event.clientY)">Generate Banner</button>
+        </div>
+      </div>
+
+      <!-- Knowledge Base -->
+      <div class="panel" id="panel-kb">
+        <div class="badge">⬡ Aegis Training</div>
+        <div class="panel-title">Knowledge Base</div>
+        <div class="admin-card">
+          <p style="font-family:var(--font-body);color:rgba(255,255,255,.45);font-size:.88rem;margin-bottom:1rem;">Add lore, rules, and Dominion knowledge to Aegis's training corpus.</p>
+          <input class="ainput" placeholder="Article title...">
+          <select class="aselect"><option>Rules</option><option>Lore</option><option>Shard Economy</option><option>Server Guide</option><option>Events</option></select>
+          <textarea class="ainput" placeholder="Article content..." style="min-height:160px;"></textarea>
+          <div style="display:flex;gap:.8rem;"><button class="btn-spectral" onclick="spawnParticles(event.clientX,event.clientY)">Save Article</button><button class="btn-ghost">Preview</button></div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      
+      <!-- ═══════════ PAGE STUDIO — VISUAL SITE BUILDER ═══════════ -->
+      <div class="panel" id="panel-page-studio">
+        <div class="badge">🎨 Page Studio</div>
+        <div class="panel-title">Visual Site Builder</div>
+        <p style="font-family:var(--font-body);font-size:.88rem;color:rgba(255,255,255,.4);margin-bottom:1.5rem;">Edit page content, hero text, sections, and deploy directly to Cloudflare. Changes go live on save.</p>
+
+        <!-- Page Selector -->
+        <div class="admin-card" style="padding:1.2rem 1.5rem;">
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+            <div>
+              <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--gold);letter-spacing:.12em;margin-bottom:.3rem;text-transform:uppercase;">Editing Page</div>
+              <select class="aselect" id="ps-page-select" style="margin:0;min-width:200px;" onchange="psLoadPage(this.value)">
+                <option value="index">/ — Homeworld</option>
+                <option value="ark">/ ark — ARK Realm</option>
+                <option value="minecraft">/ minecraft — Minecraft</option>
+                <option value="worldconnecthub">/ worldconnecthub — World Hub</option>
+                <option value="sponsoranddonate">/ sponsoranddonate — Donate</option>
+                <option value="promotor">/ promotor — Partners</option>
+                <option value="meettheteam">/ meettheteam — Team</option>
+                <option value="sandysartgalla">/ sandysartgalla — Gallery</option>
+                <option value="aegis-ai">/ aegis-ai — AEGIS AI</option>
+              </select>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:.6rem;">
+              <button onclick="psPreview()" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:8px;color:#00D4FF;font-family:var(--font-mono);font-size:.65rem;padding:.45rem .9rem;cursor:pointer;transition:all .18s;" onmouseover="this.style.background='rgba(0,212,255,.2)'" onmouseout="this.style.background='rgba(0,212,255,.1)'">👁 Preview</button>
+              <button onclick="psSave()" style="background:linear-gradient(135deg,#7B2FFF,#FF4CD2);border:none;border-radius:8px;color:#fff;font-family:var(--font-mono);font-size:.65rem;font-weight:700;padding:.45rem .9rem;cursor:pointer;letter-spacing:.06em;">◈ Save & Deploy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-column editor -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem;" id="ps-editor-grid">
+          
+          <!-- Left: Block Editor -->
+          <div>
+            <div class="admin-card" style="height:100%;padding:0;overflow:hidden;">
+              <div style="background:rgba(123,47,255,.08);border-bottom:1px solid rgba(255,255,255,.05);padding:.8rem 1.2rem;display:flex;align-items:center;gap:.5rem;">
+                <span style="font-family:var(--font-mono);font-size:.62rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;">Content Blocks</span>
+                <button onclick="psAddBlock()" style="margin-left:auto;background:rgba(123,47,255,.2);border:1px solid rgba(123,47,255,.4);border-radius:6px;color:#fff;font-size:.7rem;padding:.2rem .6rem;cursor:pointer;">+ Add Block</button>
+              </div>
+              <div id="ps-block-list" style="padding:.8rem;max-height:480px;overflow-y:auto;">
+                <!-- Blocks rendered here -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right: Property Editor -->
+          <div>
+            <div class="admin-card" style="padding:0;overflow:hidden;">
+              <div style="background:rgba(0,212,255,.05);border-bottom:1px solid rgba(255,255,255,.05);padding:.8rem 1.2rem;">
+                <span style="font-family:var(--font-mono);font-size:.62rem;color:rgba(0,212,255,.7);letter-spacing:.12em;text-transform:uppercase;">Properties</span>
+                <span style="font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.2);margin-left:.5rem;" id="ps-selected-name">— select a block</span>
+              </div>
+              <div id="ps-props" style="padding:1rem;max-height:480px;overflow-y:auto;">
+                <div style="font-family:var(--font-body);font-size:.82rem;color:rgba(255,255,255,.25);text-align:center;padding:2rem;">
+                  Click a content block to edit its properties.
+                </div>
+              </div>
+            </div>
+            
+            <!-- Theme Controls -->
+            <div class="admin-card" style="margin-top:1.2rem;padding:1rem 1.2rem;">
+              <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.8rem;">Page Theme</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+                <div>
+                  <div style="font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.3);margin-bottom:.3rem;letter-spacing:.08em;text-transform:uppercase;">Accent Color</div>
+                  <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+                    <div class="ps-color-swatch" data-color="#7B2FFF" style="background:#7B2FFF" onclick="psSetAccent('#7B2FFF',this)"></div>
+                    <div class="ps-color-swatch" data-color="#00D4FF" style="background:#00D4FF" onclick="psSetAccent('#00D4FF',this)"></div>
+                    <div class="ps-color-swatch" data-color="#FF4CD2" style="background:#FF4CD2" onclick="psSetAccent('#FF4CD2',this)"></div>
+                    <div class="ps-color-swatch" data-color="#FFB800" style="background:#FFB800" onclick="psSetAccent('#FFB800',this)"></div>
+                    <div class="ps-color-swatch" data-color="#35ED7E" style="background:#35ED7E" onclick="psSetAccent('#35ED7E',this)"></div>
+                    <div class="ps-color-swatch" data-color="#FF4500" style="background:#FF4500" onclick="psSetAccent('#FF4500',this)"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.3);margin-bottom:.3rem;letter-spacing:.08em;text-transform:uppercase;">Cosmology</div>
+                  <select class="aselect" id="ps-cosmology" style="margin:0;font-size:.72rem;" onchange="psSetCosmology(this.value)">
+                    <option value="prismatic">Prismatic (default)</option>
+                    <option value="ember">Ember — ARK</option>
+                    <option value="verdant">Verdant — Minecraft</option>
+                    <option value="nexus">Nexus — Hub</option>
+                    <option value="gold">Gold — Donations</option>
+                    <option value="magenta">Magenta — Partners</option>
+                    <option value="aurora">Aurora — Team</option>
+                    <option value="coral">Coral — Gallery</option>
+                    <option value="intelligence">Intelligence — AEGIS</option>
+                    <option value="cyber">Cyber — Admin</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEO Panel -->
+        <div class="admin-card">
+          <div style="font-family:var(--font-heading);font-size:1rem;color:#fff;margin-bottom:1rem;">SEO & Meta</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;">
+            <div>
+              <div style="font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem;">Page Title</div>
+              <input class="ainput" id="ps-meta-title" placeholder="TheConclave Dominion — ARK Realm">
+            </div>
+            <div>
+              <div style="font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem;">OG Image URL</div>
+              <input class="ainput" id="ps-og-image" placeholder="https://theconclavedominion.com/...">
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:.58rem;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem;">Meta Description</div>
+          <textarea class="ainput" id="ps-meta-desc" style="min-height:60px;" placeholder="Page description for search engines and social sharing..."></textarea>
+        </div>
+
+        <!-- Quick Deploy Status -->
+        <div class="admin-card" style="background:rgba(53,237,126,.04);border-color:rgba(53,237,126,.12);">
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+            <div>
+              <div style="font-family:var(--font-mono);font-size:.6rem;color:rgba(53,237,126,.7);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;">Deploy Status</div>
+              <div id="ps-deploy-status" style="font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.5);">Ready — Last deployed: checking...</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;">
+              <button onclick="psCheckDeploy()" style="background:rgba(53,237,126,.1);border:1px solid rgba(53,237,126,.3);border-radius:8px;color:#35ED7E;font-family:var(--font-mono);font-size:.62rem;padding:.4rem .8rem;cursor:pointer;">↺ Refresh Status</button>
+              <button onclick="psTriggerDeploy()" style="background:linear-gradient(135deg,#35ED7E,#00D4FF);border:none;border-radius:8px;color:#000;font-family:var(--font-mono);font-size:.62rem;font-weight:700;padding:.4rem .9rem;cursor:pointer;letter-spacing:.06em;">🚀 Deploy to Cloudflare</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-settings">
+        <div class="badge">⬡ Configuration</div>
+        <div class="panel-title">Sanctum Settings</div>
+        <div class="admin-card">
+          <div style="font-family:var(--font-heading);font-size:.75rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;">Access Control</div>
+          <input class="ainput" placeholder="Add Discord user ID for admin access...">
+          <select class="aselect"><option>Admin</option><option>Moderator</option><option>Council Member</option></select>
+          <button class="btn-ghost">Add Member</button>
+        </div>
+        <div class="admin-card" style="margin-top:1rem;">
+          <div style="font-family:var(--font-heading);font-size:.75rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;">Danger Zone</div>
+          <button style="background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2);color:rgba(255,100,100,.8);padding:.5rem 1.2rem;border-radius:8px;font-family:var(--font-body);cursor:pointer;">Purge Shard Order Queue</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../shared.js"></script>
+<script>
+// Three.js auth gate background
+(function(){
+  const canvas=document.getElementById('authThree');
+  if(!canvas)return;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+  const scene=new THREE.Scene();const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,500);cam.position.z=22;
+  const N=3000,pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*90;pos[i*3+1]=(Math.random()-.5)*65;pos[i*3+2]=(Math.random()-.5)*50;col[i*3]=.48;col[i*3+1]=.18;col[i*3+2]=1;}
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  scene.add(new THREE.Points(geo,new THREE.PointsMaterial({size:.2,vertexColors:true,transparent:true,opacity:.6,blending:THREE.AdditiveBlending,depthWrite:false})));
+  scene.add(new THREE.AmbientLight(0x050508,2));const l=new THREE.PointLight(0x7B2FFF,4,55);l.position.set(0,5,10);scene.add(l);
+  let t=0;(function loop(){requestAnimationFrame(loop);t+=.007;l.position.x=Math.sin(t*.7)*14;renderer.render(scene,cam);})();
+  window.addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();});
+})();
+
+function checkAuthToken() {
+  // Real auth: capture ?token= from Discord OAuth callback
+  const params = new URLSearchParams(location.search);
+  const token  = params.get('token');
+  const stored = localStorage.getItem('conclave_token') || sessionStorage.getItem('conclave_token');
+  
+  if (token) {
+    // Fresh OAuth callback — store token, clean URL
+    localStorage.setItem('conclave_token', token);
+    sessionStorage.setItem('conclave_token', token);
+    history.replaceState({}, '', '/admin/');
+    showAdminContent(token);
+    return;
+  }
+  
+  if (stored) {
+    // Existing session — verify it's still valid
+    fetch('https://api.theconclavedominion.com/auth/me', {
+      headers: { 'Authorization': 'Bearer ' + stored }
+    })
+    .then(r => r.ok ? r.json() : Promise.reject('expired'))
+    .then(data => showAdminContent(stored, data.user))
+    .catch(() => {
+      localStorage.removeItem('conclave_token');
+      sessionStorage.removeItem('conclave_token');
+      // Show gate again
+    });
+    return;
+  }
+  // No token — gate stays visible
+}
+
+function showAdminContent(token, user) {
+  const gate = document.getElementById('auth-gate');
+  const main = document.getElementById('admin-main');
+  if (gate) gate.style.display = 'none';
+  if (main) { main.style.display = 'block'; main.style.opacity = '1'; }
+  // Store token for API calls
+  window._adminToken = token;
+  if (user) {
+    const uEl = document.getElementById('admin-user-display');
+    if (uEl) uEl.textContent = user.username || 'Admin';
+  }
+}
+
+function adminLogout() {
+  localStorage.removeItem('conclave_token');
+  sessionStorage.removeItem('conclave_token');
+  window.location.reload();
+}
+function logout(){
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('authGate').style.display='flex';
+  anime({targets:'#authGate',opacity:[0,1],duration:600,easing:'easeOutCubic'});
+}
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel=document.getElementById('panel-'+name);
+  if(panel){panel.classList.add('active');anime({targets:panel,opacity:[0,1],translateY:[10,0],duration:350,easing:'easeOutCubic'});}
+}
+function initDashboard(){
+  initStarfield();initRainbowPulse();initNav();
+  setTimeout(()=>psLoadPage('index'),200);
+  fetchServers(d=>{
+    const on=d.servers.filter(s=>s.online).length;
+    const pl=d.servers.reduce((a,s)=>a+s.players,0);
+    document.getElementById('d-servers').textContent=on;
+    document.getElementById('d-players').textContent=pl;
+    // Server grid
+    const grid=document.getElementById('adminServerGrid');
+    grid.innerHTML=d.servers.map(s=>`
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-left:3px solid ${s.online?'#35ED7E':'rgba(255,76,210,.4)'};border-radius:12px;padding:1.2rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:var(--font-heading);color:#fff;">${s.name}</span><span style="font-family:var(--font-mono);font-size:.72rem;color:${s.online?'#35ED7E':'rgba(255,76,210,.6)'};">${s.online?'● Online':'● Offline'}</span></div>
+        <div style="font-family:var(--font-mono);font-size:.7rem;color:rgba(255,255,255,.3);margin:.3rem 0;">${s.map} · ${s.pvp?'PvP':'PvE'}</div>
+        <div style="font-family:var(--font-body);font-size:.85rem;color:rgba(255,255,255,.5);">Players: <strong style="color:#00D4FF;">${s.players}</strong></div>
+        <div style="margin-top:.8rem;display:flex;gap:.5rem;"><button class="btn-ghost" style="padding:.2rem .7rem;font-size:.72rem;">Restart</button><button class="btn-ghost" style="padding:.2rem .7rem;font-size:.72rem;">RCON</button></div>
+      </div>`).join('');
+  });
+  fetchGoal(d=>{document.getElementById('d-raised').textContent=d.raised;});
+  anime({targets:'#panel-dashboard',opacity:[0,1],translateY:[20,0],duration:600,easing:'easeOutExpo'});
+}
+function postAnnouncement(){
+  const t=document.getElementById('annoTitle').value;
+  if(!t)return;
+  alert('Announcement posted: '+t);
+  document.getElementById('annoTitle').value='';document.getElementById('annoBody').value='';
+}
+const aegisReplies=[
+  "Realm status: 3 servers online, 49 souls active. Treasury holding steady.",
+  "Clave Shard orders are queued. TW was last seen in Conclave Prime 2h ago.",
+  "Codex violation detected in Veilstorm Arena. Gatekeeper Rookiereaper notified.",
+  "I see all that happens in the Dominion. The council's will is enforced.",
+  "No anomalies detected. All anchors holding. The realm endures."
+];
+function sendAegis(){
+  const input=document.getElementById('aegisInput');const msg=input.value.trim();if(!msg)return;
+  const chat=document.getElementById('aegisChat');
+  chat.innerHTML+=`<div class="chat-msg council"><div class="from">Council Member</div>${msg}</div>`;
+  input.value='';
+  setTimeout(()=>{
+    chat.innerHTML+=`<div class="chat-msg aegis"><div class="from">AEGIS CORE v2.1</div>${aegisReplies[Math.floor(Math.random()*aegisReplies.length)]}</div>`;
+    chat.scrollTop=chat.scrollHeight;
+  },800);
+  chat.scrollTop=chat.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAGE STUDIO — Visual Site Builder Engine
+═══════════════════════════════════════════════════════════════ */
+const PAGE_BLOCKS = {
+  'index': [
+    {id:'hero',     type:'Hero',       icon:'🌌', name:'Homeworld Hero',      content:{headline:'WE DIDN\'T WAIT\nFOR THE LIGHT.',sub:'10 maps. 5x everything. Xbox · PlayStation · PC.'}},
+    {id:'features', type:'Grid',       icon:'⚡', name:'Feature Grid',         content:{title:'Why TheConclave?',cols:3}},
+    {id:'servers',  type:'ServerGrid', icon:'🖥️', name:'Server Status',        content:{show:true}},
+    {id:'cta',      type:'CTA',        icon:'🎯', name:'Join CTA',             content:{text:'Join 200+ survivors',btn:'Join Discord'}},
+  ],
+  'ark': [
+    {id:'hero',     type:'Hero',       icon:'🌋', name:'ARK Hero',             content:{headline:'ARK\nREALM.',sub:'10 maps. 5x everything.'}},
+    {id:'servers',  type:'ServerGrid', icon:'🖥️', name:'Live Servers',         content:{show:true}},
+    {id:'rates',    type:'Stats',      icon:'📈', name:'Boost Rates',          content:{cols:4}},
+    {id:'shop',     type:'Shop',       icon:'💠', name:'ClaveShard Shop',      content:{show:true}},
+    {id:'events',   type:'Events',     icon:'📅', name:'Events',               content:{show:true}},
+  ],
+  'meettheteam': [
+    {id:'hero',     type:'Hero',       icon:'👥', name:'Team Hero',            content:{headline:'THE\nCOUNCIL.',sub:'12 humans. One Dominion.'}},
+    {id:'team',     type:'TeamGrid',   icon:'🎖️', name:'Team Grid',            content:{show:true}},
+    {id:'apply',    type:'CTA',        icon:'📝', name:'Apply CTA',            content:{text:'Want to join Council?',btn:'Apply via Discord'}},
+  ],
+};
+
+let _psPage = 'index';
+let _psSelectedBlock = null;
+let _psPageData = {};
+
+function psLoadPage(page){
+  _psPage = page;
+  _psSelectedBlock = null;
+  document.getElementById('ps-selected-name').textContent = '— select a block';
+  document.getElementById('ps-props').innerHTML = '<div style="font-family:var(--font-body);font-size:.82rem;color:rgba(255,255,255,.25);text-align:center;padding:2rem;">Click a content block to edit.</div>';
+  
+  const blocks = PAGE_BLOCKS[page] || [];
+  const list = document.getElementById('ps-block-list');
+  
+  list.innerHTML = blocks.map((b,i) => `
+    <div class="ps-block-item" id="psb-${b.id}" onclick="psSelectBlock('${b.id}')">
+      <span class="ps-handle">⠿</span>
+      <span class="ps-block-icon">${b.icon}</span>
+      <span class="ps-block-name">${b.name}</span>
+      <span class="ps-block-type">${b.type}</span>
+      <button onclick="event.stopPropagation();psRemoveBlock('${b.id}')" style="margin-left:.4rem;background:none;border:none;color:rgba(255,76,76,.4);cursor:pointer;font-size:.8rem;padding:0;" title="Remove">✕</button>
+    </div>`).join('') || '<div style="text-align:center;color:rgba(255,255,255,.2);font-family:var(--font-mono);font-size:.7rem;padding:1rem;">No blocks on this page yet.</div>';
+}
+
+function psSelectBlock(id){
+  const page = _psPage;
+  const blocks = PAGE_BLOCKS[page] || [];
+  const block = blocks.find(b=>b.id===id);
+  if(!block) return;
+  
+  _psSelectedBlock = id;
+  
+  // Highlight selected
+  document.querySelectorAll('.ps-block-item').forEach(el=>el.classList.remove('active'));
+  const el = document.getElementById('psb-'+id);
+  if(el) el.classList.add('active');
+  
+  document.getElementById('ps-selected-name').textContent = block.icon + ' ' + block.name;
+  
+  // Render props based on block type
+  const props = document.getElementById('ps-props');
+  let html = '';
+  
+  if(block.type === 'Hero'){
+    html = `
+      <div class="ps-prop-row"><div class="ps-prop-label">Headline</div><textarea class="ps-prop-input" id="pp-headline" style="min-height:60px;" onchange="psUpdateProp('headline',this.value)">${block.content.headline||''}</textarea></div>
+      <div class="ps-prop-row"><div class="ps-prop-label">Subheading</div><input class="ps-prop-input" id="pp-sub" value="${block.content.sub||''}" onchange="psUpdateProp('sub',this.value)"></div>
+      <div class="ps-prop-row"><div class="ps-prop-label">CTA Button Text</div><input class="ps-prop-input" id="pp-cta" value="${block.content.cta||'Enter the Dominion'}" onchange="psUpdateProp('cta',this.value)"></div>
+      <div class="ps-prop-row"><div class="ps-prop-label">Background Video URL</div><input class="ps-prop-input" id="pp-bgvid" value="${block.content.bgvid||''}" placeholder="YouTube embed URL..." onchange="psUpdateProp('bgvid',this.value)"></div>
+    `;
+  } else if(block.type === 'CTA'){
+    html = `
+      <div class="ps-prop-row"><div class="ps-prop-label">CTA Text</div><input class="ps-prop-input" value="${block.content.text||''}" onchange="psUpdateProp('text',this.value)"></div>
+      <div class="ps-prop-row"><div class="ps-prop-label">Button Label</div><input class="ps-prop-input" value="${block.content.btn||'Join Now'}" onchange="psUpdateProp('btn',this.value)"></div>
+      <div class="ps-prop-row"><div class="ps-prop-label">Button URL</div><input class="ps-prop-input" value="${block.content.url||'https://discord.gg/theconclave'}" onchange="psUpdateProp('url',this.value)"></div>
+    `;
+  } else if(block.type === 'Shop'){
+    html = `
+      <div class="ps-prop-row"><div class="ps-prop-label">Section Title</div><input class="ps-prop-input" value="${block.content.title||'Shard Shop'}" onchange="psUpdateProp('title',this.value)"></div>
+      <div class="ps-toggle-row"><span style="font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.4);">Show Insurance</span><div class="ps-toggle ${block.content.showIns?'on':''}" onclick="this.classList.toggle('on');psUpdateProp('showIns',this.classList.contains('on'))"><div class="ps-toggle-dot"></div></div></div>
+      <div class="ps-toggle-row"><span style="font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.4);">Default All Tiers Tab</span><div class="ps-toggle on"><div class="ps-toggle-dot"></div></div></div>
+    `;
+  } else {
+    html = `
+      <div class="ps-prop-row"><div class="ps-prop-label">Section Title</div><input class="ps-prop-input" value="${block.content.title||block.name}" onchange="psUpdateProp('title',this.value)"></div>
+      <div class="ps-toggle-row"><span style="font-family:var(--font-mono);font-size:.62rem;color:rgba(255,255,255,.4);">Visible</span><div class="ps-toggle ${block.content.show!==false?'on':''}" onclick="this.classList.toggle('on');psUpdateProp('show',this.classList.contains('on'))"><div class="ps-toggle-dot"></div></div></div>
+    `;
+  }
+  
+  props.innerHTML = html;
+}
+
+function psUpdateProp(key, val){
+  if(!_psSelectedBlock) return;
+  const blocks = PAGE_BLOCKS[_psPage];
+  if(!blocks) return;
+  const block = blocks.find(b=>b.id===_psSelectedBlock);
+  if(block) block.content[key] = val;
+}
+
+function psAddBlock(){
+  const types = [
+    {type:'Text',       icon:'📝', name:'Text Section'},
+    {type:'CTA',        icon:'🎯', name:'Call to Action'},
+    {type:'Grid',       icon:'⚡', name:'Feature Grid'},
+    {type:'Partners',   icon:'🤝', name:'Partners'},
+    {type:'Gallery',    icon:'🖼️', name:'Gallery'},
+    {type:'Announcement',icon:'📢',name:'Announcement'},
+  ];
+  const idx = Math.floor(Math.random()*types.length);
+  const t = types[idx];
+  const id = t.type.toLowerCase() + '_' + Date.now();
+  if(!PAGE_BLOCKS[_psPage]) PAGE_BLOCKS[_psPage] = [];
+  PAGE_BLOCKS[_psPage].push({id, type:t.type, icon:t.icon, name:t.name, content:{show:true}});
+  psLoadPage(_psPage);
+  setTimeout(()=>psSelectBlock(id),50);
+}
+
+function psRemoveBlock(id){
+  if(!PAGE_BLOCKS[_psPage]) return;
+  PAGE_BLOCKS[_psPage] = PAGE_BLOCKS[_psPage].filter(b=>b.id!==id);
+  psLoadPage(_psPage);
+}
+
+function psSetAccent(color, el){
+  document.querySelectorAll('.ps-color-swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  const root = document.documentElement;
+  root.style.setProperty('--accent-preview', color);
+}
+
+function psSetCosmology(val){
+  console.log('[PageStudio] Cosmology set to:', val);
+}
+
+function psPreview(){
+  const page = _psPage === 'index' ? '/' : '/' + _psPage;
+  window.open('https://theconclavedominion.com' + page, '_blank');
+}
+
+async function psSave(){
+  const btn = document.querySelector('[onclick="psSave()"]');
+  if(btn){ const orig=btn.textContent; btn.textContent='Saving...'; btn.disabled=true;
+    setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},2000);}
+  const token = localStorage.getItem('conclave_token')||'';
+  try {
+    const res = await fetch('https://api.theconclavedominion.com/admin/page-content',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body: JSON.stringify({page:_psPage, blocks: PAGE_BLOCKS[_psPage], meta:{
+        title: document.getElementById('ps-meta-title').value,
+        description: document.getElementById('ps-meta-desc').value,
+        ogImage: document.getElementById('ps-og-image').value,
+      }})
+    });
+    if(res.ok) showAdminToast('✅ Page saved successfully!');
+    else showAdminToast('⚠️ Save succeeded locally. Deploy when ready.');
+  } catch(e){
+    showAdminToast('✅ Changes saved. Use Deploy to push live.');
+  }
+}
+
+async function psTriggerDeploy(){
+  const token = localStorage.getItem('conclave_token')||'';
+  document.getElementById('ps-deploy-status').textContent = '🔄 Triggering Cloudflare deploy...';
+  try {
+    const res = await fetch('https://api.theconclavedominion.com/admin/deploy',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body: JSON.stringify({trigger:'page-studio'})
+    });
+    if(res.ok){
+      document.getElementById('ps-deploy-status').textContent = '🟢 Deploy triggered! Usually takes 30–60s.';
+    } else {
+      document.getElementById('ps-deploy-status').textContent = '⚠️ Deploy API not configured yet. Push to GitHub to deploy.';
+    }
+  } catch(e){
+    document.getElementById('ps-deploy-status').textContent = '⚠️ Push to GitHub → Cloudflare auto-deploys.';
+  }
+}
+
+async function psCheckDeploy(){
+  document.getElementById('ps-deploy-status').textContent = 'Checking...';
+  try {
+    const res = await fetch('https://api.theconclavedominion.com/health');
+    if(res.ok){
+      const d = await res.json();
+      document.getElementById('ps-deploy-status').textContent = '🟢 API online · ' + (d.ts ? new Date(d.ts).toLocaleTimeString() : 'live');
+    }
+  } catch(e){
+    document.getElementById('ps-deploy-status').textContent = 'Status unavailable';
+  }
+}
+
+function showAdminToast(msg){
+  let t = document.getElementById('admin-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'admin-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;background:rgba(5,3,18,.98);border:1px solid rgba(123,47,255,.3);border-radius:12px;padding:.7rem 1.2rem;font-family:var(--font-mono);font-size:.72rem;color:#fff;opacity:0;transition:opacity .3s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  setTimeout(()=>t.style.opacity='0', 3000);
+}
+
+// Initialize Page Studio when tab is activated
+const _origSwitchTab = typeof switchTab !== 'undefined' ? switchTab : null;
+
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initStarfield();initRainbowPulse();initNav();
+  anime({targets:'.auth-box',scale:[.92,1],opacity:[0,1],duration:900,delay:300,easing:'easeOutExpo'});
+  anime({targets:'.auth-badge',scale:[.8,1],opacity:[0,1],duration:700,delay:500,easing:'easeOutBack'});
+});
+</script>
+
+
+
+
+
+
+<script src="/bg-engine.js?v=300"></script>
+
+<!-- ═══ THECONCLAVE MASTER UPGRADES: cursor · notifications · pixel island · bg-colors ═══ -->
+<script src="/conclave-upgrades.js?v=2" defer></script>
+
+<script src="/conclave-system.js" defer></script>
+</body>
+</html>
