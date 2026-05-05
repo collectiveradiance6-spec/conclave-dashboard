@@ -1,0 +1,70 @@
+services:
+  - type: web
+    name: conclave-aegis-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: FRONTEND_URL
+        value: https://theconclavedominion.com
+      - key: DISCORD_GUILD_ID
+        value: "1438103556610723922"
+      - key: DISCORD_REDIRECT_URI
+        value: https://api.theconclavedominion.com/auth/discord/callback
+      - key: BEACON_CLIENT_ID
+        value: eb9ecdff-4048-4a83-8f40-f2e16d2e9a81
+      - key: SHOP_TICKETS_CHANNEL
+        value: "1492878413533282394"
+      - key: SHOP_LOG_CHANNEL
+        value: "1492870196958859436"
+      # ── Secrets ──────────────────────────────────────────────────
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DISCORD_CLIENT_ID
+        sync: false
+      - key: DISCORD_CLIENT_SECRET
+        sync: false
+      - key: DISCORD_BOT_TOKEN
+        sync: false
+      - key: DISCORD_WEBHOOK_URL
+        sync: false
+      - key: ROLE_OWNER_ID
+        sync: false
+      - key: ROLE_ADMIN_ID
+        sync: false
+      - key: ROLE_HELPER_ID
+        sync: false
+      - key: ROLE_BOOSTER_ID
+        sync: false
+      - key: ROLE_DONATOR_ID
+        sync: false
+      - key: ROLE_SURVIVOR_ID
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: BEACON_CLIENT_SECRET
+        sync: false
+      - key: BEACON_ACCESS_TOKEN
+        sync: false
+      - key: BEACON_REFRESH_TOKEN
+        sync: false
+      - key: BEACON_TOKEN_EXPIRES
+        sync: false
+      - key: BEACON_GROUP_ID
+        sync: false
+      - key: SHOP_WEBHOOK_URL
+        sync: false
+      - key: NITRADO_TOKEN
+        sync: false

@@ -1,0 +1,21 @@
+{
+  "name": "conclave-aegis-api",
+  "version": "9.0.0",
+  "description": "TheConclave Dominion — AEGIS Platform API v9.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev":   "node --watch server.js",
+    "check": "node --check server.js"
+  },
+  "engines": { "node": ">=18.0.0" },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.0",
+    "axios":                 "^1.7.0",
+    "cors":                  "^2.8.5",
+    "dotenv":                "^16.4.0",
+    "express":               "^4.21.0",
+    "express-session":       "^1.18.0",
+    "jsonwebtoken":          "^9.0.2"
+  }
+}
