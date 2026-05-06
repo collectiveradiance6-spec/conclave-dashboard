@@ -273,17 +273,6 @@ footer a{color:rgba(255,76,210,.35);text-decoration:none;}footer a:hover{color:v
 </head>
 <body>
 
-<nav id="nav">
-  <a class="n-logo" href="/">THECONCLAVE®</a>
-  <span class="n-dot"></span>
-  <div class="n-links">
-    <a href="/">Home</a>
-    <a href="/ark">ARK</a>
-    <a href="/promotor" class="on">Partners</a>
-    <a href="/donate">Donate</a>
-    <a href="/ai">AEGIS</a>
-  </div>
-</nav>
 
 <!-- CONCERT VIDEO HERO -->
 <section id="hero">
@@ -529,9 +518,9 @@ window.addEventListener('resize',buildPanels);
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.1});
 document.querySelectorAll('.r').forEach(el=>io.observe(el));
 </script>
-
-<script src="/bg-engine.js"></script>
-<script src="/nav-island.js"></script>
-
+<a id="aegis-float" href="/aegis-ai" style="position:fixed;bottom:28px;left:22px;z-index:2147483630;display:flex;align-items:center;gap:8px;padding:10px 18px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,47,255,.2));border:1px solid rgba(0,212,255,.35);border-radius:100px;font-family:Share Tech Mono,monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:#00D4FF;text-decoration:none;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,212,255,.25)">🤖 AEGIS AI</a>
+<script src="/shared.js" defer></script>
+<script src="/bg-engine.js" defer></script>
+<script src="/nav-island.js" defer></script>
 </body>
 </html>

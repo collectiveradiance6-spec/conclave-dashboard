@@ -192,19 +192,14 @@ footer a{color:rgba(100,255,218,.32);text-decoration:none;}footer a:hover{color:
 .r{opacity:0;transform:translateY(26px);transition:opacity .68s ease,transform .68s ease;}
 .r.in{opacity:1;transform:none;}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+#aegis-float{position:fixed;bottom:28px;left:22px;z-index:2147483630;display:flex;align-items:center;gap:8px;padding:10px 18px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,47,255,.2));border:1px solid rgba(0,212,255,.35);border-radius:100px;font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:#00D4FF;text-decoration:none;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,212,255,.25);transition:all .25s;animation:aegisfloat 4s ease-in-out infinite;}
+@keyframes aegisfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#aegis-float:hover{box-shadow:0 8px 36px rgba(0,212,255,.45);animation-play-state:paused;}
+.af-dot{width:7px;height:7px;border-radius:50%;background:#00D4FF;box-shadow:0 0 8px #00D4FF;flex-shrink:0;}
 </style>
 </head>
 <body>
 
-<nav id="nav">
-  <a class="n-logo" href="/">THECONCLAVE®</a>
-  <span class="n-dot"></span>
-  <div class="n-links">
-    <a href="/">Home</a><a href="/ark">ARK</a>
-    <a href="/sandysartgalla" class="on">Art Galla</a>
-    <a href="/sponsoranddonate">Donate</a>
-  </div>
-</nav>
 
 <section id="hero">
   <video id="av" autoplay muted loop playsinline preload="auto">
@@ -440,9 +435,9 @@ window.addEventListener('resize', buildRing);
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }), {threshold:.1});
 document.querySelectorAll('.r').forEach(el => io.observe(el));
 </script>
-
-<script src="/bg-engine.js"></script>
-<script src="/nav-island.js"></script>
-
+<a id="aegis-float" href="/aegis-ai" style="position:fixed;bottom:28px;left:22px;z-index:2147483630;display:flex;align-items:center;gap:8px;padding:10px 18px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,47,255,.2));border:1px solid rgba(0,212,255,.35);border-radius:100px;font-family:Share Tech Mono,monospace;font-size:.52rem;color:#00D4FF;text-decoration:none">🤖 AEGIS AI</a>
+<script src="/shared.js" defer></script>
+<script src="/bg-engine.js" defer></script>
+<script src="/nav-island.js" defer></script>
 </body>
 </html>
