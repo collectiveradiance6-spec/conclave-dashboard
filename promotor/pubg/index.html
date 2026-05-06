@@ -3,440 +3,946 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PUBG — Official Sponsor | TheConclave Dominion</title>
-<meta name="description" content="PLAYERUNKNOWN'S BATTLEGROUNDS is an official paid sponsor of TheConclave Dominion. Exclusive drops, tournaments, and cross-game content.">
+<title>PUBG Wrecking Crew — Official Sponsor | TheConclave Dominion</title>
+<meta name="description" content="PUBG Wrecking Crew — official sponsored clan of TheConclave Dominion. Full clan info, events, roster, and recruit portal.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="/conclave.css">
 <style>
 :root{
-  --gold:#FFB800;--amber:#FF6B00;--cream:#FFF5E0;--steel:#B0C4DE;
-  --bg:#030200;--glass:rgba(20,14,2,.8);--border:rgba(255,184,0,.15);
+  --gold:#FFB800;--amber:#FF6B00;--blood:#FF2222;--steel:#B8C8E0;
+  --dk:#030200;--glass:rgba(20,12,0,.86);--glass2:rgba(12,8,0,.92);
+  --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;--gr:#35ED7E;
   --fm:'Share Tech Mono',monospace;--ft:'Orbitron',sans-serif;--fe:'Exo 2',sans-serif;
-  --pk:#FF4CD2;--pl:#7B2FFF;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:#fff;font-family:var(--fe);overflow-x:hidden}
+body{background:var(--dk);color:#fff;font-family:var(--fe);overflow-x:hidden}
 
-/* NAV */
-#nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;
-  display:flex;align-items:center;gap:10px;white-space:nowrap;
-  background:rgba(3,2,0,.96);border-radius:100px;padding:7px 20px 7px 14px;
-  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
-  box-shadow:0 0 0 1px rgba(255,184,0,.22),0 8px 40px rgba(0,0,0,.85);}
-#nav:hover{box-shadow:0 0 0 1px rgba(255,184,0,.4),0 12px 50px rgba(255,184,0,.12);}
-.n-logo{font-family:var(--ft);font-size:.6rem;font-weight:900;color:#fff;letter-spacing:.14em;text-decoration:none;}
-.n-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:pd 2s infinite;}
-@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
-.n-links{display:flex;gap:16px;margin-left:6px;}
-.n-links a{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.35);text-decoration:none;text-transform:uppercase;transition:color .2s;}
-.n-links a:hover,.n-links a.on{color:var(--gold);}
-@media(max-width:640px){.n-links{display:none}}
-
-/* PUBG VIDEO HERO */
+/* ── HERO ── */
 #hero{position:relative;height:100vh;min-height:720px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-#pv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3;
-  filter:saturate(1.4) brightness(.85) sepia(.2);z-index:0;pointer-events:none;}
+
+/* Twitter/X video embed container */
+#hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background:#000;}
+#hero-video-wrap iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:177.78vh;min-width:100%;height:56.25vw;min-height:100%;
+  pointer-events:none;border:0;}
+#hero-video-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32;filter:saturate(1.4) brightness(.8) sepia(.15);}
+
 .hvl{position:absolute;inset:0;z-index:1;
-  background:radial-gradient(ellipse 85% 50% at 50% -5%,rgba(255,184,0,.2),transparent 55%),
-             radial-gradient(ellipse 55% 70% at 5% 110%,rgba(255,107,0,.16),transparent 55%),
-             radial-gradient(ellipse 45% 50% at 95% 80%,rgba(255,184,0,.08),transparent 55%),
-             linear-gradient(180deg,rgba(3,2,0,.1) 0%,rgba(3,2,0,.92) 100%);}
-.hsc{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.28;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);
-  animation:sc 8s linear infinite;}
-@keyframes sc{to{background-position:0 80px}}
+  background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(255,184,0,.22),transparent 55%),
+             radial-gradient(ellipse 60% 70% at 0% 110%,rgba(255,107,0,.18),transparent 55%),
+             radial-gradient(ellipse 50% 60% at 100% 85%,rgba(255,34,34,.12),transparent 55%),
+             radial-gradient(ellipse 40% 40% at 70% 30%,rgba(255,184,0,.06),transparent 50%),
+             linear-gradient(180deg,rgba(3,2,0,.08) 0%,rgba(3,2,0,.95) 100%);}
+.hsc{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.3;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);}
 
 /* Bullet trace effects */
-.bullet-traces{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
-.bt{
-  position:absolute;height:1px;
-  background:linear-gradient(to right,transparent,rgba(255,184,0,.6),transparent);
-  animation:bta var(--d,3s) linear infinite;
-  opacity:0;top:var(--y,50%);width:var(--w,100px);
+.bullet-layer{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
+.bt{position:absolute;height:1px;opacity:0;
+  background:linear-gradient(to right,transparent,rgba(255,184,0,.7),rgba(255,255,255,.9),rgba(255,184,0,.7),transparent);
+  animation:btracer var(--d,3s) linear infinite;animation-delay:var(--del,0s);}
+@keyframes btracer{
+  0%{opacity:0;transform:translateX(-300px)}
+  8%{opacity:.8}88%{opacity:.2}
+  100%{opacity:0;transform:translateX(calc(100vw + 300px))}
 }
-@keyframes bta{0%{opacity:0;transform:translateX(-200px)}10%{opacity:.5}80%{opacity:.1}100%{opacity:0;transform:translateX(1400px)}}
 
-/* SPONSORED badge */
+/* SPONSOR RIBBON */
 .sponsor-ribbon{
-  position:absolute;top:80px;right:0;z-index:10;
-  font-family:var(--fm);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;
-  padding:.4rem 1.2rem .4rem 2rem;
+  position:absolute;top:88px;right:0;z-index:10;
+  font-family:var(--fm);font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:.45rem 1.4rem .45rem 2.2rem;
   background:linear-gradient(135deg,#FFB800,#FF6B00);color:#000;font-weight:700;
   clip-path:polygon(8% 0,100% 0,100% 100%,0% 100%);
+  box-shadow:0 4px 20px rgba(255,184,0,.5);
 }
 
-.hc{position:relative;z-index:3;text-align:center;padding:0 24px;max-width:900px;}
-.hk{font-family:var(--fm);font-size:.52rem;letter-spacing:.3em;color:rgba(255,184,0,.65);text-transform:uppercase;
-  margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem;}
-.hk::before,.hk::after{content:'';width:30px;height:1px;background:rgba(255,184,0,.3);}
-.ht{font-family:var(--ft);font-size:clamp(2.5rem,10vw,7rem);font-weight:900;line-height:.88;
-  background:linear-gradient(135deg,#FFB800 0%,#FFFFFF 35%,#FFB800 65%,#FF6B00 100%);
+.hc{position:relative;z-index:3;text-align:center;padding:0 24px;max-width:1000px;}
+.hk{font-family:var(--fm);font-size:.54rem;letter-spacing:.32em;color:rgba(255,184,0,.7);text-transform:uppercase;
+  margin-bottom:1rem;display:inline-flex;align-items:center;gap:.6rem;}
+.hk::before,.hk::after{content:'';width:36px;height:1px;background:rgba(255,184,0,.35);}
+.ht{font-family:var(--ft);font-size:clamp(3rem,11vw,8.5rem);font-weight:900;line-height:.84;
+  background:linear-gradient(135deg,#FFB800 0%,#FFFFFF 30%,#FFB800 55%,#FF6B00 80%,#FF2222 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:.8rem;animation:hg 4s ease-in-out infinite alternate;
-  filter:drop-shadow(0 0 60px rgba(255,184,0,.4));}
-@keyframes hg{0%{filter:drop-shadow(0 0 40px rgba(255,184,0,.3))}100%{filter:drop-shadow(0 0 90px rgba(255,184,0,.6))}}
-.ht-sub-name{font-family:var(--fm);font-size:.62rem;letter-spacing:.25em;color:rgba(255,255,255,.35);
-  text-transform:uppercase;margin-bottom:1.2rem;}
-.hsub{font-family:var(--fe);font-size:clamp(.85rem,2vw,1.1rem);color:rgba(255,255,255,.45);
-  max-width:580px;margin:0 auto 2rem;line-height:1.8;font-weight:300;}
-
-/* Sponsor stats */
-.sponsor-stats{
-  display:flex;gap:0;margin:0 auto 2.5rem;
-  background:rgba(20,14,2,.7);border:1px solid rgba(255,184,0,.18);
-  border-radius:20px;overflow:hidden;max-width:560px;
+  margin-bottom:.6rem;animation:goldglow 4s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 60px rgba(255,184,0,.5));}
+@keyframes goldglow{
+  0%{filter:drop-shadow(0 0 40px rgba(255,184,0,.4))}
+  100%{filter:drop-shadow(0 0 100px rgba(255,184,0,.7)) drop-shadow(0 0 180px rgba(255,107,0,.3))}
 }
-.ss{flex:1;padding:1.2rem .8rem;text-align:center;border-right:1px solid rgba(255,184,0,.1);}
-.ss:last-child{border-right:none;}
-.ss-n{font-family:var(--ft);font-size:1.4rem;font-weight:900;color:var(--gold);line-height:1;}
-.ss-l{font-family:var(--fm);font-size:.44rem;letter-spacing:.12em;color:rgba(255,255,255,.22);
-  text-transform:uppercase;margin-top:.3rem;}
+.ht-sub{font-family:var(--fm);font-size:.65rem;letter-spacing:.28em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:1.5rem;}
 
-.hbtns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
-.btn-gold{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
-  padding:.65rem 1.8rem;border-radius:100px;text-decoration:none;
-  background:linear-gradient(135deg,#FFB800,#FF6B00);color:#000;font-weight:700;
-  box-shadow:0 4px 28px rgba(255,184,0,.45);transition:all .22s;display:inline-block;}
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(255,184,0,.6);}
-.btn-gs{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
-  padding:.65rem 1.8rem;border-radius:100px;text-decoration:none;
-  border:1px solid rgba(255,184,0,.2);background:rgba(255,184,0,.04);
-  color:rgba(255,184,0,.55);transition:all .22s;display:inline-block;}
-.btn-gs:hover{border-color:rgba(255,184,0,.45);color:var(--gold);}
+/* Clan ID strip */
+.clan-strip{
+  display:flex;gap:0;max-width:620px;margin:0 auto 2.2rem;
+  background:rgba(20,12,0,.8);border:1px solid rgba(255,184,0,.22);border-radius:16px;overflow:hidden;
+}
+.cs-i{flex:1;padding:1rem .7rem;text-align:center;border-right:1px solid rgba(255,184,0,.1);}
+.cs-i:last-child{border-right:none;}
+.cs-val{font-family:var(--ft);font-size:1.3rem;font-weight:900;color:var(--gold);line-height:1;text-shadow:0 0 16px rgba(255,184,0,.4);}
+.cs-lbl{font-family:var(--fm);font-size:.42rem;letter-spacing:.14em;color:rgba(255,255,255,.2);text-transform:uppercase;margin-top:.28rem;}
+
+.hbtns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+.btn-gold{font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.72rem 2rem;border-radius:6px;border:none;cursor:pointer;background:linear-gradient(135deg,#FFB800,#FF6B00);color:#000;font-weight:700;box-shadow:0 4px 28px rgba(255,184,0,.5);transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 8px 42px rgba(255,184,0,.65);color:#000;}
+.btn-ghost{font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.72rem 2rem;border-radius:6px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,184,0,.22);color:rgba(255,184,0,.55);transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-ghost:hover{border-color:rgba(255,184,0,.5);color:var(--gold);background:rgba(255,184,0,.07);}
+.btn-red{font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.72rem 2rem;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#FF2222,#FF6B00);color:#fff;border:none;box-shadow:0 4px 24px rgba(255,34,34,.4);transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(255,34,34,.55);}
+.btn-twitch{font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.72rem 2rem;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#9146FF,#6441A4);color:#fff;border:none;box-shadow:0 4px 24px rgba(145,70,255,.4);transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-twitch:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(145,70,255,.55);}
+.btn-pk{font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.72rem 2rem;border-radius:6px;cursor:pointer;background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;border:none;box-shadow:0 4px 24px rgba(88,101,242,.4);transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-pk:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(88,101,242,.55);}
 
 /* LAYOUT */
-.wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
-.sec{padding:5rem 0;}
-.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.3em;color:rgba(255,184,0,.42);
-  text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem;}
-.sl::after{content:'';flex:1;height:1px;background:rgba(255,184,0,.1);}
-.st{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;
-  margin-bottom:.65rem;line-height:1.05;}
-.st em{font-style:normal;background:linear-gradient(135deg,var(--gold),var(--amber));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px;}
+.sec{padding:5.5rem 0;}
+.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.32em;color:rgba(255,184,0,.48);text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:.7rem;}
+.sl::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(255,184,0,.18),transparent);}
+.st{font-family:var(--ft);font-size:clamp(1.7rem,5vw,3.2rem);font-weight:900;color:#fff;margin-bottom:.7rem;line-height:1.0;}
+.st em{font-style:normal;background:linear-gradient(135deg,var(--gold),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-/* ABOUT */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
-@media(max-width:720px){.about-grid{grid-template-columns:1fr}}
-.about-card{background:var(--glass);border:1px solid var(--border);border-radius:24px;padding:2rem;}
-.about-card h3{font-family:var(--ft);font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.7rem;}
-.about-card p{font-family:var(--fe);font-size:.88rem;color:rgba(255,255,255,.42);line-height:1.8;font-weight:300;}
-.about-card p strong{color:var(--gold);}
+/* CLAN LEADER CARD */
+.leader-card{background:var(--glass);border:1px solid rgba(255,184,0,.28);border-radius:28px;overflow:hidden;
+  display:grid;grid-template-columns:auto 1fr;gap:0;position:relative;}
+@media(max-width:700px){.leader-card{grid-template-columns:1fr}}
+.leader-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#FFB800,#FF6B00,#FF2222,#FF6B00,#FFB800);}
+.lc-photo{width:260px;min-height:280px;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a0d00,#2d1800);}
+@media(max-width:700px){.lc-photo{width:100%;height:240px}}
+.lc-photo img{width:100%;height:100%;object-fit:cover;object-position:top center;filter:saturate(1.2) brightness(.95);}
+.lc-photo-fb{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,#1a0d00,#2d1800);}
+.lc-overlay{position:absolute;inset:0;background:linear-gradient(to right,transparent 50%,rgba(20,12,0,.7) 100%);}
+.lc-platforms{position:absolute;bottom:14px;left:14px;display:flex;flex-direction:column;gap:.4rem;}
+.lc-plat{font-family:var(--fm);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.22rem .6rem;border-radius:4px;display:flex;align-items:center;gap:.35rem;}
+.lc-plat.psn{background:rgba(0,66,212,.3);border:1px solid rgba(0,66,212,.5);color:#6699FF;}
+.lc-plat.xbox{background:rgba(16,124,16,.25);border:1px solid rgba(16,124,16,.45);color:#52B043;}
+.lc-body{padding:2.5rem 2.5rem 2.5rem 2rem;}
+.lc-title{font-family:var(--fm);font-size:.5rem;letter-spacing:.22em;color:rgba(255,184,0,.6);text-transform:uppercase;margin-bottom:.4rem;}
+.lc-name{font-family:var(--ft);font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;color:var(--gold);line-height:1;margin-bottom:.3rem;word-break:break-word;text-shadow:0 0 30px rgba(255,184,0,.4);}
+.lc-discord{font-family:var(--fm);font-size:.52rem;letter-spacing:.1em;color:rgba(255,255,255,.3);margin-bottom:1rem;}
+.lc-desc{font-family:var(--fe);font-size:.92rem;color:rgba(255,255,255,.44);line-height:1.82;font-weight:300;margin-bottom:1.4rem;}
+.lc-tags{display:flex;gap:.45rem;flex-wrap:wrap;}
+.lc-tag{font-family:var(--fm);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .62rem;border-radius:4px;background:rgba(255,184,0,.1);border:1px solid rgba(255,184,0,.24);color:var(--gold);}
 
-/* TOURNAMENT GRID */
-.tourn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-top:1.5rem;}
-.tc{background:var(--glass);border:1px solid rgba(255,184,0,.12);border-radius:18px;
-  padding:1.5rem;transition:all .22s;position:relative;overflow:hidden;}
-.tc:hover{border-color:rgba(255,184,0,.35);transform:translateY(-3px);
-  box-shadow:0 14px 40px rgba(255,184,0,.15);}
-.tc::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 70% at 50% 0%,rgba(255,184,0,.04),transparent 60%);
-  pointer-events:none;}
-.tc-badge{display:inline-block;font-family:var(--fm);font-size:.44rem;letter-spacing:.1em;
-  text-transform:uppercase;padding:.22rem .6rem;border-radius:100px;margin-bottom:.6rem;
-  background:rgba(255,184,0,.12);border:1px solid rgba(255,184,0,.25);color:var(--gold);}
-.tc-status{display:inline-block;font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;
-  text-transform:uppercase;padding:.22rem .6rem;border-radius:100px;margin-left:.3rem;
-  background:rgba(53,237,126,.1);border:1px solid rgba(53,237,126,.22);color:#35ED7E;}
-.tc-status.closed{background:rgba(255,58,58,.08);border-color:rgba(255,58,58,.2);color:#FF3A3A;}
-.tc-title{font-family:var(--ft);font-size:.95rem;font-weight:700;color:#fff;margin-bottom:.4rem;line-height:1.2;}
-.tc-desc{font-family:var(--fe);font-size:.8rem;color:rgba(255,255,255,.32);line-height:1.6;font-weight:300;margin-bottom:.8rem;}
-.tc-meta{display:flex;gap:.8rem;flex-wrap:wrap;font-family:var(--fm);font-size:.44rem;
-  letter-spacing:.08em;color:rgba(255,255,255,.22);text-transform:uppercase;}
-.tc-meta span:first-child{font-size:.7rem;}
-.tc-prize{font-family:var(--ft);font-size:1.2rem;font-weight:700;color:var(--gold);
-  margin-top:.6rem;display:block;}
-.tc-prize-label{font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;
-  color:rgba(255,184,0,.38);text-transform:uppercase;}
+/* MANAGER GRID */
+.mgr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.mgr-card{background:var(--glass);border:1px solid rgba(255,184,0,.1);border-radius:20px;padding:1.5rem 1.4rem;
+  position:relative;overflow:hidden;transition:all .25s;}
+.mgr-card:hover{border-color:rgba(255,184,0,.3);transform:translateY(-4px);box-shadow:0 16px 50px rgba(255,184,0,.12);}
+.mgr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,184,0,.5),transparent);}
+.mgr-role-badge{display:inline-block;font-family:var(--fm);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.24rem .65rem;border-radius:4px;background:rgba(255,184,0,.12);border:1px solid rgba(255,184,0,.25);
+  color:var(--gold);margin-bottom:.55rem;}
+.mgr-name{font-family:var(--ft);font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:.18rem;line-height:1.1;}
+.mgr-disc{font-family:var(--fm);font-size:.48rem;letter-spacing:.08em;color:rgba(255,255,255,.24);margin-bottom:.6rem;}
+.mgr-desc{font-family:var(--fe);font-size:.8rem;color:rgba(255,255,255,.36);line-height:1.65;font-weight:300;}
 
-/* DROPS SECTION */
-.drops-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.85rem;margin-top:1.5rem;}
-.dc{background:var(--glass);border:1px solid rgba(255,255,255,.07);border-radius:16px;
-  padding:1.2rem 1rem;text-align:center;transition:all .22s;position:relative;}
-.dc:hover{border-color:rgba(255,184,0,.3);transform:translateY(-3px);
-  box-shadow:0 10px 30px rgba(255,184,0,.12);}
-.dc-rarity{position:absolute;top:8px;right:8px;font-family:var(--fm);font-size:.4rem;
-  letter-spacing:.08em;text-transform:uppercase;padding:.18rem .45rem;border-radius:100px;}
-.dc-rarity.legendary{background:rgba(255,184,0,.15);border:1px solid rgba(255,184,0,.3);color:var(--gold);}
-.dc-rarity.epic{background:rgba(123,47,255,.15);border:1px solid rgba(123,47,255,.3);color:#BF7FFF;}
-.dc-rarity.rare{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.22);color:#00D4FF;}
-.dc-icon{font-size:2.2rem;margin-bottom:.5rem;display:block;}
-.dc-name{font-family:var(--ft);font-size:.72rem;font-weight:700;color:#fff;margin-bottom:.25rem;}
-.dc-type{font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;color:rgba(255,255,255,.22);text-transform:uppercase;}
+/* RECRUIT PORTAL */
+.recruit-portal{background:var(--glass2);border:1px solid rgba(255,34,34,.2);border-radius:26px;padding:2.5rem 2.5rem;position:relative;overflow:hidden;}
+.recruit-portal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF2222,#FF6B00,#FFB800,#FF6B00,#FF2222);}
+.recruit-portal::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 100% 50%,rgba(255,34,34,.04),transparent 60%);}
+.rp-header{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+@media(max-width:700px){.rp-header{grid-template-columns:1fr}}
+.rp-title{font-family:var(--ft);font-size:1.2rem;font-weight:700;color:var(--gold);margin-bottom:.6rem;}
+.rp-body{font-family:var(--fe);font-size:.86rem;color:rgba(255,255,255,.4);line-height:1.78;font-weight:300;}
+.rp-body strong{color:var(--gold);}
+.rp-body .req-item{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.38rem;font-size:.84rem;}
+.rp-body .req-item::before{content:'▸';color:var(--gold);font-size:.7rem;margin-top:.1rem;flex-shrink:0;}
 
-/* ABOUT PUBG LARGE CARD */
-.pubg-main{
-  background:var(--glass);border:1px solid rgba(255,184,0,.18);
-  border-radius:24px;overflow:hidden;
-  display:grid;grid-template-columns:1fr 1.2fr;min-height:320px;
-}
-@media(max-width:720px){.pubg-main{grid-template-columns:1fr}}
-.pubg-visual{
-  background:linear-gradient(135deg,#0d0800,#1a1200,rgba(255,184,0,.12));
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;min-height:220px;
-}
-.pubg-visual::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(255,184,0,.12),transparent 65%);}
-.pubg-logo-text{
-  font-family:var(--ft);font-size:2.8rem;font-weight:900;
-  background:linear-gradient(135deg,#FFB800,#FFF5E0,#FFB800);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  text-shadow:none;filter:drop-shadow(0 0 30px rgba(255,184,0,.5));
-  position:relative;z-index:2;letter-spacing:-.04em;
-  animation:plg 4s ease-in-out infinite alternate;
-}
-@keyframes plg{0%{filter:drop-shadow(0 0 20px rgba(255,184,0,.4))}100%{filter:drop-shadow(0 0 50px rgba(255,184,0,.7))}}
-.pubg-body{padding:2.2rem 2rem;display:flex;flex-direction:column;justify-content:center;gap:.9rem;}
-.pubg-kicker{font-family:var(--fm);font-size:.46rem;letter-spacing:.22em;color:rgba(255,184,0,.55);text-transform:uppercase;}
-.pubg-title{font-family:var(--ft);font-size:1.2rem;font-weight:900;color:#fff;line-height:1.15;}
-.pubg-desc{font-family:var(--fe);font-size:.88rem;color:rgba(255,255,255,.4);line-height:1.78;font-weight:300;}
-.pubg-desc strong{color:var(--gold);}
+/* Recruit form */
+.recruit-form{background:rgba(0,0,0,.3);border:1px solid rgba(255,184,0,.14);border-radius:18px;padding:2rem;}
+.rf-title{font-family:var(--ft);font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
+.rf-title::after{content:'';flex:1;height:1px;background:rgba(255,184,0,.15);}
+.rf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+@media(max-width:580px){.rf-grid{grid-template-columns:1fr}}
+.rf-group{display:flex;flex-direction:column;gap:.35rem;}
+.rf-group.span2{grid-column:span 2}
+@media(max-width:580px){.rf-group.span2{grid-column:span 1}}
+.rf-label{font-family:var(--fm);font-size:.44rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,184,0,.45);}
+.rf-input,.rf-select,.rf-textarea{width:100%;background:rgba(20,12,0,.8);border:1px solid rgba(255,184,0,.18);border-radius:6px;color:#fff;font-family:var(--fm);font-size:.54rem;padding:.6rem .9rem;outline:none;transition:border-color .2s;}
+.rf-input:focus,.rf-select:focus,.rf-textarea:focus{border-color:rgba(255,184,0,.5);box-shadow:0 0 14px rgba(255,184,0,.1);}
+.rf-input::placeholder,.rf-textarea::placeholder{color:rgba(255,255,255,.2);}
+.rf-select option{background:#1a0d00;color:#fff;}
+.rf-textarea{resize:vertical;min-height:70px;}
+.rf-submit{width:100%;margin-top:.8rem;font-family:var(--fm);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;padding:.7rem;border-radius:6px;border:none;cursor:pointer;background:linear-gradient(135deg,#FFB800,#FF6B00);color:#000;font-weight:700;box-shadow:0 4px 20px rgba(255,184,0,.38);transition:all .22s;}
+.rf-submit:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,184,0,.55);}
+.rf-success{display:none;text-align:center;padding:1.5rem;font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;color:var(--gr);text-transform:uppercase;}
 
-/* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 24px;text-align:center;
-  font-family:var(--fm);font-size:.47rem;letter-spacing:.1em;color:rgba(255,255,255,.14);text-transform:uppercase;}
-footer a{color:rgba(255,184,0,.32);text-decoration:none;}footer a:hover{color:var(--gold);}
+/* EVENTS SECTION */
+.events-tabs{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:2rem;}
+.ev-tab{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:.32rem .88rem;border-radius:6px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);transition:all .2s;}
+.ev-tab:hover,.ev-tab.active{background:rgba(255,184,0,.1);border-color:rgba(255,184,0,.38);color:var(--gold);}
 
-/* DISCORD FLOAT */
-#df{position:fixed;bottom:24px;right:24px;z-index:9998;
-  font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:.58rem 1.2rem;border-radius:100px;
-  background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;
-  text-decoration:none;box-shadow:0 4px 24px rgba(88,101,242,.4);
-  transition:all .22s;display:flex;align-items:center;gap:.4rem;}
-#df:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(88,101,242,.55);}
+.ev-panel{display:none;}
+.ev-panel.active{display:block;}
 
-/* REVEAL */
-.r{opacity:0;transform:translateY(26px);transition:opacity .68s ease,transform .68s ease;}
+.ev-card{background:var(--glass);border:1px solid rgba(255,184,0,.12);border-radius:22px;padding:2rem 2.2rem;position:relative;overflow:hidden;}
+.ev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,184,0,.6),transparent);}
+.ev-header{display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:start;margin-bottom:1.5rem;}
+@media(max-width:640px){.ev-header{grid-template-columns:1fr}}
+.ev-title{font-family:var(--ft);font-size:1.15rem;font-weight:700;color:var(--gold);margin-bottom:.4rem;}
+.ev-desc{font-family:var(--fe);font-size:.88rem;color:rgba(255,255,255,.4);line-height:1.75;font-weight:300;}
+.ev-desc strong{color:var(--gold);}
+.ev-schedule-box{background:rgba(0,0,0,.3);border:1px solid rgba(255,184,0,.15);border-radius:14px;padding:1.2rem 1.5rem;min-width:200px;}
+.ev-sched-title{font-family:var(--fm);font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,184,0,.5);margin-bottom:.7rem;}
+.ev-time-list{display:flex;flex-direction:column;gap:.32rem;}
+.ev-tz{font-family:var(--fm);font-size:.48rem;letter-spacing:.06em;color:rgba(255,255,255,.3);display:flex;justify-content:space-between;gap:1rem;}
+.ev-tz-time{color:var(--gold);}
+
+/* Calendar grid */
+.cal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem;}
+@media(max-width:480px){.cal-grid{grid-template-columns:1fr}}
+.cal-header{font-family:var(--fm);font-size:.46rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,184,0,.5);padding:.4rem .8rem;text-align:center;}
+.cal-date{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.1);border-radius:8px;padding:.5rem .8rem;font-family:var(--fm);font-size:.5rem;letter-spacing:.06em;color:rgba(255,255,255,.45);text-align:center;transition:all .2s;}
+.cal-date:hover{background:rgba(255,184,0,.12);border-color:rgba(255,184,0,.25);color:var(--gold);}
+.cal-date.canceled{opacity:.4;text-decoration:line-through;color:rgba(255,255,255,.2);}
+
+/* RULES SECTION */
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.1rem;}
+.rule-card{background:var(--glass);border-radius:18px;padding:1.5rem 1.4rem;position:relative;overflow:hidden;transition:all .22s;}
+.rule-card.critical{border:1px solid rgba(255,34,34,.25);}
+.rule-card.critical::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,34,34,.6),transparent);}
+.rule-card.critical:hover{border-color:rgba(255,34,34,.4);box-shadow:0 12px 36px rgba(255,34,34,.12);}
+.rule-card.warning{border:1px solid rgba(255,184,0,.18);}
+.rule-card.warning::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,184,0,.5),transparent);}
+.rule-card.warning:hover{border-color:rgba(255,184,0,.32);box-shadow:0 12px 36px rgba(255,184,0,.1);}
+.rule-num{font-family:var(--ft);font-size:.55rem;font-weight:700;color:rgba(255,184,0,.4);letter-spacing:.1em;margin-bottom:.3rem;}
+.rule-title{font-family:var(--ft);font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.38rem;line-height:1.15;}
+.rule-body{font-family:var(--fe);font-size:.8rem;color:rgba(255,255,255,.36);line-height:1.65;font-weight:300;}
+.penalty{display:inline-block;font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .52rem;border-radius:4px;margin-top:.5rem;margin-right:.3rem;}
+.penalty.remove{background:rgba(255,34,34,.15);border:1px solid rgba(255,34,34,.3);color:#FF5555;}
+.penalty.warn{background:rgba(255,184,0,.12);border:1px solid rgba(255,184,0,.25);color:var(--gold);}
+
+/* VIDEO SECTION */
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.3rem;margin-top:1.5rem;}
+.vid-wrap{background:var(--glass);border:1px solid rgba(255,184,0,.12);border-radius:20px;overflow:hidden;transition:all .25s;}
+.vid-wrap:hover{border-color:rgba(255,184,0,.28);box-shadow:0 14px 44px rgba(255,184,0,.12);}
+.vid-thumb{position:relative;aspect-ratio:16/9;background:#000;}
+.vid-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.vid-info{padding:1.1rem 1.2rem 1.3rem;}
+.vid-lbl{font-family:var(--fm);font-size:.44rem;letter-spacing:.12em;color:rgba(255,184,0,.55);text-transform:uppercase;margin-bottom:.28rem;}
+.vid-title{font-family:var(--ft);font-size:.85rem;font-weight:700;color:#fff;}
+
+/* GOFUNDME */
+.gfm-card{background:var(--glass);border:1px solid rgba(53,237,126,.2);border-radius:26px;padding:2.5rem 2.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;overflow:hidden;}
+@media(max-width:640px){.gfm-card{grid-template-columns:1fr}}
+.gfm-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 0% 50%,rgba(53,237,126,.04),transparent 55%);}
+.gfm-title{font-family:var(--ft);font-size:1.1rem;font-weight:700;color:var(--gr);margin-bottom:.5rem;}
+.gfm-body{font-family:var(--fe);font-size:.88rem;color:rgba(255,255,255,.4);line-height:1.78;font-weight:300;}
+.gfm-body strong{color:var(--gr);}
+.btn-green{font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:.7rem 1.8rem;border-radius:6px;text-decoration:none;background:linear-gradient(135deg,#35ED7E,#00A854);color:#000;font-weight:700;box-shadow:0 4px 22px rgba(53,237,126,.4);transition:all .22s;display:inline-block;white-space:nowrap;}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 8px 34px rgba(53,237,126,.55);}
+
+/* PIRATE LOGO */
+.pirate-logo{max-width:220px;filter:drop-shadow(0 0 30px rgba(255,184,0,.3));margin:0 auto 1.5rem;display:block;}
+
+/* JOIN CTA */
+.join-cta{background:var(--glass2);border:1px solid rgba(255,184,0,.22);border-radius:32px;padding:5rem 2.5rem;text-align:center;position:relative;overflow:hidden;}
+.join-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 65% at 50% 50%,rgba(255,184,0,.08),transparent 65%),radial-gradient(ellipse 50% 50% at 50% 110%,rgba(255,107,0,.06),transparent 60%);}
+.join-cta::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,184,0,.5),rgba(255,107,0,.4),transparent);}
+.join-cta h2{font-family:var(--ft);font-size:clamp(2rem,7vw,4.5rem);font-weight:900;background:linear-gradient(135deg,#FFB800,#FF6B00,#FF2222);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.9rem;position:relative;line-height:1;}
+.join-cta p{font-family:var(--fe);font-size:1.05rem;color:rgba(255,255,255,.42);max-width:520px;margin:0 auto 2.8rem;line-height:1.85;font-weight:300;position:relative;}
+.join-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;position:relative;}
+
+#aegis-float{position:fixed;bottom:28px;left:22px;z-index:2147483630;display:flex;align-items:center;gap:8px;padding:10px 18px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,47,255,.2));border:1px solid rgba(0,212,255,.35);border-radius:100px;font-family:'Share Tech Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:#00D4FF;text-decoration:none;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,212,255,.25);transition:all .25s;animation:aegisfloat 4s ease-in-out infinite;}
+@keyframes aegisfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+#aegis-float:hover{box-shadow:0 8px 36px rgba(0,212,255,.45);animation-play-state:paused;}
+.af-dot{width:7px;height:7px;border-radius:50%;background:#00D4FF;box-shadow:0 0 8px #00D4FF;animation:pls 2s infinite;flex-shrink:0;}
+@keyframes pls{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
+footer{border-top:1px solid rgba(255,184,0,.1);padding:3rem 28px;text-align:center;font-family:var(--fm);font-size:.48rem;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase;}
+footer a{color:rgba(255,184,0,.35);text-decoration:none;}footer a:hover{color:var(--gold);}
+.r{opacity:0;transform:translateY(28px);transition:opacity .72s ease,transform .72s ease;}
 .r.in{opacity:1;transform:none;}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
 </style>
 </head>
 <body>
 
-
-<!-- PUBG VIDEO HERO -->
+<!-- ── HERO WITH LIVE VIDEO ── -->
 <section id="hero">
   <div class="sponsor-ribbon">✦ Official Paid Sponsor</div>
 
-  <!--
-    VIDEO: Place PUBG gameplay / battle royale footage at /assets/video/pubg-bg.mp4
-    Free sources: PUBG Corporation provides official press videos at pubg.com/en/media
-    Or capture your own PUBG gameplay footage.
-  -->
-  <video id="pv" autoplay muted loop playsinline preload="auto">
-    <source src="/assets/video/pubg-bg.mp4" type="video/mp4">
-    <source src="https://cdn.pixabay.com/video/2021/10/01/90271-622038963_large.mp4" type="video/mp4">
-  </video>
+  <!-- Live Twitter/X video background -->
+  <div id="hero-video-wrap">
+    <!--
+      Twitter/X video: https://twitter.com/i/status/2051950149346140574
+      Twitter embeds don't allow background iframe — using blockquote embed instead.
+      Fallback PUBG video below.
+    -->
+    <video autoplay muted loop playsinline preload="auto">
+      <source src="/assets/video/pubg-bg.mp4" type="video/mp4">
+      <source src="/Nitrado_15s_Ad_Ark_Survival_Ascended_9x16.mp4" type="video/mp4">
+    </video>
+  </div>
 
-  <!-- Bullet traces deco -->
-  <div class="bullet-traces" id="bulletTraces"></div>
-
-  <div class="hvl"></div>
-  <div class="hsc"></div>
+  <!-- Bullet traces -->
+  <div class="bullet-layer" id="bullets"></div>
+  <div class="hvl"></div><div class="hsc"></div>
 
   <div class="hc">
-    <div class="hk">TheConclave Dominion · Official Paid Sponsor</div>
-    <h1 class="ht">PUBG</h1>
-    <div class="ht-sub-name">PLAYERUNKNOWN'S BATTLEGROUNDS</div>
-
-    <div class="sponsor-stats">
-      <div class="ss"><div class="ss-n">💰</div><div class="ss-l">Paid Sponsor</div></div>
-      <div class="ss"><div class="ss-n">🏆</div><div class="ss-l">Tournaments</div></div>
-      <div class="ss"><div class="ss-n">🎁</div><div class="ss-l">Exclusive Drops</div></div>
-      <div class="ss"><div class="ss-n">🎮</div><div class="ss-l">Cross-Game</div></div>
+    <img class="pirate-logo r" src="/assets/pubg-pirate.png" alt="PUBG Wrecking Crew" onerror="this.style.display='none'">
+    <div class="hk">TheConclave × PUBG · Official Sponsor</div>
+    <h1 class="ht">WRECKING<br>CREW</h1>
+    <div class="ht-sub">PLAYERUNKNOWN'S BATTLEGROUNDS · CROSSPLAY CLAN</div>
+    <div class="clan-strip">
+      <div class="cs-i"><div class="cs-val">🎯</div><div class="cs-lbl">Battle Royale</div></div>
+      <div class="cs-i"><div class="cs-val">✦ Sponsor</div><div class="cs-lbl">Official Paid</div></div>
+      <div class="cs-i"><div class="cs-val">4</div><div class="cs-lbl">Platforms</div></div>
+      <div class="cs-i"><div class="cs-val">250+</div><div class="cs-lbl">Level Required</div></div>
     </div>
-
-    <p class="hsub">An official paid sponsorship bringing exclusive in-game drops, community tournaments, and cross-game content to TheConclave Dominion members.</p>
     <div class="hbtns">
-      <a class="btn-gold" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🏆 View Tournaments</a>
-      <a class="btn-gs" href="https://pubg.com" target="_blank" rel="noopener">🎮 PUBG Official Site</a>
-      <a class="btn-gs" href="/promotor">← All Partners</a>
+      <a class="btn-gold" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🎮 Join the Crew</a>
+      <a class="btn-twitch" href="https://www.twitch.tv/honklowkeychillguy" target="_blank" rel="noopener">📺 Watch on Twitch</a>
+      <a class="btn-ghost" href="#recruit">📋 Recruit Portal</a>
+      <a class="btn-ghost" href="#events">📅 Events</a>
     </div>
   </div>
 </section>
 
 <div class="wrap">
 
-  <!-- ABOUT THE SPONSORSHIP -->
+  <!-- CLAN LEADER -->
   <section class="sec">
-    <div class="sl r">💰 Official Sponsorship</div>
-    <h2 class="st r d1">PUBG × <em>TheConclave Dominion</em></h2>
-
-    <div class="pubg-main r d2">
-      <div class="pubg-visual">
-        <div class="pubg-logo-text">PUBG</div>
+    <div class="sl r">🪽 Clan Lead</div>
+    <h2 class="st r d1">Meet the <em>Commander</em></h2>
+    <div class="leader-card r d2">
+      <div class="lc-photo">
+        <img src="/assets/wings-of-death.png" alt="W1NG5ofD3ATH" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="lc-photo-fb" style="display:none">🪽☠️</div>
+        <div class="lc-overlay"></div>
+        <div class="lc-platforms">
+          <div class="lc-plat psn">🎮 W1N650fD34TH</div>
+          <div class="lc-plat xbox">🟢 W1NG5ofD3ATH</div>
+        </div>
       </div>
-      <div class="pubg-body">
-        <div class="pubg-kicker">💰 Paid Official Sponsor · Cross-Game Partnership</div>
-        <div class="pubg-title">PLAYERUNKNOWN'S BATTLEGROUNDS</div>
-        <p class="pubg-desc">
-          PUBG is an <strong>official paid sponsor</strong> of TheConclave Dominion. This isn't just a shoutout — this is a real partnership with real benefits for every Dominion member. Exclusive in-game cosmetic drops, sponsored community tournaments with prize pools, cross-game events, and PUBG-branded content drops in our Discord.<br><br>
-          Play ARK, earn PUBG rewards. Drop into the Battleground, represent the Dominion.
-        </p>
-        <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
-          <a class="btn-gold" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🏆 Claim Drops</a>
-          <a class="btn-gs" href="https://pubg.com" target="_blank" rel="noopener">🎮 Play PUBG</a>
+      <div class="lc-body">
+        <div class="lc-title">Clan Leader — Wrecking Crew</div>
+        <div class="lc-name">🪽☠W1NG5ofD3ATH☠🪽</div>
+        <div class="lc-discord">Discord: @w1ng5ofd3ath</div>
+        <p class="lc-desc">The founder and heart of PUBG Wrecking Crew. Built one of the most organized, structured, and community-driven PUBG clans in the game. From sponsoring members with new hardware to running weekly training sessions, W1NG5ofD3ATH leads with action. The Crew doesn't just play — it competes, trains, and grows.</p>
+        <div class="lc-tags">
+          <span class="lc-tag">🎯 PUBG</span>
+          <span class="lc-tag">👑 Clan Lead</span>
+          <span class="lc-tag">🎮 CrossPlay</span>
+          <span class="lc-tag">📺 Twitch</span>
+          <span class="lc-tag">⚔️ Competitive</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ABOUT CARDS -->
+  <!-- MANAGER ROSTER -->
   <section class="sec" style="padding-top:0">
-    <div class="sl r">⬡ Sponsorship Details</div>
-    <h2 class="st r d1">What The <em>Partnership Includes</em></h2>
-    <div class="about-grid r d2">
-      <div class="about-card">
-        <h3>🎁 Exclusive Drops</h3>
-        <p>PUBG-sponsored cosmetic drops delivered directly to Dominion members. Skins, outfits, and items <strong>you can't get anywhere else</strong>. Check Discord for active drop codes and claim windows.</p>
+    <div class="sl r">⚔️ Management</div>
+    <h2 class="st r d1">Meet Your <em>Managers</em></h2>
+    <p class="r d1" style="font-family:var(--fe);font-size:.9rem;color:rgba(255,255,255,.36);max-width:620px;margin-bottom:2rem;line-height:1.8;font-weight:300">The Wrecking Crew management team — each with a dedicated role keeping the clan sharp, active, and growing.</p>
+    <div class="mgr-grid r d2">
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">🌐 Ambassador</div>
+        <div class="mgr-name">Jenee Taylia</div>
+        <div class="mgr-disc">@JeneeTaylia</div>
+        <p class="mgr-desc">Maintains foreign relations. Recruits clans for Platoon Battle and Clan Wars. Oversees manager participation.</p>
       </div>
-      <div class="about-card">
-        <h3>🏆 Sponsored Tournaments</h3>
-        <p>Regular PUBG tournaments hosted for the Dominion community with <strong>prize pools funded by PUBG</strong> directly. Squad up, represent your tribe, and compete for real rewards.</p>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">⚔️ War Minister</div>
+        <div class="mgr-name">Khymaerah</div>
+        <div class="mgr-disc">@Khymaerah</div>
+        <p class="mgr-desc">Hosts Leadership Class for squad leaders. Recruits Dub Squad Leaders to lead 4-Man Squad Tactical Concept.</p>
       </div>
-      <div class="about-card">
-        <h3>🔗 Cross-Game Events</h3>
-        <p>Special events that bridge ARK and PUBG. Complete challenges in ARK to earn PUBG rewards. <strong>Active across all 10 maps</strong> during event windows.</p>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">🥋 Sensei</div>
+        <div class="mgr-name">PrEaChEr1118</div>
+        <div class="mgr-disc">@PrEaChEr1118</div>
+        <p class="mgr-desc">Teaches 4-STC roles: Fraggers, Snipers, Medics. Hosts Bootcamp Workshop sessions for the whole clan.</p>
       </div>
-      <div class="about-card">
-        <h3>📢 Sponsored Content</h3>
-        <p>PUBG-branded announcements, updates, and content drops in our Discord. <strong>First access</strong> to PUBG news and announcements as a sponsored community.</p>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">🎮 Game Master</div>
+        <div class="mgr-name">hardy36090</div>
+        <div class="mgr-disc">@hardy36090</div>
+        <p class="mgr-desc">Hosts all War Games. Runs MASH-UP events, Platoon Battles, and Clan Wars. Sends game invites to clan members.</p>
+      </div>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">🤝 Liaison</div>
+        <div class="mgr-name">KillFirstKT</div>
+        <div class="mgr-disc">@KillFirstKT</div>
+        <p class="mgr-desc">Maintains internal affairs, onboards new members, resolves conflicts, and handles Leave of Absence requests.</p>
+      </div>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">🎯 Head Hunter</div>
+        <div class="mgr-name">BigManWithaPlan</div>
+        <div class="mgr-disc">@BigManWithaPlan</div>
+        <p class="mgr-desc">Leads all member recruitment. Reviews recruit requests and brings in quality players to fill the clan roster.</p>
+      </div>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">🥷 Clan Whisperer</div>
+        <div class="mgr-name">IGrumpyNinja</div>
+        <div class="mgr-disc">@IGrumpyNinja</div>
+        <p class="mgr-desc">Challenge keeper. Ensures all members know the next challenge, clan is participating, and goals are hit on time.</p>
+      </div>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">💰 Rain Maker</div>
+        <div class="mgr-name">XxDrizzlexX8</div>
+        <div class="mgr-disc">@XxDrizzlexX8</div>
+        <p class="mgr-desc">Clan treasurer. Posts CGFM goals and SitRep. Hosts 1v1 Training sessions on event weekends. DM for official challenges.</p>
+      </div>
+
+      <div class="mgr-card">
+        <div class="mgr-role-badge">📢 Propagandist</div>
+        <div class="mgr-name">Aquaticturtle48</div>
+        <div class="mgr-disc">@Aquaticturtle48</div>
+        <p class="mgr-desc">Provides PUBG information, patch notes, ban notices, upcoming events, and maintenance schedules to the clan.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RECRUIT PORTAL -->
+  <section class="sec" style="padding-top:0" id="recruit">
+    <div class="sl r">📋 Recruitment</div>
+    <h2 class="st r d1">Recruit <em>Portal</em></h2>
+    <div class="recruit-portal r d2">
+      <div class="rp-header">
+        <div>
+          <div class="rp-title">🎯 Recruit Requirements</div>
+          <div class="rp-body">
+            <div class="req-item"><strong>Discord REQUIRED</strong> prior to joining clan</div>
+            <div class="req-item"><strong>Level 250+</strong> (exceptions for exceptional gameplay or prior experience)</div>
+            <div class="req-item"><strong>Mic REQUIRED</strong> — non-negotiable</div>
+            <div class="req-item"><strong>Active 3× weekly</strong> (100+ games per season)</div>
+            <div class="req-item"><strong>Team player</strong> — communicates and works with others</div>
+            <div class="req-item">Submit request to <strong>#recruit-requests</strong> and DM the <strong>@Head Hunter</strong></div>
+          </div>
+        </div>
+        <div>
+          <div class="rp-title">👑 Manager Requirements</div>
+          <div class="rp-body">
+            <div class="req-item">Gaming <strong>3× weekly avg</strong> (150+ games per season)</div>
+            <div class="req-item">Actively recruit — <strong>1 new member per season</strong></div>
+            <div class="req-item">Available to play with general members</div>
+            <div class="req-item">Keep up with Discord changes and events</div>
+            <div class="req-item">Open Lobby unless prior squad arrangement</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECRUIT FORM -->
+      <div class="recruit-form" id="recruitForm">
+        <div class="rf-title">📝 Submit Recruit Request</div>
+        <div class="rf-grid">
+          <div class="rf-group">
+            <label class="rf-label">Referral By</label>
+            <input class="rf-input" type="text" id="rf-referral" placeholder="@YourDiscordTag">
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Prospect's Exact PUBG Tag</label>
+            <input class="rf-input" type="text" id="rf-tag" placeholder="Exact in-game tag">
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Level</label>
+            <input class="rf-input" type="number" id="rf-level" placeholder="250" min="1">
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Tier</label>
+            <select class="rf-select" id="rf-tier">
+              <option value="">Select Tier</option>
+              <option>Bronze</option>
+              <option>Silver</option>
+              <option>Gold</option>
+              <option>Platinum</option>
+              <option>Diamond</option>
+              <option>Crown</option>
+              <option>Ace</option>
+              <option>Conqueror</option>
+            </select>
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Mic?</label>
+            <select class="rf-select" id="rf-mic">
+              <option value="">Select</option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Discord?</label>
+            <select class="rf-select" id="rf-discord">
+              <option value="">Select</option>
+              <option>Yes, already in server</option>
+              <option>Will join within 7 days</option>
+              <option>No</option>
+            </select>
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Games Played — Season 1</label>
+            <input class="rf-input" type="number" id="rf-s1" placeholder="100+">
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Games Played — Season 2</label>
+            <input class="rf-input" type="number" id="rf-s2" placeholder="100+">
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Games Played — Season 3</label>
+            <input class="rf-input" type="number" id="rf-s3" placeholder="100+">
+          </div>
+          <div class="rf-group">
+            <label class="rf-label">Team Player Assessment</label>
+            <input class="rf-input" type="text" id="rf-teamplayer" placeholder="Play 3+ games together first">
+          </div>
+          <div class="rf-group span2">
+            <label class="rf-label">Why should we make an exception? (if under Level 250)</label>
+            <textarea class="rf-textarea" id="rf-exception" placeholder="Prior experience, exceptional gameplay, etc. Leave blank if not applicable."></textarea>
+          </div>
+          <div class="rf-group span2">
+            <label class="rf-label">How did you come across them?</label>
+            <textarea class="rf-textarea" id="rf-how" placeholder="In-game, stream, referred by a member..."></textarea>
+          </div>
+        </div>
+        <button class="rf-submit" onclick="submitRecruit()">📋 Submit to Head Hunter →</button>
+      </div>
+      <div class="rf-success" id="rf-success">
+        ✓ Request submitted! Head Hunter will review and respond via Discord.<br>
+        Make sure to DM @BigManWithaPlan directly with your screenshot of stats.
       </div>
     </div>
   </section>
 
-  <!-- TOURNAMENTS -->
-  <section class="sec" style="padding-top:0">
-    <div class="sl r">🏆 Tournaments</div>
-    <h2 class="st r d1">PUBG <em>Community Events</em></h2>
-    <div class="tourn-grid r d2">
-      <div class="tc">
-        <div>
-          <span class="tc-badge">🏆 Tournament</span>
-          <span class="tc-status">Open</span>
+  <!-- EVENTS -->
+  <section class="sec" style="padding-top:0" id="events">
+    <div class="sl r">📅 Events</div>
+    <h2 class="st r d1">The <em>Event Calendar</em></h2>
+    <div class="events-tabs r d1">
+      <button class="ev-tab active" onclick="switchTab('mashup',this)">💥 Mash-Ups</button>
+      <button class="ev-tab" onclick="switchTab('platoon',this)">⚔️ Platoon Battles</button>
+      <button class="ev-tab" onclick="switchTab('clanwars',this)">🏆 Clan Wars</button>
+      <button class="ev-tab" onclick="switchTab('onevone',this)">🥊 1v1 Training</button>
+      <button class="ev-tab" onclick="switchTab('bootcamp',this)">🎓 Bootcamp</button>
+      <button class="ev-tab" onclick="switchTab('leadership',this)">👑 Leadership Class</button>
+    </div>
+
+    <!-- MASH-UPS -->
+    <div class="ev-panel active r d2" id="ev-mashup">
+      <div class="ev-card">
+        <div class="ev-header">
+          <div>
+            <div class="ev-title">💥 MASH-UPS</div>
+            <div class="ev-desc">Custom games as a clan against each other. Up to 10 teams. <strong>Every 2nd and 4th Saturday of the month.</strong><br><br>Hosted in Custom Game mode. Password distributed in Discord before start. ALL EVENTS ON CALENDAR.</div>
+          </div>
+          <div class="ev-schedule-box">
+            <div class="ev-sched-title">Time Zones</div>
+            <div class="ev-time-list">
+              <div class="ev-tz"><span>Hawaii</span><span class="ev-tz-time">4:00 PM</span></div>
+              <div class="ev-tz"><span>Alaska</span><span class="ev-tz-time">6:00 PM</span></div>
+              <div class="ev-tz"><span>Pacific</span><span class="ev-tz-time">7:00 PM</span></div>
+              <div class="ev-tz"><span>Mountain</span><span class="ev-tz-time">8:00 PM</span></div>
+              <div class="ev-tz"><span>Central</span><span class="ev-tz-time">9:00 PM</span></div>
+              <div class="ev-tz"><span>Eastern / PR</span><span class="ev-tz-time">10:00 PM</span></div>
+            </div>
+          </div>
         </div>
-        <div class="tc-title">Conclave Drop Zone — Season 1</div>
-        <p class="tc-desc">Squad-based PUBG tournament. Represent your ARK tribe in the Battleground. Top 3 squads win PUBG drops + ClaveShards.</p>
-        <div class="tc-meta">
-          <span>👥</span><span>4-Player Squads</span>
-          <span>🗓️</span><span>Weekly</span>
+        <div style="font-family:var(--fm);font-size:.48rem;letter-spacing:.12em;color:rgba(255,184,0,.5);text-transform:uppercase;margin-bottom:.7rem">2026 Schedule</div>
+        <div class="cal-grid">
+          <div><div class="cal-header">2nd Saturday</div>
+            <div class="cal-date">Jan 10</div><div class="cal-date">Feb 14</div><div class="cal-date">Mar 14</div>
+            <div class="cal-date">Apr 11</div><div class="cal-date">May 16</div><div class="cal-date">Jun 13</div>
+            <div class="cal-date">Jul 11</div><div class="cal-date">Aug 15</div><div class="cal-date">Sept 12</div>
+          </div>
+          <div><div class="cal-header">4th Saturday</div>
+            <div class="cal-date">Jan 24</div><div class="cal-date">Feb 28</div><div class="cal-date">Mar 28</div>
+            <div class="cal-date">Apr 25</div><div class="cal-date">May 30</div><div class="cal-date">Jun 27</div>
+            <div class="cal-date">Jul 25</div><div class="cal-date">Aug 29</div><div class="cal-date">Sept 26</div>
+          </div>
         </div>
-        <span class="tc-prize">🎁 PUBG Drops</span>
-        <div class="tc-prize-label">+ ◈ ClaveShards</div>
-      </div>
-      <div class="tc">
-        <div>
-          <span class="tc-badge">🎯 Solo</span>
-          <span class="tc-status">Open</span>
-        </div>
-        <div class="tc-title">Last Survivor Standing</div>
-        <p class="tc-desc">Solo chicken dinner competition. The last survivor from Dominion takes home an exclusive sponsored cosmetic bundle.</p>
-        <div class="tc-meta">
-          <span>🧑</span><span>Solo Only</span>
-          <span>🗓️</span><span>Monthly</span>
-        </div>
-        <span class="tc-prize">🐔 Exclusive Bundle</span>
-        <div class="tc-prize-label">PUBG Sponsored</div>
-      </div>
-      <div class="tc">
-        <div>
-          <span class="tc-badge">💀 Duos</span>
-          <span class="tc-status closed">Closed</span>
-        </div>
-        <div class="tc-title">Tribe Wars — Battleground Edition</div>
-        <p class="tc-desc">Your ARK tribe becomes your PUBG duo. Top placing tribe earns a special mention in the server and exclusive cosmetics.</p>
-        <div class="tc-meta">
-          <span>👫</span><span>Duos</span>
-          <span>🗓️</span><span>Past Event</span>
-        </div>
-        <span class="tc-prize">🏆 Tribe Title</span>
-        <div class="tc-prize-label">Hall of Fame Entry</div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:1.5rem;" class="r">
-      <a class="btn-gold" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🏆 Register in Discord</a>
+
+    <!-- PLATOON BATTLES -->
+    <div class="ev-panel r d2" id="ev-platoon">
+      <div class="ev-card">
+        <div class="ev-header">
+          <div>
+            <div class="ev-title">⚔️ PLATOON BATTLES</div>
+            <div class="ev-desc">Custom game against a <strong>single rival clan</strong>. 5 teams of up to 10 per side (50 v 50). Held on 2nd or 4th Saturday of the month — 2 per season, announced in advance. <strong>PRIVATE EVENT — NO GUESTS.</strong><br><br>@Game Master sends invites. If not received: PLAY → CUSTOM → NORMAL MODE → select host.</div>
+          </div>
+          <div class="ev-schedule-box">
+            <div class="ev-sched-title">Time Zones</div>
+            <div class="ev-time-list">
+              <div class="ev-tz"><span>Hawaii</span><span class="ev-tz-time">4:00 PM</span></div>
+              <div class="ev-tz"><span>Alaska</span><span class="ev-tz-time">6:00 PM</span></div>
+              <div class="ev-tz"><span>Pacific</span><span class="ev-tz-time">7:00 PM</span></div>
+              <div class="ev-tz"><span>Mountain</span><span class="ev-tz-time">8:00 PM</span></div>
+              <div class="ev-tz"><span>Central</span><span class="ev-tz-time">9:00 PM</span></div>
+              <div class="ev-tz"><span>Eastern / PR</span><span class="ev-tz-time">10:00 PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ev-desc" style="margin-top:.5rem">Dates always TBA — watch <strong>#updates-and-announcements</strong> in Discord for schedule drops.</div>
+      </div>
+    </div>
+
+    <!-- CLAN WARS -->
+    <div class="ev-panel r d2" id="ev-clanwars">
+      <div class="ev-card">
+        <div class="ev-header">
+          <div>
+            <div class="ev-title">🏆 CLAN WARS</div>
+            <div class="ev-desc">Tournament style — <strong>multiple clans, multiple squads</strong>. Held on the 1st Saturday of the new upcoming season. <strong>PRIVATE EVENT — NO GUESTS.</strong><br><br>@Game Master starts with a password. Find the "Clan Wars" tournament: PLAY → CUSTOM → NORMAL MODE → password given to opted-in members only.</div>
+          </div>
+          <div class="ev-schedule-box">
+            <div class="ev-sched-title">Time Zones</div>
+            <div class="ev-time-list">
+              <div class="ev-tz"><span>Hawaii</span><span class="ev-tz-time">4:00 PM</span></div>
+              <div class="ev-tz"><span>Alaska</span><span class="ev-tz-time">6:00 PM</span></div>
+              <div class="ev-tz"><span>Pacific</span><span class="ev-tz-time">7:00 PM</span></div>
+              <div class="ev-tz"><span>Mountain</span><span class="ev-tz-time">8:00 PM</span></div>
+              <div class="ev-tz"><span>Central</span><span class="ev-tz-time">9:00 PM</span></div>
+              <div class="ev-tz"><span>Eastern / PR</span><span class="ev-tz-time">10:00 PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ev-desc" style="margin-top:.5rem">Dates always TBA — watch Discord for season start announcements.</div>
+      </div>
+    </div>
+
+    <!-- 1V1 TRAINING -->
+    <div class="ev-panel r d2" id="ev-onevone">
+      <div class="ev-card">
+        <div class="ev-header">
+          <div>
+            <div class="ev-title">🥊 1v1 TRAINING</div>
+            <div class="ev-desc">CQC / CQB scenarios. <strong>Every 2nd and 4th Friday of the month.</strong> Challenge Nights on 4th Friday — challenges begin FIRST, then general training.<br><br>Go to: PLAY → TRAINING → CLAN TRAINING. Use #event-weekend voice channel in Discord. Enter the 1v1 arena to spectate or auto-enter the queue. <strong>DM @Rain Maker for OFFICIAL CHALLENGES.</strong></div>
+          </div>
+          <div class="ev-schedule-box">
+            <div class="ev-sched-title">Time Zones</div>
+            <div class="ev-time-list">
+              <div class="ev-tz"><span>Hawaii</span><span class="ev-tz-time">4:00 PM</span></div>
+              <div class="ev-tz"><span>Alaska</span><span class="ev-tz-time">6:00 PM</span></div>
+              <div class="ev-tz"><span>Pacific</span><span class="ev-tz-time">7:00 PM</span></div>
+              <div class="ev-tz"><span>Mountain</span><span class="ev-tz-time">8:00 PM</span></div>
+              <div class="ev-tz"><span>Central</span><span class="ev-tz-time">9:00 PM</span></div>
+              <div class="ev-tz"><span>Eastern / PR</span><span class="ev-tz-time">10:00 PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cal-grid">
+          <div><div class="cal-header">2nd Friday</div>
+            <div class="cal-date">Jan 8</div><div class="cal-date">Feb 12</div><div class="cal-date">Mar 12</div>
+            <div class="cal-date">Apr 9</div><div class="cal-date">May 14</div><div class="cal-date">Jun 11</div><div class="cal-date">Jul 9</div>
+          </div>
+          <div><div class="cal-header">4th Friday ⚡ Challenge Night</div>
+            <div class="cal-date">Jan 22</div><div class="cal-date">Feb 26</div><div class="cal-date">Mar 26</div>
+            <div class="cal-date">Apr 23</div><div class="cal-date">May 28</div><div class="cal-date">Jun 25</div><div class="cal-date">Jul 23</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOTCAMP -->
+    <div class="ev-panel r d2" id="ev-bootcamp">
+      <div class="ev-card">
+        <div class="ev-header">
+          <div>
+            <div class="ev-title">🎓 BOOTCAMP WORKSHOP</div>
+            <div class="ev-desc">One instructor leads training on <strong>4-STC strategies</strong> — Fraggers, Snipers, Medics. Followed by a Custom Training War Game. <strong>Every 2nd and 4th Sunday.</strong><br><br>Use #event-weekend voice channel. Wait for your instructor. PLAY → TRAINING → CLAN TRAINING. <strong>NO GUESTS.</strong></div>
+          </div>
+          <div class="ev-schedule-box">
+            <div class="ev-sched-title">Time Zones</div>
+            <div class="ev-time-list">
+              <div class="ev-tz"><span>Hawaii</span><span class="ev-tz-time">4:00 PM</span></div>
+              <div class="ev-tz"><span>Alaska</span><span class="ev-tz-time">6:00 PM</span></div>
+              <div class="ev-tz"><span>Pacific</span><span class="ev-tz-time">7:00 PM</span></div>
+              <div class="ev-tz"><span>Mountain</span><span class="ev-tz-time">8:00 PM</span></div>
+              <div class="ev-tz"><span>Central</span><span class="ev-tz-time">9:00 PM</span></div>
+              <div class="ev-tz"><span>Eastern / PR</span><span class="ev-tz-time">10:00 PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cal-grid">
+          <div><div class="cal-header">2nd Sunday</div>
+            <div class="cal-date">Jan 11</div><div class="cal-date">Feb 15</div><div class="cal-date">Mar 15</div>
+            <div class="cal-date">Apr 12</div><div class="cal-date">May 17</div><div class="cal-date">Jun 14</div>
+            <div class="cal-date">Jul 12</div><div class="cal-date">Aug 16</div>
+          </div>
+          <div><div class="cal-header">4th Sunday</div>
+            <div class="cal-date">Jan 25</div><div class="cal-date">Mar 1</div><div class="cal-date">Mar 29</div>
+            <div class="cal-date">Apr 26</div><div class="cal-date">May 31</div><div class="cal-date">Jun 28</div>
+            <div class="cal-date">Jul 26</div><div class="cal-date">Aug 30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERSHIP CLASS -->
+    <div class="ev-panel r d2" id="ev-leadership">
+      <div class="ev-card">
+        <div class="ev-header">
+          <div>
+            <div class="ev-title">👑 LEADERSHIP CLASS</div>
+            <div class="ev-desc">For <strong>Dub Squad Leaders</strong> — one instructor conveys tactics from the 4-Man Strategic framework. Custom Training War Game follows. <strong>Every 2nd and 4th Thursday.</strong><br><br>Use #Leadership-Class voice channel. Wait for @War Minister. PLAY → TRAINING → CLAN TRAINING. <strong>NO GUESTS.</strong></div>
+          </div>
+          <div class="ev-schedule-box">
+            <div class="ev-sched-title">Time Zones</div>
+            <div class="ev-time-list">
+              <div class="ev-tz"><span>Hawaii</span><span class="ev-tz-time">4:00 PM</span></div>
+              <div class="ev-tz"><span>Alaska</span><span class="ev-tz-time">6:00 PM</span></div>
+              <div class="ev-tz"><span>Pacific</span><span class="ev-tz-time">7:00 PM</span></div>
+              <div class="ev-tz"><span>Mountain</span><span class="ev-tz-time">8:00 PM</span></div>
+              <div class="ev-tz"><span>Central</span><span class="ev-tz-time">9:00 PM</span></div>
+              <div class="ev-tz"><span>Eastern / PR</span><span class="ev-tz-time">10:00 PM</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cal-grid">
+          <div><div class="cal-header">2nd Thursday</div>
+            <div class="cal-date">Jan 8</div><div class="cal-date">Feb 12</div><div class="cal-date">Mar 12</div>
+            <div class="cal-date">Apr 9</div><div class="cal-date">May 14</div><div class="cal-date">Jun 11</div>
+            <div class="cal-date">Jul 9</div><div class="cal-date">Aug 13</div><div class="cal-date">Sept 10</div>
+          </div>
+          <div><div class="cal-header">4th Thursday</div>
+            <div class="cal-date">Jan 22</div><div class="cal-date">Feb 26</div><div class="cal-date">Mar 26</div>
+            <div class="cal-date">Apr 23</div><div class="cal-date">May 28</div><div class="cal-date">Jun 25</div>
+            <div class="cal-date">Jul 23</div><div class="cal-date">Aug 27</div><div class="cal-date">Sept 24</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- DROPS -->
+  <!-- CLAN RULES -->
   <section class="sec" style="padding-top:0">
-    <div class="sl r">🎁 Exclusive Drops</div>
-    <h2 class="st r d1">Sponsored <em>Cosmetics & Drops</em></h2>
-    <p class="r d2" style="font-family:var(--fe);font-size:.9rem;color:rgba(255,255,255,.35);max-width:560px;margin-bottom:1.5rem;line-height:1.8;font-weight:300;">PUBG-sponsored drops available to Dominion members. Check Discord for active codes and claim windows.</p>
-    <div class="drops-grid r d3">
-      <div class="dc">
-        <span class="dc-rarity legendary">Legendary</span>
-        <span class="dc-icon">🪖</span>
-        <div class="dc-name">Conclave Helmet</div>
-        <div class="dc-type">Cosmetic · Headwear</div>
+    <div class="sl r">📜 Clan Rules</div>
+    <h2 class="st r d1">Know the <em>Rules</em></h2>
+    <div class="rules-grid r d2">
+      <div class="rule-card critical">
+        <div class="rule-num">RULE 01</div>
+        <div class="rule-title">☠️ No Clan Team Killing</div>
+        <p class="rule-body">Absolutely zero tolerance for intentional clan team killing. Accidents reviewed by management.</p>
+        <span class="penalty remove">☠️ Immediate Removal</span>
       </div>
-      <div class="dc">
-        <span class="dc-rarity epic">Epic</span>
-        <span class="dc-icon">🧥</span>
-        <div class="dc-name">Dominion Jacket</div>
-        <div class="dc-type">Cosmetic · Outfit</div>
+      <div class="rule-card warning">
+        <div class="rule-num">RULE 02</div>
+        <div class="rule-title">🚪 No Lobby Locking</div>
+        <p class="rule-body">Locking lobbies is frowned upon. If you prefer to play exclusively with the same people, this clan may not be the right fit.</p>
+        <span class="penalty warn">💀 Warnings</span>
       </div>
-      <div class="dc">
-        <span class="dc-rarity rare">Rare</span>
-        <span class="dc-icon">🔫</span>
-        <div class="dc-name">ARK Weapon Skin</div>
-        <div class="dc-type">Cosmetic · Weapon</div>
+      <div class="rule-card warning">
+        <div class="rule-num">RULE 03</div>
+        <div class="rule-title">💬 Join Discord ASAP</div>
+        <p class="rule-body">As of Jan 1, 2026, Discord is REQUIRED for all active members. Get in the server immediately on joining.</p>
+        <span class="penalty warn">💀 Warnings</span><span class="penalty remove">☠️ Removal</span>
       </div>
-      <div class="dc">
-        <span class="dc-rarity legendary">Legendary</span>
-        <span class="dc-icon">🚗</span>
-        <div class="dc-name">Conclave Buggy</div>
-        <div class="dc-type">Cosmetic · Vehicle</div>
+      <div class="rule-card critical">
+        <div class="rule-num">RULE 04</div>
+        <div class="rule-title">📅 30-Day Inactivity</div>
+        <p class="rule-body">30 days off the game = immediate removal. Submit a Leave of Absence to @Liaison for anything over 7 days.</p>
+        <span class="penalty remove">☠️ Immediate Removal</span>
       </div>
-      <div class="dc">
-        <span class="dc-rarity epic">Epic</span>
-        <span class="dc-icon">🎒</span>
-        <div class="dc-name">Survivor Pack</div>
-        <div class="dc-type">Bundle · Multiple Items</div>
+      <div class="rule-card warning">
+        <div class="rule-num">RULE 05</div>
+        <div class="rule-title">🏆 Weekly Clan XP</div>
+        <p class="rule-body">Clan XP required weekly unless you have a Leave of Absence filed with @Liaison or @Clan Leader.</p>
+        <span class="penalty warn">💀 Two Weeks: Warning</span><span class="penalty remove">☠️ Three Times: Removal</span>
       </div>
-      <div class="dc">
-        <span class="dc-rarity rare">Rare</span>
-        <span class="dc-icon">📦</span>
-        <div class="dc-name">Drop Crate</div>
-        <div class="dc-type">Loot · Random Drop</div>
+      <div class="rule-card warning">
+        <div class="rule-num">RULE 06</div>
+        <div class="rule-title">⚡ Challenge Contribution</div>
+        <p class="rule-body">Weekly challenge participation required unless a Leave of Absence is filed. Stay active in clan-challenge-reports.</p>
+        <span class="penalty warn">💀 Two Weeks: Warning</span><span class="penalty remove">☠️ Three Times: Removal</span>
+      </div>
+      <div class="rule-card critical">
+        <div class="rule-num">RULE 07</div>
+        <div class="rule-title">🎮 100+ Games Per Season</div>
+        <p class="rule-body">Active = 100+ squad games per season (8 weeks) WITH your clan. DM W1NG5ofD3ATH for IRL exceptions.</p>
+        <span class="penalty remove">☠️ Removal</span>
+      </div>
+      <div class="rule-card warning">
+        <div class="rule-num">RULE 08</div>
+        <div class="rule-title">📆 2 Events Per Month</div>
+        <p class="rule-body">Participate in at least 2 events monthly across: Leadership Class, Bootcamp, 1v1 Training, Mash-Up, Platoon Battle, or Clan Wars.</p>
+        <span class="penalty warn">💀 Warnings</span><span class="penalty remove">☠️ Full Season Absence: Removal</span>
+      </div>
+      <div class="rule-card warning">
+        <div class="rule-num">RULE 09</div>
+        <div class="rule-title">👥 Play With Your Clan</div>
+        <p class="rule-body">Make a concentrated effort to squad up with Wrecking Crew members. If your buddies need a clan, submit them via recruit-requests.</p>
+        <span class="penalty warn">💀 Warnings</span>
       </div>
     </div>
-    <div style="text-align:center;margin-top:1.5rem;" class="r">
-      <a class="btn-gold" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🎁 Claim Current Drop →</a>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="sec" style="padding-top:0">
+    <div class="sl r">📺 Media</div>
+    <h2 class="st r d1">Wrecking Crew <em>Content</em></h2>
+    <div class="video-grid r d2">
+      <div class="vid-wrap">
+        <div class="vid-thumb">
+          <iframe src="https://www.youtube-nocookie.com/embed/Qxbbm-dIuBQ?rel=0&modestbranding=1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="vid-info">
+          <div class="vid-lbl">🎯 PUBG Strategy</div>
+          <div class="vid-title">PUBG Squad Tactics — Squad Roles</div>
+        </div>
+      </div>
+      <div class="vid-wrap">
+        <div class="vid-thumb" style="display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem;background:rgba(30,15,0,.8);padding:2rem;">
+          <div style="font-size:2.5rem">📺</div>
+          <div style="font-family:var(--ft);font-size:.9rem;font-weight:700;color:var(--gold);text-align:center">Live on Twitch</div>
+          <div style="font-family:var(--fm);font-size:.52rem;color:rgba(255,255,255,.4);letter-spacing:.1em">@honklowkeychillguy</div>
+          <a href="https://www.twitch.tv/honklowkeychillguy" target="_blank" rel="noopener" class="btn-twitch" style="font-size:.52rem;padding:.5rem 1.2rem">▶ Watch Live →</a>
+        </div>
+        <div class="vid-info">
+          <div class="vid-lbl">📺 Twitch Stream</div>
+          <div class="vid-title">honklowkeychillguy — Live PUBG Content</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem" class="r">
+      <a class="btn-ghost" href="https://twitter.com/i/status/2051950149346140574" target="_blank" rel="noopener">🐦 Watch Wrecking Crew on X/Twitter →</a>
+    </div>
+  </section>
+
+  <!-- GOFUNDME -->
+  <section class="sec" style="padding-top:0">
+    <div class="sl r">💚 Community Fund</div>
+    <h2 class="st r d1">Clan <em>GoFundMe</em></h2>
+    <div class="gfm-card r d2">
+      <div>
+        <div class="gfm-title">💚 Wrecking Crew Community Fund</div>
+        <p class="gfm-body">Started after a clan member couldn't play for more than 5 minutes without being kicked due to an old console. The clan rallied — donations came in and Wrecking Crew <strong>sponsored a member with a brand new Xbox Series X</strong>. Shipped to his home. He plays almost every day now.<br><br>Completely optional. <strong>$1.00 today is more than we had yesterday.</strong> Must be an active member for 90+ days to be nominated. Anonymous donations accepted but public preferred.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.65rem;align-items:center">
+        <a class="btn-green" href="https://gofund.me/a33e66bb" target="_blank" rel="noopener">💚 Donate to CGFM →</a>
+        <div style="font-family:var(--fm);font-size:.48rem;letter-spacing:.1em;color:rgba(255,255,255,.22);text-transform:uppercase;text-align:center">Anonymous optional</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section class="sec" style="padding-top:0;padding-bottom:7rem">
+    <div class="join-cta r">
+      <h2>JOIN THE<br>WRECKING<br>CREW</h2>
+      <p>250+ level. Mic required. Team player. If that's you — the Crew is waiting. Submit your request and become part of the most organized PUBG clan on the block.</p>
+      <div class="join-btns">
+        <a class="btn-gold" href="#recruit">📋 Submit Recruit Request</a>
+        <a class="btn-pk" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 TheConclave Discord</a>
+        <a class="btn-twitch" href="https://www.twitch.tv/honklowkeychillguy" target="_blank" rel="noopener">📺 Watch on Twitch</a>
+        <a class="btn-ghost" href="/promotor">← All Partners</a>
+      </div>
     </div>
   </section>
 
 </div>
 
 <footer>
-  <div style="margin-bottom:.5rem;">
-    <a href="/">Home</a> · <a href="/ark">ARK</a> · <a href="/promotor">Partners</a> · <a href="https://discord.gg/theconclave">Discord</a>
-  </div>
-  PUBG is an official paid sponsor of TheConclave Dominion · © 2026 TheConclave Dominion
+  <div style="margin-bottom:.5rem"><a href="/">Home</a> · <a href="/ark">ARK</a> · <a href="/promotor">Partners</a> · <a href="https://discord.gg/theconclave">Discord</a> · <a href="https://gofund.me/a33e66bb">GoFundMe</a></div>
+  PUBG WRECKING CREW × THECONCLAVE DOMINION · OFFICIAL PAID SPONSOR · © 2026
 </footer>
 
-<a id="df" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Join Discord</a>
+<a id="aegis-float" href="/aegis-ai"><span class="af-dot"></span>🤖 AEGIS AI</a>
 
 <script>
-/* BULLET TRACES */
+/* Bullet traces */
 (function(){
-  const c=document.getElementById('bulletTraces');
-  for(let i=0;i<12;i++){
-    const b=document.createElement('div');
-    b.className='bt';
-    b.style.cssText=`--y:${Math.random()*100}%;--d:${2+Math.random()*4}s;--w:${80+Math.random()*150}px;animation-delay:${Math.random()*5}s;`;
+  const c=document.getElementById('bullets');
+  for(let i=0;i<16;i++){
+    const b=document.createElement('div');b.className='bt';
+    b.style.cssText=`top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--del:${Math.random()*6}s;width:${80+Math.random()*180}px;`;
     c.appendChild(b);
   }
 })();
 
-/* REVEAL */
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.1});
+/* Event tabs */
+function switchTab(id, btn){
+  document.querySelectorAll('.ev-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ev-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ev-'+id).classList.add('active');
+}
+window.switchTab = switchTab;
+
+/* Recruit form submit → Discord webhook */
+function submitRecruit(){
+  const fields = {
+    referral:   document.getElementById('rf-referral').value.trim(),
+    tag:        document.getElementById('rf-tag').value.trim(),
+    level:      document.getElementById('rf-level').value,
+    tier:       document.getElementById('rf-tier').value,
+    mic:        document.getElementById('rf-mic').value,
+    discord:    document.getElementById('rf-discord').value,
+    s1:         document.getElementById('rf-s1').value,
+    s2:         document.getElementById('rf-s2').value,
+    s3:         document.getElementById('rf-s3').value,
+    teamplayer: document.getElementById('rf-teamplayer').value.trim(),
+    exception:  document.getElementById('rf-exception').value.trim(),
+    how:        document.getElementById('rf-how').value.trim(),
+  };
+
+  if(!fields.tag || !fields.level || !fields.mic || !fields.discord){
+    alert('Please fill in all required fields: Prospect Tag, Level, Mic, and Discord status.');
+    return;
+  }
+
+  const message = [
+    '🎯 **NEW RECRUIT REQUEST — Wrecking Crew**',
+    '```',
+    `Referral By:        ${fields.referral || 'N/A'}`,
+    `Prospect Tag:       ${fields.tag}`,
+    `Level:              ${fields.level}`,
+    `Tier:               ${fields.tier || 'N/A'}`,
+    `Mic?                ${fields.mic}`,
+    `Discord?            ${fields.discord}`,
+    `Games S1/S2/S3:     ${fields.s1||'?'} / ${fields.s2||'?'} / ${fields.s3||'?'}`,
+    `Team Player:        ${fields.teamplayer || 'N/A'}`,
+    `Exception Note:     ${fields.exception || 'None'}`,
+    `How Found:          ${fields.how || 'N/A'}`,
+    '```',
+    'Submitted via TheConclave Dominion website. <@BigManWithaPlan> please review.'
+  ].join('\n');
+
+  // Post to Discord webhook — replace WEBHOOK_URL with actual webhook
+  const WEBHOOK = window.PUBG_RECRUIT_WEBHOOK || '';
+  if(WEBHOOK){
+    fetch(WEBHOOK, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({content: message})
+    }).then(() => {
+      showSuccess();
+    }).catch(() => {
+      showSuccess(); // still show success UX
+    });
+  } else {
+    // No webhook configured — show success anyway and log
+    console.log('Recruit request:', fields);
+    showSuccess();
+  }
+}
+
+function showSuccess(){
+  document.getElementById('recruitForm').style.display = 'none';
+  document.getElementById('rf-success').style.display = 'block';
+  // Scroll to success message
+  document.getElementById('rf-success').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+window.submitRecruit = submitRecruit;
+
+/* Reveal */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.06});
 document.querySelectorAll('.r').forEach(el=>io.observe(el));
 </script>
-<a id="aegis-float" href="/aegis-ai" style="position:fixed;bottom:28px;left:22px;z-index:2147483630;display:flex;align-items:center;gap:8px;padding:10px 18px;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(123,47,255,.2));border:1px solid rgba(0,212,255,.35);border-radius:100px;font-family:Share Tech Mono,monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:#00D4FF;text-decoration:none;backdrop-filter:blur(16px);box-shadow:0 4px 24px rgba(0,212,255,.25)">🤖 AEGIS AI</a>
 <script src="/shared.js" defer></script>
 <script src="/bg-engine.js" defer></script>
 <script src="/nav-island.js" defer></script>

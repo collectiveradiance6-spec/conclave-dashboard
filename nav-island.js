@@ -6,68 +6,69 @@ const SECTIONS = [
   {
     label: 'REALM',
     pages: [
-      {label:'Home',            icon:'🏠', href:'/',                   key:'index'},
-      {label:'ARK',             icon:'🦕', href:'/ark',                key:'ark'},
-      {label:'Minecraft',       icon:'⛏️', href:'/minecraft',          key:'minecraft'},
-      {label:'World Hub',       icon:'🌐', href:'/worldconnecthub',    key:'hub'},
-      {label:'ClaveShard Shop', icon:'💎', href:'/claveshard-shop',    key:'shop'},
+      {label:'Homepage',          icon:'🏠', href:'/',                    key:'index'},
+      {label:'ARK — Dominion',    icon:'🦕', href:'/ark',                 key:'ark'},
+      {label:'ARK — Cyber',       icon:'🤖', href:'/ark-cyber',           key:'arkcyber'},
+      {label:'World Connect Hub', icon:'🌐', href:'/worldconnecthub',     key:'hub'},
+      {label:'◈ ClaveShard Shop', icon:'💎', href:'/claveshard-shop',     key:'shop'},
     ]
   },
   {
     label: 'SUPPORT',
     pages: [
-      {label:'Donate',          icon:'💛', href:'/sponsoranddonate',   key:'donate'},
-      {label:'Sponsor',         icon:'🤝', href:'/promotor',           key:'sponsor'},
+      {label:'Donate',            icon:'💛', href:'/sponsoranddonate',    key:'donate'},
+      {label:'Sponsor',           icon:'🤝', href:'/promotor',            key:'sponsor'},
     ]
   },
   {
     label: 'COMMUNITY',
     pages: [
-      {label:'Meet The Team',   icon:'👥', href:'/meettheteam',        key:'meet'},
-      {label:"Sandy's Art Galla",icon:'🎨',href:'/sandysartgalla',     key:'gallery'},
-      {label:'World Connect',   icon:'🌐', href:'/worldconnecthub',    key:'worldconnect'},
-      {label:'SuzyQs',          icon:'🔥', href:'/suzyqs',             key:'suzyqs'},
-      {label:'Choco',           icon:'🐾', href:'/choco',              key:'choco'},
+      {label:'Meet The Team',     icon:'👥', href:'/meettheteam',         key:'meet'},
+      {label:"Sandy's Art Galla", icon:'🎨', href:'/sandysartgalla',      key:'gallery'},
+      {label:'SuzyQs',            icon:'🔥', href:'/suzyqs',              key:'suzyqs'},
+      {label:'Choco',             icon:'🐾', href:'/choco',               key:'choco'},
     ]
   },
   {
     label: 'PARTNERS',
     pages: [
-      {label:'Partners',        icon:'🤝', href:'/promotor',           key:'partners'},
-      {label:'Sol Parade',      icon:'🎵', href:'/promotor/sol-parade',key:'solparade'},
-      {label:'PUBG',            icon:'🎯', href:'/promotor/pubg',      key:'pubg'},
+      {label:'All Partners',      icon:'⬡',  href:'/promotor',            key:'partners'},
+      {label:'Nitrado',           icon:'🖥️', href:'/promotor#nitrado',    key:'nitrado'},
+      {label:'PUBG',              icon:'🎯', href:'/promotor/pubg',       key:'pubg'},
+      {label:"SuzyQ's",           icon:'🔥', href:'/suzyqs',              key:'suzyqpart'},
+      {label:'Sol Parade',        icon:'🎵', href:'/promotor/sol-parade', key:'solparade'},
     ]
   },
   {
     label: 'INFO',
     pages: [
-      {label:'Developers',      icon:'⚙️', href:'/meettheteam',        key:'developers'},
-      {label:'Terms',           icon:'📄', href:'/terms',              key:'terms'},
-      {label:'Privacy',         icon:'🔒', href:'/privacy',            key:'privacy'},
+      {label:'Terms',             icon:'📄', href:'/terms',               key:'terms'},
+      {label:'Privacy',           icon:'🔒', href:'/privacy',             key:'privacy'},
     ]
   },
   {
     label: 'AEGIS',
     pages: [
-      {label:'AEGIS AI',        icon:'🤖', href:'/aegis-ai',           key:'aegis', highlight:true},
-      {label:'Login',           icon:'🔐', href:'/login',              key:'login'},
-      {label:'Admin',           icon:'⚡', href:'/admin',              key:'admin'},
+      {label:'AEGIS AI',          icon:'🤖', href:'/aegis-ai',            key:'aegis',   highlight:true},
+      {label:'Discord Login',     icon:'🔐', href:'/login',               key:'login'},
+      {label:'Admin Dashboard',   icon:'⚡', href:'/admin',               key:'admin'},
+      {label:'AEGIS Admin',       icon:'🛡️', href:'/aegis-admin',         key:'aegisadm'},
     ]
   },
 ];
 
 /* Flat list for pill bar (top picks only — space constrained) */
 const PILL_LINKS = [
-  {label:'Home',      icon:'🏠', href:'/'},
-  {label:'ARK',       icon:'🦕', href:'/ark'},
-  {label:'Minecraft', icon:'⛏️', href:'/minecraft'},
-  {label:'Hub',       icon:'🌐', href:'/worldconnecthub'},
-  {label:'Shop',      icon:'💎', href:'/claveshard-shop'},
-  {label:'Partners',  icon:'🤝', href:'/promotor'},
-  {label:'Team',      icon:'👥', href:'/meettheteam'},
-  {label:'Art Galla', icon:'🎨', href:'/sandysartgalla'},
-  {label:'AEGIS AI',  icon:'🤖', href:'/aegis-ai'},
-  {label:'Discord',   icon:'💬', href:'https://discord.gg/theconclave', external:true, dc:true},
+  {label:'Home',        icon:'🏠', href:'/'},
+  {label:'ARK',         icon:'🦕', href:'/ark'},
+  {label:'Cyber',       icon:'🤖', href:'/ark-cyber'},
+  {label:'Hub',         icon:'🌐', href:'/worldconnecthub'},
+  {label:'Shop',        icon:'💎', href:'/claveshard-shop'},
+  {label:'Partners',    icon:'🤝', href:'/promotor'},
+  {label:'Team',        icon:'👥', href:'/meettheteam'},
+  {label:'Art Galla',   icon:'🎨', href:'/sandysartgalla'},
+  {label:'AEGIS AI',    icon:'🤖', href:'/aegis-ai', highlight:true},
+  {label:'Discord',     icon:'💬', href:'https://discord.gg/theconclave', external:true, dc:true},
 ];
 
 const path = location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
