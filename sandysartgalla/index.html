@@ -4,27 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sandy's Art Galla — TheConclave Dominion</title>
-<meta name="description" content="Sandy's Art Galla — community art showcase of TheConclave Dominion. Original ARK fan art, custom dino illustrations, and community creations.">
+<meta name="description" content="Sandy's Art Galla — community art showcase of TheConclave Dominion.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Share+Tech+Mono&display=swap">
 <style>
 :root{
-  --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;--gd:#FFB800;--gr:#35ED7E;
-  --or:#FF6B00;--coral:#FF6B6B;--mint:#64FFDA;
-  --bg:#010208;--glass:rgba(4,8,28,.78);--border:rgba(100,255,218,.12);
+  --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;--gd:#FFB800;--gr:#35ED7E;--or:#FF6B00;
+  --mint:#64FFDA;
+  --bg:#010208;--glass:rgba(4,8,28,.82);--border:rgba(100,255,218,.12);
   --fm:'Share Tech Mono',monospace;--ft:'Orbitron',sans-serif;--fe:'Exo 2',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:#fff;font-family:var(--fe);overflow-x:hidden}
 
-/* NAV */
 #nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;
   display:flex;align-items:center;gap:10px;white-space:nowrap;
   background:rgba(1,2,10,.95);border-radius:100px;padding:7px 20px 7px 14px;
-  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  backdrop-filter:blur(32px);
   box-shadow:0 0 0 1px rgba(100,255,218,.2),0 8px 40px rgba(0,0,0,.8);}
-#nav:hover{box-shadow:0 0 0 1px rgba(100,255,218,.38),0 12px 50px rgba(100,255,218,.1);}
 .n-logo{font-family:var(--ft);font-size:.6rem;font-weight:900;color:#fff;letter-spacing:.14em;text-decoration:none;}
 .n-dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint);animation:pd 2s infinite;}
 @keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
@@ -33,261 +31,164 @@ body{background:var(--bg);color:#fff;font-family:var(--fe);overflow-x:hidden}
 .n-links a:hover,.n-links a.on{color:var(--mint);}
 @media(max-width:640px){.n-links{display:none}}
 
-/* ART/TIMELAPSE VIDEO HERO */
+/* ART VIDEO HERO */
 #hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-#av{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22;
-  filter:saturate(1.8) hue-rotate(200deg) brightness(.9);z-index:0;pointer-events:none;}
+#av{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22;filter:saturate(1.8) hue-rotate(200deg) brightness(.9);z-index:0;pointer-events:none;}
 .hvl{position:absolute;inset:0;z-index:1;
   background:radial-gradient(ellipse 85% 55% at 50% 0%,rgba(100,255,218,.18),transparent 58%),
              radial-gradient(ellipse 55% 70% at 10% 110%,rgba(123,47,255,.18),transparent 55%),
-             radial-gradient(ellipse 45% 55% at 90% 80%,rgba(255,76,210,.1),transparent 55%),
              linear-gradient(180deg,rgba(1,2,8,.1) 0%,rgba(1,2,8,.95) 100%);}
-.hsc{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.3;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);
-  animation:sc 10s linear infinite;}
-@keyframes sc{to{background-position:0 80px}}
+.hsc{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.28;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);}
 
-/* Floating paint strokes deco */
+/* Paint blob decorations */
 .paint-deco{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
-.pd{position:absolute;border-radius:50%;filter:blur(60px);opacity:.04;
-  animation:pda var(--dur,12s) ease-in-out infinite alternate;}
-@keyframes pda{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--tx,20px),var(--ty,-20px)) scale(1.2)}}
+.pd-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.05;animation:pdrift var(--dur,14s) ease-in-out infinite alternate;}
+@keyframes pdrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--tx,30px),var(--ty,-30px)) scale(1.25)}}
 
 .hc{position:relative;z-index:3;text-align:center;padding:0 24px;max-width:820px;}
-.hk{font-family:var(--fm);font-size:.52rem;letter-spacing:.3em;color:rgba(100,255,218,.55);text-transform:uppercase;
-  margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem;}
+.hk{font-family:var(--fm);font-size:.52rem;letter-spacing:.3em;color:rgba(100,255,218,.55);text-transform:uppercase;margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem;}
 .hk::before,.hk::after{content:'';width:30px;height:1px;background:rgba(100,255,218,.25);}
 .ht{font-family:var(--ft);font-size:clamp(2.5rem,10vw,7rem);font-weight:900;line-height:.88;
   background:linear-gradient(135deg,#64FFDA 0%,#FF4CD2 40%,#7B2FFF 70%,#FFB800 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:1rem;animation:hg 5s ease-in-out infinite alternate;
-  filter:drop-shadow(0 0 55px rgba(100,255,218,.28));}
-@keyframes hg{0%{filter:drop-shadow(0 0 35px rgba(100,255,218,.2))}100%{filter:drop-shadow(0 0 80px rgba(100,255,218,.5))}}
-.hsub{font-family:var(--fe);font-size:clamp(.85rem,2vw,1.08rem);color:rgba(255,255,255,.42);
-  max-width:540px;margin:0 auto 2rem;line-height:1.8;font-weight:300;}
+  margin-bottom:1rem;filter:drop-shadow(0 0 55px rgba(100,255,218,.28));}
+.hsub{font-family:var(--fe);font-size:clamp(.85rem,2vw,1.08rem);color:rgba(255,255,255,.42);max-width:540px;margin:0 auto 2rem;line-height:1.8;font-weight:300;}
 .htags{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
-.htag{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:.28rem .78rem;border-radius:100px;border:1px solid rgba(100,255,218,.2);
-  background:rgba(100,255,218,.06);color:var(--mint);}
+.htag{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:.28rem .78rem;border-radius:100px;border:1px solid rgba(100,255,218,.2);background:rgba(100,255,218,.06);color:var(--mint);}
 .hbtns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
-.btn-mint{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
-  padding:.62rem 1.7rem;border-radius:100px;text-decoration:none;
-  background:linear-gradient(135deg,#64FFDA,#7B2FFF);color:#000;font-weight:700;
-  box-shadow:0 4px 24px rgba(100,255,218,.3);transition:all .22s;display:inline-block;}
+.btn-mint{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.62rem 1.7rem;border-radius:100px;text-decoration:none;background:linear-gradient(135deg,#64FFDA,#7B2FFF);color:#000;font-weight:700;box-shadow:0 4px 24px rgba(100,255,218,.3);transition:all .22s;display:inline-block;}
 .btn-mint:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(100,255,218,.45);}
-.btn-gs{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
-  padding:.62rem 1.7rem;border-radius:100px;text-decoration:none;
-  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
-  color:rgba(255,255,255,.42);transition:all .22s;display:inline-block;}
+.btn-gs{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.62rem 1.7rem;border-radius:100px;text-decoration:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.42);transition:all .22s;display:inline-block;}
 .btn-gs:hover{border-color:rgba(100,255,218,.35);color:var(--mint);}
 
 /* LAYOUT */
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
 .sec{padding:5rem 0;}
-.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.3em;color:rgba(100,255,218,.38);
-  text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem;}
+.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.3em;color:rgba(100,255,218,.38);text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem;}
 .sl::after{content:'';flex:1;height:1px;background:rgba(100,255,218,.08);}
-.st{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;
-  margin-bottom:.65rem;line-height:1.05;}
-.st em{font-style:normal;background:linear-gradient(135deg,var(--mint),var(--pk));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.st{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:.65rem;line-height:1.05;}
+.st em{font-style:normal;background:linear-gradient(135deg,var(--mint),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-/* ABOUT */
-.about-card{background:var(--glass);border:1px solid var(--border);border-radius:24px;
-  padding:2.5rem 2rem;position:relative;overflow:hidden;}
-.about-card::before{content:'🎨';position:absolute;right:2rem;top:50%;transform:translateY(-50%);
-  font-size:7rem;opacity:.04;pointer-events:none;}
-.about-card p{font-family:var(--fe);font-size:.95rem;color:rgba(255,255,255,.48);
-  line-height:1.88;font-weight:300;max-width:700px;}
+.about-card{background:var(--glass);border:1px solid var(--border);border-radius:24px;padding:2.5rem 2rem;position:relative;overflow:hidden;}
+.about-card::before{content:'🎨';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-size:7rem;opacity:.04;pointer-events:none;}
+.about-card p{font-family:var(--fe);font-size:.95rem;color:rgba(255,255,255,.48);line-height:1.88;font-weight:300;max-width:700px;}
 .about-card strong{color:var(--mint);}
 
-/* STATS */
-.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);
-  border-radius:20px;overflow:hidden;margin:2rem 0;}
+.sbar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-radius:20px;overflow:hidden;margin:2rem 0;}
 @media(max-width:600px){.sbar{grid-template-columns:repeat(2,1fr)}}
 .sb{background:var(--glass);padding:1.5rem 1rem;text-align:center;transition:background .2s;}
 .sb:hover{background:rgba(100,255,218,.05);}
-.sbn{font-family:var(--ft);font-size:1.8rem;font-weight:900;
-  background:linear-gradient(135deg,var(--mint),var(--pk));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
-.sbl{font-family:var(--fm);font-size:.48rem;letter-spacing:.14em;
-  color:rgba(255,255,255,.2);text-transform:uppercase;margin-top:.35rem;}
+.sbn{font-family:var(--ft);font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--mint),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.sbl{font-family:var(--fm);font-size:.48rem;letter-spacing:.14em;color:rgba(255,255,255,.2);text-transform:uppercase;margin-top:.35rem;}
 
-/* ── ADVANCED SPINNING RADIAL GALLERY ── */
-.radial-sec{padding:5rem 24px;text-align:center;overflow:hidden;position:relative;}
-.radial-sec::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(100,255,218,.04),transparent 65%),
-             radial-gradient(ellipse 40% 40% at 20% 30%,rgba(123,47,255,.04),transparent 60%),
-             radial-gradient(ellipse 40% 40% at 80% 70%,rgba(255,76,210,.04),transparent 60%);
+/* ══════════════════════════════════════════
+   FIXED 3D RADIAL GALLERY
+   Uses rotateY(angle) translateZ(radius)
+   This is the CORRECT approach for 3D carousels
+══════════════════════════════════════════ */
+.gallery-section{padding:5rem 0;text-align:center;overflow:hidden;position:relative;}
+.gallery-section::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(100,255,218,.04),transparent 65%);
   pointer-events:none;}
-.rsec-label{font-family:var(--fm);font-size:.5rem;letter-spacing:.28em;
-  color:rgba(100,255,218,.38);text-transform:uppercase;margin-bottom:.6rem;
-  display:inline-flex;align-items:center;gap:.6rem;}
-.rsec-label::before,.rsec-label::after{content:'';width:24px;height:1px;background:rgba(100,255,218,.18);}
-.rsec-title{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:.5rem;}
-.rsec-title em{font-style:normal;background:linear-gradient(135deg,var(--mint),var(--pk));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.rsec-hint{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.15);
-  text-transform:uppercase;margin:.5rem 0 0;}
 
-/* Dual-ring 3D stage */
-.radial-stage{
-  position:relative;width:100%;height:680px;
-  display:flex;align-items:center;justify-content:center;
-  perspective:1200px;margin:2rem auto;max-width:960px;
+.gs-label{font-family:var(--fm);font-size:.5rem;letter-spacing:.28em;color:rgba(100,255,218,.38);text-transform:uppercase;margin-bottom:.6rem;display:inline-flex;align-items:center;gap:.6rem;}
+.gs-label::before,.gs-label::after{content:'';width:24px;height:1px;background:rgba(100,255,218,.18);}
+.gs-title{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:.4rem;}
+.gs-title em{font-style:normal;background:linear-gradient(135deg,var(--mint),var(--pk));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gs-hint{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.15);text-transform:uppercase;margin:.4rem 0 2rem;}
+
+/* Scene container — perspective goes HERE */
+.gallery-scene{
+  width:100%;
+  height:520px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1000px;
+  position:relative;
+  margin:0 auto;
 }
+@media(max-width:768px){.gallery-scene{height:420px}}
+@media(max-width:480px){.gallery-scene{height:340px}}
 
-/* OUTER ring */
-.radial-ring-outer{
-  position:absolute;width:580px;height:580px;
+/* The rotating ring — transform-style goes HERE */
+.gallery-ring{
+  position:relative;
+  width:220px;
+  height:270px;
   transform-style:preserve-3d;
-  animation:rspin-out 32s linear infinite;
+  animation:ring-spin 28s linear infinite;
+  cursor:grab;
 }
-.radial-ring-outer.paused{animation-play-state:paused;}
-@keyframes rspin-out{
-  0%{transform:rotateY(0deg) rotateX(5deg)}
-  100%{transform:rotateY(360deg) rotateX(5deg)}
-}
-
-/* INNER ring — counter-rotates */
-.radial-ring-inner{
-  position:absolute;width:280px;height:280px;
-  transform-style:preserve-3d;
-  animation:rspin-in 18s linear infinite reverse;
-}
-.radial-ring-inner.paused{animation-play-state:paused;}
-@keyframes rspin-in{
-  0%{transform:rotateY(0deg) rotateX(-8deg)}
-  100%{transform:rotateY(360deg) rotateX(-8deg)}
+.gallery-ring:active{cursor:grabbing;}
+.gallery-ring.paused{animation-play-state:paused;}
+@keyframes ring-spin{
+  from{transform:rotateX(8deg) rotateY(0deg)}
+  to{transform:rotateX(8deg) rotateY(360deg)}
 }
 
-/* Outer panels (larger art cards) */
-.rp-outer{
-  position:absolute;top:50%;left:50%;
-  width:210px;height:250px;
-  margin-top:-125px;margin-left:-105px;
-  border-radius:18px;overflow:hidden;
-  background:var(--glass);border:1px solid rgba(100,255,218,.12);
-  backdrop-filter:blur(16px);cursor:pointer;
-  transition:box-shadow .3s,border-color .3s;
+/* Each panel — positioned via rotateY + translateZ */
+.gp{
+  position:absolute;
+  top:0;left:0;
+  width:220px;height:270px;
+  border-radius:18px;
+  overflow:hidden;
+  background:var(--glass);
+  border:1px solid rgba(100,255,218,.14);
+  backdrop-filter:blur(12px);
+  cursor:pointer;
+  transition:border-color .3s,box-shadow .3s;
+  /* Each panel rotated around Y axis by its angle, then pushed out */
+  transform:rotateY(var(--angle)) translateZ(var(--radius));
+  backface-visibility:hidden;
 }
-.rp-outer:hover{
-  border-color:rgba(100,255,218,.45);
-  box-shadow:0 20px 60px rgba(100,255,218,.2),0 0 40px rgba(255,76,210,.15);
+.gp:hover{
+  border-color:rgba(100,255,218,.5);
+  box-shadow:0 0 40px rgba(100,255,218,.25),0 0 80px rgba(255,76,210,.1);
 }
-
-/* Inner panels (smaller feature cards) */
-.rp-inner{
-  position:absolute;top:50%;left:50%;
-  width:130px;height:160px;
-  margin-top:-80px;margin-left:-65px;
-  border-radius:14px;overflow:hidden;
-  background:rgba(4,8,28,.9);border:1px solid rgba(255,76,210,.15);
-  backdrop-filter:blur(20px);cursor:pointer;
-  transition:box-shadow .3s,border-color .3s;
-}
-.rp-inner:hover{
-  border-color:rgba(255,76,210,.5);
-  box-shadow:0 16px 50px rgba(255,76,210,.25);
-}
-
-/* Shared panel internals */
-.rp-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s;}
-.rp-outer:hover .rp-bg,.rp-inner:hover .rp-bg{transform:scale(1.1);}
-.rp-overlay{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(1,2,8,.97) 0%,rgba(1,2,8,.35) 55%,transparent 100%);}
-.rp-badge{position:absolute;top:8px;right:8px;
-  font-family:var(--fm);font-size:.4rem;letter-spacing:.08em;text-transform:uppercase;
-  padding:.2rem .5rem;border-radius:100px;
-  background:rgba(100,255,218,.12);border:1px solid rgba(100,255,218,.25);color:var(--mint);}
-.rp-inner .rp-badge{font-size:.38rem;padding:.18rem .42rem;
-  background:rgba(255,76,210,.12);border-color:rgba(255,76,210,.25);color:var(--pk);}
-.rp-body{position:absolute;bottom:0;left:0;right:0;padding:10px;}
-.rp-label{font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:.2rem;}
-.rp-title{font-family:var(--ft);font-size:.68rem;font-weight:700;color:#fff;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.3rem;}
-.rp-link{display:inline-flex;align-items:center;gap:.3rem;
-  font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--mint);text-decoration:none;transition:gap .2s;}
-.rp-inner .rp-link{color:var(--pk);}
-.rp-link:hover{gap:.5rem;}
+.gp-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s;}
+.gp:hover .gp-bg{transform:scale(1.08);}
+.gp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(1,2,8,.97) 0%,rgba(1,2,8,.3) 55%,transparent 100%);}
+.gp-badge{position:absolute;top:10px;right:10px;font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .55rem;border-radius:100px;background:rgba(100,255,218,.12);border:1px solid rgba(100,255,218,.25);color:var(--mint);}
+.gp-body{position:absolute;bottom:0;left:0;right:0;padding:14px;}
+.gp-label{font-family:var(--fm);font-size:.44rem;letter-spacing:.12em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:.22rem;}
+.gp-title{font-family:var(--ft);font-size:.78rem;font-weight:700;color:#fff;margin-bottom:.35rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.gp-link{display:inline-flex;align-items:center;gap:.3rem;font-family:var(--fm);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mint);text-decoration:none;transition:gap .2s;}
+.gp-link:hover{gap:.5rem;}
 
 /* Center hub */
-.r-hub{
+.gallery-hub{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:10;width:96px;height:96px;border-radius:50%;
-  background:rgba(1,2,10,.97);border:2px solid rgba(100,255,218,.28);
+  z-index:10;width:88px;height:88px;border-radius:50%;
+  background:rgba(1,2,10,.97);
+  border:2px solid rgba(100,255,218,.28);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   box-shadow:0 0 40px rgba(100,255,218,.15),0 0 80px rgba(123,47,255,.08);
   pointer-events:none;
 }
-.r-hub-icon{font-size:1.5rem;line-height:1;}
-.r-hub-txt{font-family:var(--fm);font-size:.35rem;letter-spacing:.14em;
-  color:rgba(100,255,218,.55);text-transform:uppercase;margin-top:.2rem;}
+.gallery-hub-icon{font-size:1.4rem;line-height:1;}
+.gallery-hub-txt{font-family:var(--fm);font-size:.34rem;letter-spacing:.14em;color:rgba(100,255,218,.55);text-transform:uppercase;margin-top:.2rem;}
 
-/* Orbit rings decoration */
-.r-orbit-a,.r-orbit-b{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  border-radius:50%;border:1px solid rgba(100,255,218,.05);pointer-events:none;}
-.r-orbit-a{width:600px;height:600px;animation:orba 6s ease-in-out infinite;}
-.r-orbit-b{width:310px;height:310px;animation:orba 4s ease-in-out infinite reverse;}
-@keyframes orba{
-  0%,100%{box-shadow:0 0 30px rgba(100,255,218,.03) inset}
-  50%{box-shadow:0 0 60px rgba(100,255,218,.07) inset}
-}
-@media(max-width:768px){
-  .radial-ring-outer{width:370px;height:370px}
-  .radial-ring-inner{width:180px;height:180px}
-  .rp-outer{width:145px;height:175px;margin-top:-87px;margin-left:-72px}
-  .rp-inner{width:90px;height:112px;margin-top:-56px;margin-left:-45px}
-  .r-orbit-a{width:390px;height:390px}
-  .r-orbit-b{width:200px;height:200px}
-}
-@media(max-width:480px){
-  .radial-stage{height:460px}
-  .radial-ring-outer{width:290px;height:290px}
-  .radial-ring-inner{width:140px;height:140px}
-  .rp-outer{width:115px;height:138px;margin-top:-69px;margin-left:-57px}
-  .rp-inner{width:72px;height:90px;margin-top:-45px;margin-left:-36px}
-  .r-orbit-a{width:305px;height:305px}
-  .r-orbit-b{width:155px;height:155px}
-}
+/* Controls */
+.gallery-controls{display:flex;gap:.65rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;}
+.gc-btn{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:.32rem .95rem;border-radius:100px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);transition:all .2s;}
+.gc-btn:hover,.gc-btn.on{background:rgba(100,255,218,.08);border-color:rgba(100,255,218,.3);color:var(--mint);}
 
-.r-controls{display:flex;gap:.65rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;}
-.rc{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:.32rem .95rem;border-radius:100px;cursor:pointer;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
-  color:rgba(255,255,255,.35);transition:all .2s;}
-.rc:hover,.rc.on{background:rgba(100,255,218,.08);border-color:rgba(100,255,218,.3);color:var(--mint);}
-
-/* SUBMIT ART SECTION */
-.submit-card{background:var(--glass);border:1px solid rgba(100,255,218,.14);border-radius:24px;
-  padding:3rem 2.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;
-  position:relative;overflow:hidden;}
+/* Submit */
+.submit-card{background:var(--glass);border:1px solid rgba(100,255,218,.14);border-radius:24px;padding:3rem 2.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;overflow:hidden;}
 @media(max-width:600px){.submit-card{grid-template-columns:1fr}}
-.submit-card::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 60% 90% at 0% 50%,rgba(100,255,218,.04),transparent 55%);pointer-events:none;}
 .submit-card h3{font-family:var(--ft);font-size:1.3rem;font-weight:900;color:var(--mint);margin-bottom:.5rem;}
 .submit-card p{font-family:var(--fe);font-size:.88rem;color:rgba(255,255,255,.38);line-height:1.72;font-weight:300;}
 .submit-card ul{margin-top:.8rem;padding-left:1.2rem;}
 .submit-card li{font-family:var(--fe);font-size:.82rem;color:rgba(255,255,255,.3);line-height:1.8;font-weight:300;}
 .submit-card li strong{color:var(--mint);}
 
-/* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 24px;text-align:center;
-  font-family:var(--fm);font-size:.47rem;letter-spacing:.1em;color:rgba(255,255,255,.14);text-transform:uppercase;}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 24px;text-align:center;font-family:var(--fm);font-size:.47rem;letter-spacing:.1em;color:rgba(255,255,255,.14);text-transform:uppercase;}
 footer a{color:rgba(100,255,218,.32);text-decoration:none;}footer a:hover{color:var(--mint);}
-
-/* DISCORD FLOAT */
-#df{position:fixed;bottom:24px;right:24px;z-index:9998;
-  font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:.58rem 1.2rem;border-radius:100px;
-  background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;
-  text-decoration:none;box-shadow:0 4px 24px rgba(88,101,242,.4);
-  transition:all .22s;display:flex;align-items:center;gap:.4rem;}
+#df{position:fixed;bottom:24px;right:24px;z-index:9998;font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:.58rem 1.2rem;border-radius:100px;background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;text-decoration:none;box-shadow:0 4px 24px rgba(88,101,242,.4);transition:all .22s;display:flex;align-items:center;gap:.4rem;}
 #df:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(88,101,242,.55);}
-
-/* REVEAL */
 .r{opacity:0;transform:translateY(26px);transition:opacity .68s ease,transform .68s ease;}
 .r.in{opacity:1;transform:none;}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
@@ -299,31 +200,19 @@ footer a{color:rgba(100,255,218,.32);text-decoration:none;}footer a:hover{color:
   <a class="n-logo" href="/">THECONCLAVE®</a>
   <span class="n-dot"></span>
   <div class="n-links">
-    <a href="/">Home</a>
-    <a href="/ark">ARK</a>
+    <a href="/">Home</a><a href="/ark">ARK</a>
     <a href="/sandysartgalla" class="on">Art Galla</a>
-    <a href="/donate">Donate</a>
-    <a href="/ai">AEGIS</a>
+    <a href="/sponsoranddonate">Donate</a>
   </div>
 </nav>
 
-<!-- ART TIMELAPSE VIDEO HERO -->
 <section id="hero">
-  <!--
-    VIDEO: Place painting timelapse or abstract art video at /assets/video/art-bg.mp4
-    Free sources: Pexels.com search "painting timelapse" or "abstract art" — free to use.
-  -->
   <video id="av" autoplay muted loop playsinline preload="auto">
     <source src="/assets/video/art-bg.mp4" type="video/mp4">
     <source src="https://cdn.pixabay.com/video/2019/04/09/22735-329929937_large.mp4" type="video/mp4">
   </video>
-
-  <!-- Floating paint blobs -->
   <div class="paint-deco" id="paintDeco"></div>
-
-  <div class="hvl"></div>
-  <div class="hsc"></div>
-
+  <div class="hvl"></div><div class="hsc"></div>
   <div class="hc">
     <div class="hk">TheConclave Dominion · Community Art Showcase</div>
     <h1 class="ht">SANDY'S<br>ART GALLA</h1>
@@ -336,212 +225,220 @@ footer a{color:rgba(100,255,218,.32);text-decoration:none;}footer a:hover{color:
     </div>
     <div class="hbtns">
       <a class="btn-mint" href="https://discord.gg/theconclave" target="_blank" rel="noopener">🎨 Submit Your Art</a>
-      <a class="btn-gs" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Discord</a>
       <a class="btn-gs" href="/">← Home</a>
     </div>
   </div>
 </section>
 
-<!-- ABOUT -->
 <div class="wrap">
   <section class="sec">
-    <div class="sl r">🎨 About The Galla</div>
+    <div class="sl r">🎨 About</div>
     <h2 class="st r d1">Art of <em>The Dominion</em></h2>
     <div class="about-card r d2">
       <p>Sandy's Art Galla is TheConclave Dominion's <strong>community art gallery</strong> — a dedicated space celebrating the creative talent within our ARK community. From hand-drawn dino portraits to full digital landscapes of our favorite maps, every piece tells the story of life in the Dominion.<br><br>
       Submit your art in Discord. Get featured here. Earn <strong>ClaveShards (◈)</strong> for accepted submissions. This is your gallery.</p>
     </div>
     <div class="sbar r d3">
-      <div class="sb"><div class="sbn">🎨</div><div class="sbl">Art Submissions</div></div>
+      <div class="sb"><div class="sbn">🎨</div><div class="sbl">Fan Art</div></div>
       <div class="sb"><div class="sbn">🦕</div><div class="sbl">Dino Art</div></div>
-      <div class="sb"><div class="sbn">🌌</div><div class="sbn" style="font-size:1rem">Digital</div><div class="sbl">Creations</div></div>
-      <div class="sb"><div class="sbn">◈</div><div class="sbl">Earn ClaveShards</div></div>
+      <div class="sb"><div class="sbn">🌌</div><div class="sbl">Digital</div></div>
+      <div class="sb"><div class="sbn">◈</div><div class="sbl">Earn Shards</div></div>
     </div>
   </section>
 </div>
 
-<!-- ADVANCED DUAL-RING SPINNING GALLERY -->
-<div class="radial-sec">
-  <div class="rsec-label r">🖼️ Gallery</div>
-  <h2 class="rsec-title r d1">Dual-Ring <em>Art Stage</em></h2>
-  <p class="rsec-hint r d2">Two rings · outer & inner · hover to pause · drag outer ring to spin</p>
+<!-- FIXED 3D GALLERY -->
+<div class="gallery-section">
+  <div class="gs-label r">🖼️ Gallery</div>
+  <h2 class="gs-title r d1">Spinning <em>Art Stage</em></h2>
+  <p class="gs-hint r d2">Drag to spin · Hover to pause · Click to open</p>
 
-  <div class="radial-stage">
-    <div class="r-orbit-a"></div>
-    <div class="r-orbit-b"></div>
-
-    <!-- OUTER RING — 8 art panels -->
-    <div class="radial-ring-outer" id="outerRing"></div>
-
-    <!-- INNER RING — 4 feature panels, counter-rotates -->
-    <div class="radial-ring-inner" id="innerRing"></div>
-
-    <div class="r-hub">
-      <div class="r-hub-icon">🎨</div>
-      <div class="r-hub-txt">Art Galla</div>
+  <div class="gallery-scene">
+    <div class="gallery-ring" id="ring"></div>
+    <div class="gallery-hub">
+      <div class="gallery-hub-icon">🎨</div>
+      <div class="gallery-hub-txt">Art Galla</div>
     </div>
   </div>
 
-  <div class="r-controls">
-    <button class="rc on" id="rcPause" onclick="toggleSpin()">⏸ Pause</button>
-    <button class="rc" onclick="setSpin(12)">⚡ Fast</button>
-    <button class="rc" onclick="setSpin(32)">◎ Normal</button>
-    <button class="rc" onclick="setSpin(60)">🌙 Slow</button>
+  <div class="gallery-controls">
+    <button class="gc-btn on" id="btnPause" onclick="togglePause()">⏸ Pause</button>
+    <button class="gc-btn" onclick="setSpeed(10)">⚡ Fast</button>
+    <button class="gc-btn" onclick="setSpeed(28)">◎ Normal</button>
+    <button class="gc-btn" onclick="setSpeed(55)">🌙 Slow</button>
   </div>
 </div>
 
-<!-- SUBMIT ART -->
 <div class="wrap">
-  <section class="sec">
+  <section class="sec" style="padding-top:0">
     <div class="sl r">📤 Get Featured</div>
     <h2 class="st r d1">Submit Your <em>Art</em></h2>
     <div class="submit-card r d2">
       <div>
         <h3>🎨 How to Get Featured</h3>
-        <p>Sandy's Art Galla accepts community art submissions every week. Get your work displayed here and earn ClaveShards as a thank-you.</p>
+        <p>Sandy's Art Galla accepts community art submissions every week.</p>
         <ul>
           <li>Open a <strong>#art-submission</strong> ticket in Discord</li>
           <li>Attach your artwork (PNG, JPG, or GIF)</li>
           <li>Tell us the map or creature that inspired it</li>
-          <li>Get featured in the gallery & earn <strong>◈ ClaveShards</strong></li>
+          <li>Get featured & earn <strong>◈ ClaveShards</strong></li>
         </ul>
       </div>
       <div>
-        <a class="btn-mint" href="https://discord.gg/theconclave" target="_blank" rel="noopener" style="white-space:nowrap;display:inline-block;font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.7rem 1.6rem;border-radius:100px;text-decoration:none;background:linear-gradient(135deg,#64FFDA,#7B2FFF);color:#000;font-weight:700;box-shadow:0 4px 24px rgba(100,255,218,.3);">🎨 Submit Art →</a>
+        <a class="btn-mint" href="https://discord.gg/theconclave" target="_blank" rel="noopener" style="white-space:nowrap">🎨 Submit Art →</a>
       </div>
     </div>
   </section>
 </div>
 
 <footer>
-  <div style="margin-bottom:.5rem;">
-    <a href="/">Home</a> · <a href="/ark">ARK</a> · <a href="/promotor">Partners</a> · <a href="https://discord.gg/theconclave">Discord</a>
-  </div>
-  © 2026 TheConclave Dominion · Sandy's Art Galla · Community Art Showcase
+  <div style="margin-bottom:.5rem;"><a href="/">Home</a> · <a href="/ark">ARK</a> · <a href="https://discord.gg/theconclave">Discord</a></div>
+  © 2026 TheConclave Dominion · Sandy's Art Galla
 </footer>
-
 <a id="df" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Join Discord</a>
 
 <script>
 'use strict';
 
-/* PAINT BLOBS */
+/* ── PAINT BLOBS ── */
 (function(){
-  const c=document.getElementById('paintDeco');
-  const cols=['#64FFDA','#FF4CD2','#7B2FFF','#FFB800','#FF6B6B'];
-  for(let i=0;i<8;i++){
+  const c = document.getElementById('paintDeco');
+  const cols = ['#64FFDA','#FF4CD2','#7B2FFF','#FFB800','#FF6B6B'];
+  for(let i=0;i<7;i++){
     const d=document.createElement('div');
-    d.className='pd';
-    d.style.cssText=`
-      width:${200+Math.random()*400}px;height:${200+Math.random()*400}px;
+    d.className='pd-blob';
+    d.style.cssText=`width:${200+Math.random()*350}px;height:${200+Math.random()*350}px;
       top:${Math.random()*100}%;left:${Math.random()*100}%;
       background:${cols[i%cols.length]};
       --dur:${10+Math.random()*10}s;
-      --tx:${-30+Math.random()*60}px;
-      --ty:${-30+Math.random()*60}px;
-      animation-delay:${Math.random()*8}s;
-    `;
+      --tx:${-30+Math.random()*60}px;--ty:${-30+Math.random()*60}px;
+      animation-delay:${Math.random()*8}s;`;
     c.appendChild(d);
   }
 })();
 
-/* GALLERY PANELS DATA */
-const OUTER_PANELS = [
-  {label:'Map Art',title:'The Island',badge:'🌿 Landscape',bg:'linear-gradient(135deg,#001a08,#003010,rgba(100,255,218,.18))',icon:'🌴'},
-  {label:'Dino Art',title:'Rex Portrait',badge:'🦖 Creature',bg:'linear-gradient(135deg,#1a0200,#300500,rgba(255,107,0,.18))',icon:'🦖'},
-  {label:'Map Art',title:'Aberration',badge:'🌑 Dark',bg:'linear-gradient(135deg,#0a0020,#180840,rgba(123,47,255,.18))',icon:'🌑'},
-  {label:'Community',title:'Base Build',badge:'🏰 Build',bg:'linear-gradient(135deg,#0a0800,#1a1400,rgba(255,184,0,.18))',icon:'🏰'},
-  {label:'Dino Art',title:'Wyvern Wing',badge:'🐉 Dragon',bg:'linear-gradient(135deg,#1a0008,#2d0015,rgba(255,76,210,.18))',icon:'🐉'},
-  {label:'Map Art',title:'Scorched Earth',badge:'☀️ Desert',bg:'linear-gradient(135deg,#1a0800,#2d1000,rgba(255,107,0,.2))',icon:'☀️'},
-  {label:'Concept',title:'Tek Gear',badge:'⚙️ Sci-Fi',bg:'linear-gradient(135deg,#000a1a,#001428,rgba(0,212,255,.18))',icon:'⚙️'},
-  {label:'Community',title:'Tribe Banner',badge:'⬡ Tribe',bg:'linear-gradient(135deg,#0a0a00,#181800,rgba(255,184,0,.14))',icon:'⬡'},
+/* ── FIXED 3D RADIAL GALLERY ── */
+const PANELS = [
+  {label:'Map Art',title:'🌴 The Island',badge:'🌿 Landscape',bg:'linear-gradient(135deg,#001a08,#003010)'},
+  {label:'Dino Art',title:'🦖 Rex Portrait',badge:'🦖 Creature',bg:'linear-gradient(135deg,#1a0200,#300800)'},
+  {label:'Map Art',title:'🌑 Aberration',badge:'🌑 Dark Zone',bg:'linear-gradient(135deg,#0a0020,#180840)'},
+  {label:'Build Art',title:'🏰 Base Build',badge:'🏰 Structure',bg:'linear-gradient(135deg,#0a0800,#1a1400)'},
+  {label:'Dino Art',title:'🐉 Wyvern',badge:'🐉 Dragon',bg:'linear-gradient(135deg,#1a0008,#2d0015)'},
+  {label:'Map Art',title:'☀️ Scorched',badge:'☀️ Desert',bg:'linear-gradient(135deg,#1a0800,#2d1000)'},
+  {label:'Concept',title:'⚙️ Tek Gear',badge:'⚙️ Sci-Fi',bg:'linear-gradient(135deg,#000a1a,#001428)'},
+  {label:'Community',title:'⬡ Tribe Banner',badge:'⬡ Tribe',bg:'linear-gradient(135deg,#0a0a00,#181800)'},
 ];
 
-const INNER_PANELS = [
-  {label:'Featured',title:'Art of the Week',badge:'⭐ Featured',bg:'linear-gradient(135deg,#0d0020,#200840,rgba(255,76,210,.22))',icon:'⭐'},
-  {label:'Sandy\'s Pick',title:'Top Submission',badge:'🎨 Sandy',bg:'linear-gradient(135deg,#001a10,#002820,rgba(100,255,218,.22))',icon:'🎨'},
-  {label:'Community',title:'Fan Favourite',badge:'❤️ Popular',bg:'linear-gradient(135deg,#1a0005,#2d000d,rgba(255,76,210,.2))',icon:'❤️'},
-  {label:'New',title:'Latest Drop',badge:'🆕 New',bg:'linear-gradient(135deg,#0a0800,#181200,rgba(255,184,0,.2))',icon:'🆕'},
-];
-
-const outerRing = document.getElementById('outerRing');
-const innerRing = document.getElementById('innerRing');
+const ring = document.getElementById('ring');
 let spinning = true;
+let currentDuration = 28;
 
-function getRO(){ const w=window.innerWidth; return w<480?115:w<768?155:210; }
-function getRI(){ const w=window.innerWidth; return w<480?60:w<768?80:100; }
+function getRadius(){
+  const w = window.innerWidth;
+  return w < 480 ? 180 : w < 768 ? 240 : 320;
+}
 
-function buildGallery(){
-  outerRing.innerHTML='';
-  innerRing.innerHTML='';
-  const NO = OUTER_PANELS.length, RO = getRO();
-  OUTER_PANELS.forEach((p,i)=>{
-    const angle=(360/NO)*i, rad=angle*(Math.PI/180);
-    const x=RO*Math.sin(rad), z=RO*Math.cos(rad);
-    const el=document.createElement('div');
-    el.className='rp-outer';
-    el.style.transform=`translateX(${x}px) translateZ(${z}px)`;
-    el.innerHTML=`
-      <div class="rp-bg" style="background:${p.bg}"></div>
-      <div class="rp-overlay"></div>
-      <div class="rp-badge">${p.badge}</div>
-      <div class="rp-body">
-        <div class="rp-label">${p.label}</div>
-        <div class="rp-title">${p.icon} ${p.title}</div>
-        <a class="rp-link" href="https://discord.gg/theconclave" target="_blank" rel="noopener">View →</a>
+function buildRing(){
+  ring.innerHTML = '';
+  const N = PANELS.length;
+  const R = getRadius();
+  const anglePer = 360 / N;
+
+  PANELS.forEach((p, i) => {
+    const angle = anglePer * i;
+    const el = document.createElement('div');
+    el.className = 'gp';
+    // KEY FIX: rotateY first, then translateZ
+    // This correctly positions each card around the carousel
+    el.style.setProperty('--angle', angle + 'deg');
+    el.style.setProperty('--radius', R + 'px');
+    el.innerHTML = `
+      <div class="gp-bg" style="background:${p.bg}"></div>
+      <div class="gp-overlay"></div>
+      <div class="gp-badge">${p.badge}</div>
+      <div class="gp-body">
+        <div class="gp-label">${p.label}</div>
+        <div class="gp-title">${p.title}</div>
+        <a class="gp-link" href="https://discord.gg/theconclave" target="_blank" rel="noopener">View →</a>
       </div>`;
-    el.addEventListener('mouseenter',()=>{ outerRing.classList.add('paused'); innerRing.classList.add('paused'); });
-    el.addEventListener('mouseleave',()=>{ if(spinning){ outerRing.classList.remove('paused'); innerRing.classList.remove('paused'); }});
-    outerRing.appendChild(el);
-  });
 
-  const NI = INNER_PANELS.length, RI = getRI();
-  INNER_PANELS.forEach((p,i)=>{
-    const angle=(360/NI)*i, rad=angle*(Math.PI/180);
-    const x=RI*Math.sin(rad), z=RI*Math.cos(rad);
-    const el=document.createElement('div');
-    el.className='rp-inner';
-    el.style.transform=`translateX(${x}px) translateZ(${z}px)`;
-    el.innerHTML=`
-      <div class="rp-bg" style="background:${p.bg}"></div>
-      <div class="rp-overlay"></div>
-      <div class="rp-badge">${p.badge}</div>
-      <div class="rp-body">
-        <div class="rp-label">${p.label}</div>
-        <div class="rp-title">${p.icon} ${p.title}</div>
-        <a class="rp-link" href="https://discord.gg/theconclave" target="_blank" rel="noopener">View →</a>
-      </div>`;
-    el.addEventListener('mouseenter',()=>{ outerRing.classList.add('paused'); innerRing.classList.add('paused'); });
-    el.addEventListener('mouseleave',()=>{ if(spinning){ outerRing.classList.remove('paused'); innerRing.classList.remove('paused'); }});
-    innerRing.appendChild(el);
+    /* pause on hover */
+    el.addEventListener('mouseenter', () => ring.classList.add('paused'));
+    el.addEventListener('mouseleave', () => { if(spinning) ring.classList.remove('paused'); });
+    ring.appendChild(el);
   });
 }
 
-function toggleSpin(){
-  spinning=!spinning;
-  outerRing.classList.toggle('paused',!spinning);
-  innerRing.classList.toggle('paused',!spinning);
-  const btn=document.getElementById('rcPause');
-  btn.textContent=spinning?'⏸ Pause':'▶ Resume';
-  btn.classList.toggle('on',spinning);
-}
-function setSpin(dur){
-  spinning=true;
-  outerRing.style.animationDuration=dur+'s';
-  innerRing.style.animationDuration=(dur*0.6)+'s';
-  outerRing.classList.remove('paused');
-  innerRing.classList.remove('paused');
-  document.getElementById('rcPause').textContent='⏸ Pause';
-}
-window.toggleSpin=toggleSpin;
-window.setSpin=setSpin;
+/* DRAG TO SPIN */
+let dragActive = false;
+let dragLastX = 0;
+let manualAngle = 0;
+let animStart = null;
 
-buildGallery();
-window.addEventListener('resize',buildGallery);
+ring.addEventListener('pointerdown', e => {
+  dragActive = true;
+  dragLastX = e.clientX;
+  ring.setPointerCapture(e.pointerId);
+  ring.classList.add('paused');
+  /* get current rotation so we can continue from it */
+  const style = window.getComputedStyle(ring);
+  const matrix = new DOMMatrix(style.transform);
+  manualAngle = Math.atan2(matrix.m13, matrix.m33) * (180/Math.PI);
+  ring.style.animation = 'none';
+});
+
+ring.addEventListener('pointermove', e => {
+  if(!dragActive) return;
+  const delta = (e.clientX - dragLastX) * 0.45;
+  manualAngle += delta;
+  dragLastX = e.clientX;
+  ring.style.transform = `rotateX(8deg) rotateY(${manualAngle}deg)`;
+});
+
+ring.addEventListener('pointerup', () => {
+  dragActive = false;
+  if(spinning){
+    /* resume animation from current angle */
+    ring.style.animation = '';
+    ring.style.transform = '';
+    ring.classList.remove('paused');
+  }
+});
+
+function togglePause(){
+  spinning = !spinning;
+  ring.classList.toggle('paused', !spinning);
+  const btn = document.getElementById('btnPause');
+  btn.textContent = spinning ? '⏸ Pause' : '▶ Resume';
+  btn.classList.toggle('on', spinning);
+  if(spinning && dragActive === false){
+    ring.style.animation = '';
+    ring.style.transform = '';
+  }
+}
+
+function setSpeed(dur){
+  currentDuration = dur;
+  ring.style.animationDuration = dur + 's';
+  spinning = true;
+  ring.classList.remove('paused');
+  ring.style.animation = '';
+  ring.style.transform = '';
+  document.getElementById('btnPause').textContent = '⏸ Pause';
+  document.getElementById('btnPause').classList.add('on');
+  // re-apply duration
+  ring.style.animationDuration = dur + 's';
+}
+
+window.togglePause = togglePause;
+window.setSpeed = setSpeed;
+
+buildRing();
+window.addEventListener('resize', buildRing);
 
 /* REVEAL */
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.1});
-document.querySelectorAll('.r').forEach(el=>io.observe(el));
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }), {threshold:.1});
+document.querySelectorAll('.r').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
