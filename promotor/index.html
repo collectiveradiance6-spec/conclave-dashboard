@@ -11,7 +11,7 @@
 :root{
   --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;
   --or:#FF6B00;--gd:#FFB800;--gr:#35ED7E;
-  --bg:#020108;--glass:rgba(10,4,28,.76);--border:rgba(255,76,210,.14);
+  --bg:#020108;--glass:rgba(10, 4, 28, 0.215);--border:rgba(255,76,210,.14);
   --fm:'Share Tech Mono',monospace;--ft:'Orbitron',sans-serif;--fe:'Exo 2',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -441,5 +441,9 @@ footer a{color:rgba(255,76,210,.35);text-decoration:none;}footer a:hover{color:v
 const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }),{threshold:.1});
 document.querySelectorAll('.r').forEach(el => io.observe(el));
 </script>
+
+<script src="/bg-engine.js"></script>
+<script src="/nav-island.js"></script>
+
 </body>
 </html>
