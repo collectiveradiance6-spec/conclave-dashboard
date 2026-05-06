@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClaveShard Shop — TheConclave Dominion</title>
+<meta name="description" content="TheConclave Dominion ClaveShard Shop — premium dinos, resources, boss support, shiny upgrades, and Dominion-tier delivery.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Share+Tech+Mono&display=swap">
+<style>
+:root{
+  --pk:#FF4CD2;--cy:#00D4FF;--pl:#7B2FFF;--gd:#FFB800;--gr:#35ED7E;--or:#FF6B00;
+  --bg:#020108;--glass:rgba(8,4,22,.82);--border:rgba(255,184,0,.15);
+  --fm:'Share Tech Mono',monospace;--ft:'Orbitron',sans-serif;--fe:'Exo 2',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:var(--fe);overflow-x:hidden}
+
+#nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+  background:rgba(4,1,12,.94);border-radius:100px;padding:7px 20px 7px 14px;
+  backdrop-filter:blur(32px);box-shadow:0 0 0 1px rgba(255,184,0,.2),0 8px 40px rgba(0,0,0,.7);}
+.n-logo{font-family:var(--ft);font-size:.6rem;font-weight:900;color:#fff;letter-spacing:.14em;text-decoration:none;}
+.n-dot{width:7px;height:7px;border-radius:50%;background:var(--gd);box-shadow:0 0 10px var(--gd);animation:pd 2s infinite;}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.65)}}
+.n-links{display:flex;gap:16px;margin-left:6px;}
+.n-links a{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:rgba(255,255,255,.38);text-decoration:none;text-transform:uppercase;transition:color .2s;}
+.n-links a:hover,.n-links a.on{color:var(--gd);}
+@media(max-width:640px){.n-links{display:none}}
+
+/* HERO */
+#hero{position:relative;min-height:60vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding-top:100px;}
+.hvl{position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(255,184,0,.18),transparent 55%),
+             radial-gradient(ellipse 55% 70% at 0% 110%,rgba(123,47,255,.14),transparent 55%),
+             linear-gradient(180deg,rgba(2,1,8,.1) 0%,rgba(2,1,8,.98) 100%);}
+.hsc{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.25;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);}
+.hc{position:relative;z-index:2;text-align:center;padding:2rem 24px 3rem;}
+.hk{font-family:var(--fm);font-size:.52rem;letter-spacing:.3em;color:rgba(255,184,0,.6);text-transform:uppercase;
+  margin-bottom:1rem;display:inline-flex;align-items:center;gap:.5rem;}
+.hk::before,.hk::after{content:'';width:30px;height:1px;background:rgba(255,184,0,.28);}
+.ht{font-family:var(--ft);font-size:clamp(2.5rem,8vw,5.5rem);font-weight:900;line-height:.9;
+  background:linear-gradient(135deg,#FFB800 0%,#FF6B00 35%,#FF4CD2 70%,#7B2FFF 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:.8rem;filter:drop-shadow(0 0 50px rgba(255,184,0,.35));}
+.hsub{font-family:var(--fe);font-size:.95rem;color:rgba(255,255,255,.4);max-width:580px;margin:0 auto 1.5rem;line-height:1.8;font-weight:300;}
+
+/* PAYMENT INFO BAR */
+.pay-bar{
+  background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);
+  border-radius:16px;padding:1.2rem 2rem;max-width:700px;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;
+}
+.pay-item{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,184,0,.65);display:flex;align-items:center;gap:.4rem;}
+.pay-item strong{color:var(--gd);}
+
+/* LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+.sec{padding:4rem 0;}
+.sl{font-family:var(--fm);font-size:.5rem;letter-spacing:.3em;color:rgba(255,184,0,.42);
+  text-transform:uppercase;margin-bottom:.65rem;display:flex;align-items:center;gap:.65rem;}
+.sl::after{content:'';flex:1;height:1px;background:rgba(255,184,0,.1);}
+.st{font-family:var(--ft);font-size:clamp(1.5rem,5vw,2.6rem);font-weight:900;color:#fff;margin-bottom:.65rem;line-height:1.05;}
+.st em{font-style:normal;background:linear-gradient(135deg,var(--gd),var(--or));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* TIER GRID */
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.1rem;}
+
+.tier-card{
+  background:var(--glass);border:1px solid rgba(255,184,0,.12);
+  border-radius:20px;padding:1.6rem 1.4rem;
+  position:relative;overflow:hidden;transition:all .25s;
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.tier-card:hover{
+  border-color:rgba(255,184,0,.35);
+  transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(255,184,0,.14);
+}
+.tier-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,184,0,.55),transparent);}
+
+.tc-top{display:flex;align-items:center;justify-content:space-between;}
+.tc-icon{font-size:1.8rem;line-height:1;}
+.tc-cs{font-family:var(--ft);font-size:.82rem;font-weight:700;color:var(--gd);
+  display:flex;align-items:center;gap:.25rem;}
+.tc-cs-label{font-family:var(--fm);font-size:.42rem;letter-spacing:.1em;color:rgba(255,184,0,.45);text-transform:uppercase;}
+
+.tc-tier{font-family:var(--fm);font-size:.46rem;letter-spacing:.16em;color:rgba(255,184,0,.45);text-transform:uppercase;}
+.tc-name{font-family:var(--ft);font-size:1.05rem;font-weight:700;color:#fff;line-height:1.1;}
+
+.tc-divider{height:1px;background:rgba(255,255,255,.07);margin:.2rem 0;}
+
+.tc-includes{font-family:var(--fm);font-size:.44rem;letter-spacing:.1em;color:rgba(255,184,0,.4);text-transform:uppercase;margin-bottom:.3rem;}
+.tc-perks{list-style:none;display:flex;flex-direction:column;gap:.28rem;}
+.tc-perks li{font-family:var(--fe);font-size:.8rem;color:rgba(255,255,255,.38);
+  line-height:1.5;font-weight:300;padding-left:.9rem;position:relative;}
+.tc-perks li::before{content:'›';position:absolute;left:0;color:var(--gd);font-size:.8rem;line-height:1.5;}
+
+.tc-fulfil{font-family:var(--fm);font-size:.43rem;letter-spacing:.08em;
+  color:rgba(255,255,255,.18);text-transform:uppercase;margin-top:auto;padding-top:.4rem;
+  border-top:1px solid rgba(255,255,255,.06);}
+
+.tc-btn{
+  display:block;text-align:center;text-decoration:none;
+  font-family:var(--fm);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.5rem 1rem;border-radius:100px;
+  background:linear-gradient(135deg,#FFB800,#FF6B00);color:#000;font-weight:700;
+  box-shadow:0 3px 14px rgba(255,184,0,.3);transition:all .2s;margin-top:.4rem;
+}
+.tc-btn:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(255,184,0,.45);}
+
+/* Insurance card — special */
+.tier-card.insurance{border-color:rgba(0,212,255,.18);}
+.tier-card.insurance::before{background:linear-gradient(90deg,transparent,rgba(0,212,255,.5),transparent);}
+.tier-card.insurance:hover{border-color:rgba(0,212,255,.38);box-shadow:0 16px 48px rgba(0,212,255,.12);}
+.tier-card.insurance .tc-cs{color:#00D4FF;}
+.tier-card.insurance .tc-cs-label{color:rgba(0,212,255,.45);}
+.tier-card.insurance .tc-btn{background:linear-gradient(135deg,#00D4FF,#7B2FFF);color:#fff;}
+.tier-card.insurance .tc-perks li::before{color:#00D4FF;}
+
+/* FULFILLMENT NOTE */
+.fulfil-note{
+  background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
+  border-radius:18px;padding:1.8rem 2rem;margin-top:2rem;
+  display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:center;
+}
+@media(max-width:600px){.fulfil-note{grid-template-columns:1fr}}
+.fn-icon{font-size:2.5rem;}
+.fn-title{font-family:var(--ft);font-size:.85rem;font-weight:700;color:var(--gd);margin-bottom:.3rem;}
+.fn-body{font-family:var(--fe);font-size:.83rem;color:rgba(255,255,255,.38);line-height:1.75;font-weight:300;}
+.fn-body strong{color:var(--gd);}
+
+footer{border-top:1px solid rgba(255,255,255,.06);padding:2.5rem 24px;text-align:center;
+  font-family:var(--fm);font-size:.47rem;letter-spacing:.1em;color:rgba(255,255,255,.14);text-transform:uppercase;}
+footer a{color:rgba(255,184,0,.32);text-decoration:none;}footer a:hover{color:var(--gd);}
+#df{position:fixed;bottom:24px;right:24px;z-index:9998;font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;padding:.58rem 1.2rem;border-radius:100px;background:linear-gradient(135deg,#5865F2,#7B2FFF);color:#fff;text-decoration:none;box-shadow:0 4px 24px rgba(88,101,242,.4);transition:all .22s;display:flex;align-items:center;gap:.4rem;}
+#df:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(88,101,242,.55);}
+.r{opacity:0;transform:translateY(26px);transition:opacity .68s ease,transform .68s ease;}
+.r.in{opacity:1;transform:none;}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}
+</style>
+</head>
+<body>
+<nav id="nav">
+  <a class="n-logo" href="/">THECONCLAVE®</a>
+  <span class="n-dot"></span>
+  <div class="n-links">
+    <a href="/">Home</a><a href="/ark">ARK</a><a href="/worldconnecthub">Hub</a>
+    <a href="/promotor">Partners</a><a href="/claveshard-shop" class="on">◈ Shop</a>
+    <a href="/sponsoranddonate">Donate</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hvl"></div><div class="hsc"></div>
+  <div class="hc">
+    <div class="hk">TheConclave Dominion · ClaveShard Exchange</div>
+    <h1 class="ht">CLAVE<br>SHARD<br>SHOP</h1>
+    <p class="hsub">Premium fulfillment panels for dinos, resources, boss support, shiny upgrades, and Dominion-tier delivery. Submit through the CLVSD shop ticket system with your 4-digit pickup code.</p>
+    <div class="pay-bar">
+      <div class="pay-item">🛒 <span>theconclavedominion.com/shop</span></div>
+      <div class="pay-item">🧾 <strong>/order</strong> to submit</div>
+      <div class="pay-item">💳 Cash App: <strong>$TheConclaveDominion</strong></div>
+      <div class="pay-item">🏦 Chime: <strong>$TheConclaveDominion</strong></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <section class="sec">
+    <div class="sl r">◈ ClaveShard Tiers</div>
+    <h2 class="st r d1">Choose Your <em>Tier</em></h2>
+
+    <div class="tier-grid r d2">
+
+      <!-- T1 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">💠</div><div><div class="tc-cs">1 <span class="tc-cs-label">ClaveShard</span></div></div></div>
+        <div class="tc-tier">Tier 1</div>
+        <div class="tc-name">Foundation Drop</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>Level 600 Allowed Dino</li>
+          <li>3 stacks of ammo</li>
+          <li>Full dino coloring</li>
+          <li>100 kibble, cakes, or beer</li>
+          <li>100% imprint</li>
+          <li>500 non-Tek structures</li>
+          <li>Cryofridge + 120 cryopods</li>
+          <li>50,000 ConCoins</li>
+          <li>2,500 materials/resources (no element)</li>
+          <li>10 same-type tributes</li>
+          <li>Boss artifact + tribute set — 1 run</li>
+          <li>Non-Tek blueprint</li>
+          <li>Dino Revival Token — 48 hours</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T2 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">💎</div><div><div class="tc-cs">2 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 2</div>
+        <div class="tc-name">Shiny Starter</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>60 Dedicated Storage</li>
+          <li>Level 700 Allowed Dino</li>
+          <li>Level 500 Random Shiny</li>
+          <li>Level 500 Shiny Shoulder Variant</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T3 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">✨</div><div><div class="tc-cs">3 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 3</div>
+        <div class="tc-name">Tek Spark</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>Tek Suit or Tek Blueprint</li>
+          <li>1 Shiny Essence</li>
+          <li>200% imprint</li>
+          <li>Level 600 T1 Shiny</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T5 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">🔥</div><div><div class="tc-cs">5 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 5</div>
+        <div class="tc-name">Boss Spark</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>Boss Defeat Command</li>
+          <li>Level 1000 Allowed Dino</li>
+          <li>Level 800 T2 Special Shiny</li>
+          <li>100 Raw Shiny Essence</li>
+          <li>2,500 imprint kibble</li>
+          <li>25,000 materials/resources (no element)</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T6 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">⚔️</div><div><div class="tc-cs">6 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 6</div>
+        <div class="tc-name">Boss Ready</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>Level 1250 Breeding Pair / Boss Dinos</li>
+          <li>250% imprint — Rex, Yuty, Carchar, or Therizino</li>
+          <li>300% imprint — Ossidion</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T8 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">🧬</div><div><div class="tc-cs">8 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 8</div>
+        <div class="tc-name">Medium Resources</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Bundle</div>
+        <ul class="tc-perks">
+          <li>100,000 materials/resources</li>
+          <li>No element variants</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T10 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">🛡️</div><div><div class="tc-cs">10 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 10</div>
+        <div class="tc-name">Dominion Upgrade</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>Ascendant Tek Suit or Blueprint Set</li>
+          <li>Floating Cliff Platform (Limited Availability)</li>
+          <li>200,000 ConCoins</li>
+          <li>Combo Shiny Essence — choose 2</li>
+          <li>Dino Color Party — 10 dinos</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T12 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">🌟</div><div><div class="tc-cs">12 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 12</div>
+        <div class="tc-name">Large Resources</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Bundle</div>
+        <ul class="tc-perks">
+          <li>200,000 materials/resources</li>
+          <li>No element variants</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T15 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">👑</div><div><div class="tc-cs">15 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 15</div>
+        <div class="tc-name">Crown Drop</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>30,000 element</li>
+          <li>Level 1500 Rhyniognatha</li>
+          <li>Level 1500 Reaper King</li>
+          <li>Level 1500 Aureliax</li>
+          <li>Level 1500 Elder Claw</li>
+          <li>Level 1500 Dreadnoughtus</li>
+          <li>Level 1500 Acrocanthosaurus</li>
+          <li>Level 1500 Helicoprion</li>
+          <li>Level 1500 Dreadmare</li>
+          <li>Level 1500 Pyromane</li>
+          <li>300,000 materials/resources (no element)</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T20 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">🏰</div><div><div class="tc-cs">20 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 20</div>
+        <div class="tc-name">Gate Expansion</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Includes</div>
+        <ul class="tc-perks">
+          <li>1×1 Behemoth Gate Expansion</li>
+          <li>Maximum 10 gates per Map per Tribe</li>
+          <li>600,000 ConCoins</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- T30 -->
+      <div class="tier-card">
+        <div class="tc-top"><div class="tc-icon">💰</div><div><div class="tc-cs">30 <span class="tc-cs-label">ClaveShards</span></div></div></div>
+        <div class="tc-tier">Tier 30</div>
+        <div class="tc-name">Dedicated Refill</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes">Storage Refill</div>
+        <ul class="tc-perks">
+          <li>1.6 million total resources</li>
+          <li>No element variants</li>
+          <li>No structures, artifacts, or trophies</li>
+        </ul>
+        <div class="tc-fulfil">⏱ Council fulfilled 24–72 hours</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener">Order →</a>
+      </div>
+
+      <!-- DINO INSURANCE -->
+      <div class="tier-card insurance">
+        <div class="tc-top"><div class="tc-icon">🛡️</div><div><div class="tc-cs" style="color:#00D4FF">Open <span class="tc-cs-label" style="color:rgba(0,212,255,.45)">Ticket</span></div></div></div>
+        <div class="tc-tier" style="color:rgba(0,212,255,.45)">Dino Insurance</div>
+        <div class="tc-name">Protection Token</div>
+        <div class="tc-divider"></div>
+        <div class="tc-includes" style="color:rgba(0,212,255,.4)">Includes</div>
+        <ul class="tc-perks">
+          <li>One-time use per dino</li>
+          <li>Dino must be named</li>
+          <li>Backup may not always save</li>
+          <li>May require respawn</li>
+        </ul>
+        <div class="tc-fulfil">🎟️ Open a Discord ticket for insurance</div>
+        <a class="tc-btn" href="https://discord.com/channels/1438103556610723922/1492878413533282394" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#00D4FF,#7B2FFF);color:#fff;">Insure →</a>
+      </div>
+
+    </div>
+
+    <div class="fulfil-note r">
+      <div class="fn-icon">📦</div>
+      <div>
+        <div class="fn-title">Fulfillment & Payment</div>
+        <p class="fn-body">All orders fulfilled by the Council within <strong>24–72 hours</strong>. Submit your order through the CLVSD shop ticket system and include your <strong>4-digit pickup code</strong> for Community Center delivery.<br><br>
+        Payment via <strong>Cash App: $TheConclaveDominion</strong> or <strong>Chime: $TheConclaveDominion</strong>. All sales are final.</p>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<footer>
+  <div style="margin-bottom:.5rem;"><a href="/">Home</a> · <a href="/ark">ARK</a> · <a href="/promotor">Partners</a> · <a href="https://discord.gg/theconclave">Discord</a></div>
+  © 2026 TheConclave Dominion · ClaveShard Shop · All sales final
+</footer>
+<a id="df" href="https://discord.gg/theconclave" target="_blank" rel="noopener">💬 Join Discord</a>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');}),{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
